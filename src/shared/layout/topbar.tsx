@@ -1,0 +1,79 @@
+"use client";
+
+import { useState } from "react";
+import { Bell, Search } from "lucide-react";
+import { useAuthStore } from "@/features/auth/store/auth-store";
+import { useLogout } from "@/features/auth/hooks/use-auth";
+import { Button } from "@/shared/ui/button";
+import { useRouter } from "next/navigation";
+
+export function Topbar() {
+  const user = useAuthStore((s) => s.user);
+  const logout = useLogout();
+  const router = useRouter();
+  const [q, setQ] = useState("");
+
+  function handleLogout() {
+    logout();
+    router.replace("/login");
+  }
+
+  function handleSearchSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const trimmed = q.trim();
+    router.push(trimmed ? `/places?q=${encodeURIComponent(trimmed)}` : "/places");
+  }
+
+  const initials = (user?.full_name || user?.email || "?")
+    .split(" ")
+    .map((p) => p[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+
+  return (
+    <header
+      style={{ height: "var(--topbar-height)" }}
+      className="sticky top-0 z-40 flex items-center gap-4 border-b border-[var(--border)] bg-[var(--bg)]/85 backdrop-blur px-6"
+    >
+      <form onSubmit={handleSearchSubmit} className="flex-1 max-w-xl">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-soft)]" />
+          <input
+            type="search"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Buscar lugares, experiencias…"
+            className="h-10 w-full rounded-md border border-[var(--border)] bg-[var(--bg-subtle)] pl-10 pr-3 text-sm placeholder:text-[var(--text-soft)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/30 focus:border-[var(--accent)] focus:bg-[var(--surface)]"
+          />
+        </div>
+      </form>
+
+      <div className="flex items-center gap-2">
+        <Button variant="ghost" size="icon" aria-label="Notificaciones">
+          <Bell className="h-[18px] w-[18px]" />
+        </Button>
+
+        <div className="flex items-center gap-3 pl-2">
+          <div
+            className="h-9 w-9 rounded-full bg-[var(--accent-soft)] text-[var(--accent)] flex items-center justify-center text-xs font-semibold"
+            aria-hidden
+          >
+            {initials}
+          </div>
+          <div className="hidden sm:flex flex-col leading-tight">
+            <span className="text-sm font-medium text-[var(--text)]">
+              {user?.full_name ?? user?.email ?? "Invitado"}
+            </span>
+            <button
+              onClick={handleLogout}
+              className="text-xs text-[var(--text-muted)] hover:text-[var(--text)] text-left"
+            >
+              Cerrar sesión
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+}
