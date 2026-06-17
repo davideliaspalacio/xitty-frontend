@@ -1,6 +1,7 @@
 import { env } from "@/lib/env";
 import { ApiError, type AuthResponse } from "@/lib/api/types";
 import { useAuthStore } from "@/features/auth/store/auth-store";
+import { useI18nStore } from "@/features/i18n/store";
 
 interface RequestOptions extends Omit<RequestInit, "body"> {
   body?: unknown;
@@ -17,6 +18,17 @@ async function rawFetch<T>(path: string, opts: RequestOptions = {}): Promise<T> 
     Accept: "application/json",
     ...((headers as Record<string, string>) ?? {}),
   };
+
+  // i18n: forward the user's language preference on every request so the
+  // backend can localise responses. Caller-supplied Accept-Language wins.
+  if (!("Accept-Language" in finalHeaders)) {
+    try {
+      const lang = useI18nStore.getState().lang;
+      if (lang) finalHeaders["Accept-Language"] = lang;
+    } catch {
+      // store not ready (SSR / tests without setup) — skip silently
+    }
+  }
 
   if (auth) {
     const token = useAuthStore.getState().accessToken;
