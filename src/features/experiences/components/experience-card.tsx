@@ -26,22 +26,44 @@ const typeLabels: Record<string, string> = {
 };
 
 export function ExperienceCard({ experience }: { experience: ExperienceCardType }) {
+  const duration = durationLabel(experience.duration_minutes);
+
   return (
     <Link
       href={`/experiences/${experience.id}`}
-      className="group relative shrink-0 w-[280px] sm:w-[320px] flex flex-col rounded-lg border border-[var(--border)] bg-[var(--surface)] overflow-hidden transition-all hover:shadow-[var(--shadow-2)] hover:border-[var(--border-strong)]"
+      aria-label={`${experience.title} — ${duration}`}
+      className="group relative shrink-0 w-[280px] sm:w-[320px] flex flex-col rounded-2xl border border-[var(--border)] bg-[var(--surface)] overflow-hidden transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[var(--shadow-flat)] hover:border-[var(--ink)]"
     >
-      <div className="relative aspect-[4/3] bg-[var(--bg-subtle)]">
+      <div className="relative aspect-[4/3] bg-[var(--bg-subtle)] overflow-hidden">
         {experience.cover_photo_url ? (
           /* eslint-disable-next-line @next/next/no-img-element */
           <img
             src={experience.cover_photo_url}
             alt={experience.title}
-            className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.04]"
           />
         ) : null}
 
-        <span className="absolute top-2.5 left-2.5 inline-flex items-center h-6 px-2.5 rounded-pill text-[11px] font-medium bg-white/95 backdrop-blur text-[var(--text)]">
+        {/* Hover gradient: coral -> teal at 20% */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+          style={{
+            background:
+              "linear-gradient(135deg, rgba(255,90,78,0.20) 0%, rgba(14,159,140,0.20) 100%)",
+          }}
+        />
+
+        {/* Sticker-style duration badge top-left */}
+        <span
+          className="absolute top-2.5 left-2.5 inline-flex items-center gap-1 h-7 px-2.5 rounded-pill text-[11px] font-semibold bg-[var(--cream)] text-[var(--ink)] border-[1.5px] border-[var(--ink)]"
+        >
+          <Clock className="h-3 w-3" aria-hidden="true" />
+          {duration}
+        </span>
+
+        {/* Experience-type pill (kept, moved to top-right so the sticker can breathe) */}
+        <span className="absolute top-2.5 right-2.5 inline-flex items-center h-6 px-2.5 rounded-pill text-[11px] font-medium bg-white/95 backdrop-blur text-[var(--text)]">
           {typeLabels[experience.experience_type] ?? experience.experience_type}
         </span>
       </div>
@@ -52,10 +74,6 @@ export function ExperienceCard({ experience }: { experience: ExperienceCardType 
         </h3>
 
         <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
-          <span className="inline-flex items-center gap-1">
-            <Clock className="h-3 w-3" />
-            {durationLabel(experience.duration_minutes)}
-          </span>
           <RatingStars
             value={experience.average_rating}
             count={experience.total_reviews}
