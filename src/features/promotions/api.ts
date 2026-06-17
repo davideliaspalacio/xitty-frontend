@@ -2,6 +2,7 @@ import { api } from "@/lib/api/http";
 import type {
   ActivePromotionListItem,
   CreatePromotionPayload,
+  HeroPromotion,
   Paginated,
   Promotion,
   UpdatePromotionPayload,
@@ -13,6 +14,13 @@ export const promotionsApi = {
       `/promotions/active?page=${page}&limit=${limit}`,
       { auth: false },
     ),
+
+  hero: () => api.get<HeroPromotion[]>("/promotions/hero", { auth: false }),
+
+  trackImpression: (promoId: string) =>
+    api.post<void>(`/promotions/${promoId}/impression`, undefined, {
+      auth: false,
+    }),
 
   byPlace: (placeId: string) =>
     api.get<Promotion[]>(`/places/${placeId}/promotions`, { auth: false }),
