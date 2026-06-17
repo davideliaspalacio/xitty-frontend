@@ -6,6 +6,7 @@ import { useAuthStore } from "@/features/auth/store/auth-store";
 import { useLogout } from "@/features/auth/hooks/use-auth";
 import { Button } from "@/shared/ui/button";
 import { EmergencyButton } from "@/shared/ui/emergency-button";
+import { LanguageSelector } from "@/features/i18n/components/language-selector";
 import { useRouter } from "next/navigation";
 
 export function Topbar() {
@@ -56,6 +57,8 @@ export function Topbar() {
         </Button>
 
         <EmergencyButton />
+
+        <LanguageSelector />
 
         <div className="flex items-center gap-3 pl-2">
           <div
