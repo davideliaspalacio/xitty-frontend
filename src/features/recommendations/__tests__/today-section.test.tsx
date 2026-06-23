@@ -21,7 +21,7 @@ function makeItem(i: number): RecommendationItem {
       id: `p-${i}`,
       slug: `place-${i}`,
       name: `Place ${i}`,
-      cover_url: `https://example.com/${i}.jpg`,
+      cover_photo_url: `https://example.com/${i}.jpg`,
       price_range: 2,
       average_rating: 4.5,
     },

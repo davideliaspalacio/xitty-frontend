@@ -9,7 +9,7 @@ const baseItem: RecommendationItem = {
     id: "place-123",
     slug: "malecon-del-rio",
     name: "Malecón del Río",
-    cover_url: "https://example.com/cover.jpg",
+    cover_photo_url: "https://example.com/cover.jpg",
     price_range: 2,
     average_rating: 4.6,
   },
