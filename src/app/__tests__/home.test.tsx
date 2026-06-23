@@ -53,6 +53,14 @@ vi.mock("@/features/experiences", () => ({
   useExperiences: () => ({ data: { data: [] }, isLoading: false }),
 }));
 
+// Curated feed — empty by default so the section renders only the header.
+vi.mock("@/features/curated", () => ({
+  useCurated: () => ({ data: [], isLoading: false }),
+  CuratedCarousel: ({ items }: { items: unknown[] }) => (
+    <div data-testid="curated-carousel" data-count={items.length} />
+  ),
+}));
+
 // next/link → plain anchor so we don't need the Next router context.
 vi.mock("next/link", () => ({
   default: ({
@@ -112,11 +120,14 @@ describe("HomePage", () => {
     const experienciasIdx = html.indexOf("Vive algo único");
     const localIdx = html.indexOf("Disfruta como un local");
 
+    const curatedIdx = html.indexOf("Descubre lo nuevo en Barranquilla");
+
     expect(adsIdx).toBeLessThan(todayIdx);
     expect(todayIdx).toBeLessThan(chipsIdx);
     expect(chipsIdx).toBeLessThan(rankingIdx);
     expect(rankingIdx).toBeLessThan(html.indexOf("Recomendados"));
-    expect(html.indexOf("Recomendados")).toBeLessThan(categoriesIdx);
+    expect(html.indexOf("Recomendados")).toBeLessThan(curatedIdx);
+    expect(curatedIdx).toBeLessThan(categoriesIdx);
     expect(categoriesIdx).toBeLessThan(experienciasIdx);
     expect(experienciasIdx).toBeLessThan(localIdx);
   });
@@ -124,5 +135,33 @@ describe("HomePage", () => {
   it("uses the updated 'Explora por categoría' header for the categories grid", () => {
     render(<HomePage />);
     expect(screen.getByText(/explora por categor[ií]a/i)).toBeInTheDocument();
+  });
+
+  it("renders the curated section header copy", () => {
+    render(<HomePage />);
+    expect(
+      screen.getByRole("heading", {
+        name: /descubre lo nuevo en barranquilla/i,
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/curado con ia, actualizado cada semana/i),
+    ).toBeInTheDocument();
+  });
+
+  it("places the curated section between 'Recomendados' and 'Explora por categoría'", () => {
+    render(<HomePage />);
+    const html = document.body.innerHTML;
+
+    const recommendedIdx = html.indexOf("Recomendados");
+    const curatedIdx = html.indexOf("Descubre lo nuevo en Barranquilla");
+    const categoriesIdx = html.indexOf("Explora por categor");
+
+    expect(recommendedIdx).toBeGreaterThan(-1);
+    expect(curatedIdx).toBeGreaterThan(-1);
+    expect(categoriesIdx).toBeGreaterThan(-1);
+
+    expect(recommendedIdx).toBeLessThan(curatedIdx);
+    expect(curatedIdx).toBeLessThan(categoriesIdx);
   });
 });

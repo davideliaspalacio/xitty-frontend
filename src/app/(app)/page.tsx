@@ -21,6 +21,7 @@ import { useTravelerFilter } from "@/features/preferences/hooks/use-traveler-fil
 import { AdsHero } from "@/features/promotions";
 import { TodaySection } from "@/features/recommendations";
 import { CategoriesGrid } from "@/features/places/components/categories-grid";
+import { CuratedCarousel, useCurated } from "@/features/curated";
 import { useT } from "@/features/i18n";
 
 function CarouselSkeletons() {
@@ -57,6 +58,7 @@ export default function HomePage() {
   const featured = useFeaturedCurrent(travelerType);
   const localPicks = useLocalPicksCurrent(travelerType);
   const experiences = useExperiences({ limit: 8, sort_by: "rating" });
+  const curated = useCurated({ limit: 12 });
 
   return (
     <div className="flex flex-col space-y-12">
@@ -133,7 +135,23 @@ export default function HomePage() {
         )}
       </section>
 
-      {/* 6. Categories grid */}
+      {/* 6. Curated — AI-curated weekly feed */}
+      <section>
+        <SectionHeader
+          eyebrow="Curado con IA"
+          title="Descubre lo nuevo en Barranquilla"
+          subtitle="Curado con IA, actualizado cada semana."
+        />
+        {curated.isLoading ? (
+          <CarouselSkeletons />
+        ) : curated.data?.length ? (
+          <CuratedCarousel items={curated.data} />
+        ) : (
+          <EmptyMini message="Pronto verás aquí lo nuevo de la semana, curado por nuestra IA." />
+        )}
+      </section>
+
+      {/* 7. Categories grid */}
       <section>
         <SectionHeader
           title="Explora por categoría"
@@ -142,7 +160,7 @@ export default function HomePage() {
         <CategoriesGrid />
       </section>
 
-      {/* 7. Experiences */}
+      {/* 8. Experiences */}
       <section>
         <SectionHeader
           eyebrow="Experiencias"
@@ -163,7 +181,7 @@ export default function HomePage() {
         )}
       </section>
 
-      {/* 8. Local picks — Disfruta como local */}
+      {/* 9. Local picks — Disfruta como local */}
       <section>
         <SectionHeader
           eyebrow="Como local"

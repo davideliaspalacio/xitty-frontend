@@ -12,6 +12,7 @@ import {
   BarChart3,
   Tag,
   Shield,
+  Database,
 } from "lucide-react";
 import { Logo } from "@/shared/ui/logo";
 import { cn } from "@/shared/utils/cn";
@@ -41,6 +42,7 @@ const navByRole: Record<Role, NavItem[]> = {
     { href: "/admin", label: "Panel admin", icon: Shield },
     { href: "/admin/featured", label: "Destacados", icon: Compass },
     { href: "/admin/local-picks", label: "Local picks", icon: Heart },
+    { href: "/admin/scraping", label: "Scraping", icon: Database },
     { href: "/admin/users", label: "Usuarios", icon: User },
     { href: "/profile", label: "Mi cuenta", icon: User },
   ],
