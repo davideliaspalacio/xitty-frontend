@@ -19,6 +19,8 @@ export function useConversations() {
 export function useCreateConversation() {
   const qc = useQueryClient();
   return useMutation({
+    // Sin first_message: crea una conversación vacía y devuelve
+    // { conversation_id, first_message_id: null }.
     mutationFn: () => chatApi.createConversation(),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: CONVERSATIONS_KEY });

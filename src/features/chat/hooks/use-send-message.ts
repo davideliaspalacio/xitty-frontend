@@ -2,24 +2,18 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { chatApi } from "@/features/chat/api";
-import {
-  CONVERSATIONS_KEY,
-} from "@/features/chat/hooks/use-conversations";
+import { CONVERSATIONS_KEY } from "@/features/chat/hooks/use-conversations";
 import { conversationKey } from "@/features/chat/hooks/use-conversation";
 import type {
   ConversationWithMessages,
   Message,
   SendMessageRequest,
-  SendMessageResponse,
+  SendMessageResult,
 } from "@/features/chat/types";
 
 interface MutationContext {
-  /** Snapshot of the conversation cache (for rollback). */
   previous: ConversationWithMessages | undefined;
-  /** The id of the cache entry we wrote into. */
   cacheKey: ReturnType<typeof conversationKey>;
-  /** The optimistic user message we injected. */
-  optimisticMessageId: string;
 }
 
 function tempId(prefix = "tmp"): string {
@@ -27,83 +21,73 @@ function tempId(prefix = "tmp"): string {
 }
 
 /**
- * Sends a message with optimistic UI: pushes the user message into the
- * conversation cache immediately, then replaces it (and appends the
- * assistant reply) when the server responds.
+ * Envía un mensaje al chat. Dos caminos según el backend:
+ *   - Conversación nueva (sin id): POST /chat/conversations { first_message }
+ *   - Conversación existente:      POST /chat/conversations/:id/messages { content }
+ *
+ * En ambos casos rehidratamos el cache desde el server (que ya tiene el turno
+ * del usuario + la respuesta del assistant), así que el optimistic update es
+ * solo para feedback inmediato en conversaciones existentes.
  */
 export function useSendMessage() {
   const qc = useQueryClient();
 
   return useMutation<
-    SendMessageResponse,
+    SendMessageResult,
     Error,
     SendMessageRequest,
     MutationContext
   >({
-    mutationFn: (payload) => chatApi.sendMessage(payload),
+    mutationFn: async (payload): Promise<SendMessageResult> => {
+      if (payload.conversation_id) {
+        await chatApi.postMessage(payload.conversation_id, payload.content);
+        return { conversation_id: payload.conversation_id };
+      }
+      const created = await chatApi.createConversation(payload.content);
+      return { conversation_id: created.conversation_id };
+    },
+
     onMutate: async (payload) => {
+      // Optimistic solo cuando ya existe la conversación (tenemos su cache key).
+      if (!payload.conversation_id) {
+        return { previous: undefined, cacheKey: conversationKey(undefined) };
+      }
       const cacheKey = conversationKey(payload.conversation_id);
       await qc.cancelQueries({ queryKey: cacheKey });
+      const previous =
+        qc.getQueryData<ConversationWithMessages>(cacheKey);
 
-      const previous = qc.getQueryData<ConversationWithMessages>(cacheKey);
-
-      const optimisticMessageId = tempId("user");
-      const userMessage: Message = {
-        id: optimisticMessageId,
-        conversation_id: payload.conversation_id,
-        role: "user",
-        content: payload.content,
-        created_at: new Date().toISOString(),
-        metadata: null,
-      };
-
-      if (previous && payload.conversation_id) {
+      if (previous) {
+        const userMessage: Message = {
+          id: tempId("user"),
+          conversation_id: payload.conversation_id,
+          role: "user",
+          content: payload.content,
+          created_at: new Date().toISOString(),
+          metadata: null,
+        };
         qc.setQueryData<ConversationWithMessages>(cacheKey, {
           ...previous,
           messages: [...previous.messages, userMessage],
           updated_at: userMessage.created_at,
         });
       }
-
-      return { previous, cacheKey, optimisticMessageId };
+      return { previous, cacheKey };
     },
+
     onError: (_err, _payload, ctx) => {
-      if (!ctx) return;
-      if (ctx.previous) {
+      // Revertir el optimistic; el refetch de onSettled corrige el resto.
+      if (ctx?.previous && ctx.cacheKey) {
         qc.setQueryData(ctx.cacheKey, ctx.previous);
       }
     },
-    onSuccess: (response, _payload, ctx) => {
-      const finalKey = conversationKey(response.conversation_id);
-      const previous =
-        (ctx?.previous && ctx.cacheKey[2] === finalKey[2]
-          ? ctx.previous
-          : qc.getQueryData<ConversationWithMessages>(finalKey)) ?? null;
 
-      // Drop the optimistic placeholder (if any), then append the real
-      // user message echoed back (or fall back to a synthetic one) plus
-      // the assistant reply.
-      const existing = previous?.messages ?? [];
-      const withoutOptimistic = ctx
-        ? existing.filter((m) => m.id !== ctx.optimisticMessageId)
-        : existing;
-
-      const next: ConversationWithMessages = previous
-        ? {
-            ...previous,
-            id: response.conversation_id,
-            messages: [...withoutOptimistic, response.message],
-            updated_at: response.message.created_at,
-          }
-        : {
-            id: response.conversation_id,
-            title: null,
-            created_at: response.message.created_at,
-            updated_at: response.message.created_at,
-            messages: [response.message],
-          };
-
-      qc.setQueryData<ConversationWithMessages>(finalKey, next);
+    onSuccess: (result) => {
+      // El server es la fuente de verdad: invalidar la conversación fuerza un
+      // refetch que trae tanto el mensaje del usuario como la respuesta del bot.
+      qc.invalidateQueries({
+        queryKey: conversationKey(result.conversation_id),
+      });
       qc.invalidateQueries({ queryKey: CONVERSATIONS_KEY });
     },
   });

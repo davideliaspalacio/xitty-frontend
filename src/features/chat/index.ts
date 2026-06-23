@@ -6,7 +6,8 @@ export type {
   ChatMessageMetadata,
   Message,
   SendMessageRequest,
-  SendMessageResponse,
+  SendMessageResult,
+  CreateConversationResponse,
 } from "./types";
 export {
   useConversations,
