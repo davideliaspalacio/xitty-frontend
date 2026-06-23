@@ -21,6 +21,7 @@ import { useTravelerFilter } from "@/features/preferences/hooks/use-traveler-fil
 import { AdsHero } from "@/features/promotions";
 import { TodaySection } from "@/features/recommendations";
 import { CategoriesGrid } from "@/features/places/components/categories-grid";
+import { useT } from "@/features/i18n";
 
 function CarouselSkeletons() {
   return (
@@ -49,6 +50,7 @@ function EmptyMini({ message }: { message: string }) {
 export default function HomePage() {
   const user = useAuthStore((s) => s.user);
   const name = user?.full_name?.split(" ")[0] ?? "Hola";
+  const t = useT();
 
   const { travelerType, setTravelerType } = useTravelerFilter();
   const ranking = useRanking(8, travelerType);
@@ -62,7 +64,7 @@ export default function HomePage() {
       <header className="flex flex-col gap-3 max-w-3xl">
         <p className="eyebrow">Hoy en Barranquilla</p>
         <h1 className="text-[36px] sm:text-[44px] font-semibold leading-[1.05] tracking-[-0.02em]">
-          Buenos días, {name}. ¿Por dónde empezamos?
+          {t("home.greeting", { name })}
         </h1>
         <p className="text-[var(--text-muted)] text-[15px] leading-relaxed max-w-2xl">
           Selección curada de lugares, destacados de la semana y experiencias
