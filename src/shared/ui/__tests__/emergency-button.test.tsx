@@ -1,16 +1,8 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { render, screen, fireEvent, act } from "@testing-library/react";
+import { describe, it, expect } from "vitest";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { EmergencyButton } from "@/shared/ui/emergency-button";
 
 describe("EmergencyButton", () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
-  });
-
   it("renders SOS trigger with accessible label", () => {
     render(<EmergencyButton />);
     const trigger = screen.getByRole("button", { name: /llamar emergencia/i });
@@ -27,7 +19,7 @@ describe("EmergencyButton", () => {
       screen.getByRole("heading", { name: /¿llamar a emergencias\?/i }),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/línea 123/i),
+      screen.getByText(/te conectaremos con la l[ií]nea/i),
     ).toBeInTheDocument();
   });
 
@@ -40,20 +32,14 @@ describe("EmergencyButton", () => {
     expect(callLink).toHaveAttribute("href", "tel:123");
   });
 
-  it("blocks the call link for the first 3 seconds with aria-disabled", () => {
+  it("call link is enabled immediately (no countdown — emergencias deben ser inmediatas)", () => {
     render(<EmergencyButton />);
     fireEvent.click(
       screen.getByRole("button", { name: /llamar emergencia/i }),
     );
-
     const callLink = screen.getByRole("link", { name: /llamar 123/i });
-    expect(callLink).toHaveAttribute("aria-disabled", "true");
-
-    act(() => {
-      vi.advanceTimersByTime(3000);
-    });
-
-    expect(callLink).toHaveAttribute("aria-disabled", "false");
+    expect(callLink).toHaveAttribute("href", "tel:123");
+    expect(callLink).not.toHaveAttribute("aria-disabled", "true");
   });
 
   it("closes the modal when cancel is clicked", () => {

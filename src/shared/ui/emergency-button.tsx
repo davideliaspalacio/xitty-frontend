@@ -1,10 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { ShieldAlert } from "lucide-react";
+import { createPortal } from "react-dom";
+import { ShieldAlert, Phone, X } from "lucide-react";
 import { cn } from "@/shared/utils/cn";
-
-const COUNTDOWN_SECONDS = 3;
 
 export interface EmergencyButtonProps {
   className?: string;
@@ -12,41 +11,10 @@ export interface EmergencyButtonProps {
 
 export function EmergencyButton({ className }: EmergencyButtonProps) {
   const [open, setOpen] = React.useState(false);
-  const [secondsLeft, setSecondsLeft] = React.useState(COUNTDOWN_SECONDS);
-
-  React.useEffect(() => {
-    if (!open) {
-      setSecondsLeft(COUNTDOWN_SECONDS);
-      return;
-    }
-
-    setSecondsLeft(COUNTDOWN_SECONDS);
-    const interval = setInterval(() => {
-      setSecondsLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(interval);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [open]);
-
-  const locked = secondsLeft > 0;
 
   const handleClose = React.useCallback(() => setOpen(false), []);
 
-  const handleAnchorClick = React.useCallback(
-    (event: React.MouseEvent<HTMLAnchorElement>) => {
-      if (locked) {
-        event.preventDefault();
-      }
-    },
-    [locked],
-  );
-
+  // Cerrar con Escape
   React.useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -55,6 +23,16 @@ export function EmergencyButton({ className }: EmergencyButtonProps) {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [open, handleClose]);
+
+  // Bloquear scroll del body mientras el modal está abierto
+  React.useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
 
   return (
     <>
@@ -71,54 +49,81 @@ export function EmergencyButton({ className }: EmergencyButtonProps) {
         <span>SOS</span>
       </button>
 
-      {open ? (
+      {open && typeof document !== "undefined"
+        ? createPortal(
         <div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="emergency-title"
-          aria-describedby="emergency-desc"
-          className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#DC2626] px-6 text-white"
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 60,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "1rem",
+            backgroundColor: "rgba(0,0,0,0.55)",
+            backdropFilter: "blur(2px)",
+          }}
+          onClick={handleClose}
         >
-          <div className="flex flex-col items-center text-center max-w-md w-full">
-            <ShieldAlert className="h-16 w-16 mb-6" aria-hidden="true" />
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="emergency-title"
+            aria-describedby="emergency-desc"
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-sm rounded-3xl bg-[var(--surface,#ffffff)] p-6 text-center shadow-2xl"
+          >
+            {/* Cerrar (X) */}
+            <button
+              type="button"
+              onClick={handleClose}
+              aria-label="Cerrar"
+              className="absolute right-3 top-3 inline-flex h-8 w-8 items-center justify-center rounded-full text-[var(--text-muted,#6b7280)] transition-colors hover:bg-black/5"
+            >
+              <X className="h-4 w-4" aria-hidden="true" />
+            </button>
+
+            {/* Ícono en círculo rojo suave */}
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#FEE2E2]">
+              <ShieldAlert className="h-8 w-8 text-[#DC2626]" aria-hidden="true" />
+            </div>
+
             <h2
               id="emergency-title"
-              className="text-3xl font-bold mb-3"
+              className="text-xl font-bold tracking-tight text-[var(--text,#111827)]"
             >
               ¿Llamar a emergencias?
             </h2>
             <p
               id="emergency-desc"
-              className="text-base text-white/90 mb-10"
+              className="mt-2 text-sm leading-relaxed text-[var(--text-muted,#6b7280)]"
             >
-              Te conectaremos con la línea 123 (Policía Nacional Colombia)
+              Te conectaremos con la línea{" "}
+              <span className="font-semibold text-[var(--text,#111827)]">123</span>{" "}
+              (Policía Nacional de Colombia).
             </p>
 
-            <a
-              href="tel:123"
-              aria-disabled={locked ? "true" : "false"}
-              onClick={handleAnchorClick}
-              tabIndex={locked ? -1 : 0}
-              className={cn(
-                "flex h-16 w-full items-center justify-center rounded-2xl bg-white text-xl font-bold text-[#DC2626] shadow-lg transition-opacity",
-                locked
-                  ? "opacity-50 cursor-not-allowed pointer-events-none"
-                  : "hover:bg-white/95 active:scale-[0.98]",
-              )}
-            >
-              {locked ? `Llamar 123 (${secondsLeft})` : "Llamar 123"}
-            </a>
-
-            <button
-              type="button"
-              onClick={handleClose}
-              className="mt-4 h-12 w-full rounded-2xl border-[1.5px] border-white/80 bg-transparent text-base font-semibold text-white transition-colors hover:bg-white/10"
-            >
-              Cancelar
-            </button>
+            <div className="mt-6 flex flex-col gap-2.5">
+              <a
+                href="tel:123"
+                className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-[#DC2626] text-base font-semibold text-white shadow-[0_6px_18px_-6px_rgba(220,38,38,0.6)] transition-transform hover:bg-[#C11D1D] active:scale-[0.98]"
+              >
+                <Phone className="h-4 w-4" aria-hidden="true" />
+                Llamar 123
+              </a>
+              <button
+                type="button"
+                onClick={handleClose}
+                className="inline-flex h-11 w-full items-center justify-center rounded-2xl border border-[var(--border,#e5e7eb)] bg-transparent text-sm font-semibold text-[var(--text,#374151)] transition-colors hover:bg-black/5"
+              >
+                Cancelar
+              </button>
+            </div>
           </div>
-        </div>
-      ) : null}
+        </div>,
+            document.body,
+          )
+        : null}
     </>
   );
 }
