@@ -574,6 +574,26 @@ export interface ActivePromotionListItem {
   places: { id: string; name: string; slug: string | null } | null;
 }
 
+/**
+ * Hero promotion shape returned by `GET /promotions/hero` —
+ * powers the home-page AdsHero rotator. Backed by the
+ * `active_hero_promotions` view on the backend.
+ */
+export interface HeroPromotion {
+  id: string;
+  place_id: string;
+  title: string;
+  description: string | null;
+  discount_percentage: number | null;
+  starts_at: string;
+  ends_at: string;
+  is_active: boolean;
+  is_hero: boolean;
+  hero_priority: number;
+  hero_image_url: string | null;
+  places: { id: string; name: string; slug: string | null } | null;
+}
+
 export type InteractionType =
   | "profile_view"
   | "call_click"

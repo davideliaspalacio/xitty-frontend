@@ -18,6 +18,9 @@ import { LocalPickCard } from "@/features/discover/components/local-pick-card";
 import { ExperienceCard as ExperienceCardComponent } from "@/features/experiences/components/experience-card";
 import { TravelerTypeChips } from "@/features/preferences/components/traveler-type-chips";
 import { useTravelerFilter } from "@/features/preferences/hooks/use-traveler-filter";
+import { AdsHero } from "@/features/promotions";
+import { TodaySection } from "@/features/recommendations";
+import { CategoriesGrid } from "@/features/places/components/categories-grid";
 
 function CarouselSkeletons() {
   return (
@@ -54,8 +57,8 @@ export default function HomePage() {
   const experiences = useExperiences({ limit: 8, sort_by: "rating" });
 
   return (
-    <div className="flex flex-col gap-14">
-      {/* Hero */}
+    <div className="flex flex-col space-y-12">
+      {/* Greeting / hero */}
       <header className="flex flex-col gap-3 max-w-3xl">
         <p className="eyebrow">Hoy en Barranquilla</p>
         <h1 className="text-[36px] sm:text-[44px] font-semibold leading-[1.05] tracking-[-0.02em]">
@@ -75,13 +78,19 @@ export default function HomePage() {
         </div>
       </header>
 
-      {/* Traveler-type filter */}
+      {/* 1. Ads — promotional slot, no section header */}
+      <AdsHero />
+
+      {/* 2. Today — "Qué vale la pena hacer hoy" */}
+      <TodaySection />
+
+      {/* 3. Traveler-type filter */}
       <TravelerTypeChips
         selected={travelerType}
         onChange={setTravelerType}
       />
 
-      {/* Ranking */}
+      {/* 4. Ranking */}
       <section>
         <SectionHeader
           eyebrow="Top de la ciudad"
@@ -102,12 +111,12 @@ export default function HomePage() {
         )}
       </section>
 
-      {/* Featured */}
+      {/* 5. Featured — Recomendados */}
       <section>
         <SectionHeader
           eyebrow="Esta semana"
-          title="Destacados editoriales"
-          subtitle="Curaduría del equipo Xitty e influencers aliados."
+          title="Recomendados"
+          subtitle="Curados por Xitty."
         />
         {featured.isLoading ? (
           <CarouselSkeletons />
@@ -122,27 +131,16 @@ export default function HomePage() {
         )}
       </section>
 
-      {/* Local picks */}
+      {/* 6. Categories grid */}
       <section>
         <SectionHeader
-          eyebrow="Como local"
-          title="Disfruta como un local"
-          subtitle="Lugares secretos, auténticos y favoritos de la comunidad."
+          title="Explora por categoría"
+          subtitle="Encuentra lo que buscas, organizado por tipo de lugar."
         />
-        {localPicks.isLoading ? (
-          <CarouselSkeletons />
-        ) : localPicks.data?.length ? (
-          <HorizontalCarousel>
-            {localPicks.data.map((item) => (
-              <LocalPickCard key={item.id} item={item} />
-            ))}
-          </HorizontalCarousel>
-        ) : (
-          <EmptyMini message="Los locales aún no han compartido sus secretos esta semana." />
-        )}
+        <CategoriesGrid />
       </section>
 
-      {/* Experiences */}
+      {/* 7. Experiences */}
       <section>
         <SectionHeader
           eyebrow="Experiencias"
@@ -160,6 +158,26 @@ export default function HomePage() {
           </HorizontalCarousel>
         ) : (
           <EmptyMini message="Estamos curando las primeras experiencias para ti." />
+        )}
+      </section>
+
+      {/* 8. Local picks — Disfruta como local */}
+      <section>
+        <SectionHeader
+          eyebrow="Como local"
+          title="Disfruta como un local"
+          subtitle="Lugares secretos, auténticos y favoritos de la comunidad."
+        />
+        {localPicks.isLoading ? (
+          <CarouselSkeletons />
+        ) : localPicks.data?.length ? (
+          <HorizontalCarousel>
+            {localPicks.data.map((item) => (
+              <LocalPickCard key={item.id} item={item} />
+            ))}
+          </HorizontalCarousel>
+        ) : (
+          <EmptyMini message="Los locales aún no han compartido sus secretos esta semana." />
         )}
       </section>
     </div>
