@@ -13,3 +13,11 @@ export {
 export { Logo } from "./logo";
 export { Skeleton } from "./skeleton";
 export { Separator } from "./separator";
+export {
+  AiCuratedBadge,
+  type AiCuratedBadgeProps,
+} from "./ai-curated-badge";
+export {
+  SourceAttribution,
+  type SourceAttributionProps,
+} from "./source-attribution";
