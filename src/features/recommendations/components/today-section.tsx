@@ -16,10 +16,10 @@ function TodaySubCard({ item }: { item: RecommendationItem }) {
       className="group relative shrink-0 w-[220px] sm:w-[260px] flex flex-col rounded-lg border border-[var(--border)] bg-[var(--surface)] overflow-hidden transition-all hover:shadow-[var(--shadow-2)] hover:border-[var(--border-strong)]"
     >
       <div className="relative aspect-[4/3] bg-[var(--bg-subtle)]">
-        {place.cover_url ? (
+        {place.cover_photo_url ? (
           /* eslint-disable-next-line @next/next/no-img-element */
           <img
-            src={place.cover_url}
+            src={place.cover_photo_url}
             alt={place.name}
             className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
           />

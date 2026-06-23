@@ -2,7 +2,8 @@ export interface RecommendationPlace {
   id: string;
   slug: string | null;
   name: string;
-  cover_url: string | null;
+  /** Backend devuelve `cover_photo_url` (alineado con el shape de places). */
+  cover_photo_url: string | null;
   price_range: number | null;
   average_rating: number;
 }

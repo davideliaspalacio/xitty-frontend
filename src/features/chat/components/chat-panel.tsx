@@ -89,7 +89,7 @@ export function ChatPanel({
   async function handleNewConversation() {
     try {
       const conv = await create.mutateAsync();
-      onConversationIdChange?.(conv.id);
+      onConversationIdChange?.(conv.conversation_id);
     } catch {
       // ignore — header still functional
     }

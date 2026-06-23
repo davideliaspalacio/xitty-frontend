@@ -34,9 +34,20 @@ export interface SendMessageRequest {
   content: string;
 }
 
-export interface SendMessageResponse {
+/**
+ * Resultado normalizado de enviar un mensaje, independientemente de si fue a
+ * una conversación nueva (POST /chat/conversations con first_message) o a una
+ * existente (POST /chat/conversations/:id/messages). El cache se rehidrata
+ * desde el server, así que solo necesitamos el id de la conversación.
+ */
+export interface SendMessageResult {
   conversation_id: string;
-  message: Message;
+}
+
+/** Backend: POST /chat/conversations → { conversation_id, first_message_id }. */
+export interface CreateConversationResponse {
+  conversation_id: string;
+  first_message_id: string | null;
 }
 
 export interface ConversationWithMessages extends Conversation {

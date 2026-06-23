@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { ChatPanel } from "@/features/chat/components/chat-panel";
 import type {
   ConversationWithMessages,
-  SendMessageResponse,
+  SendMessageResult,
 } from "@/features/chat/types";
 
 // Mock the chat hooks so we don't need a QueryClient / network.
@@ -44,7 +44,7 @@ function setupHooks(opts: {
 
   mockedUseSendMessage.mockReturnValue({
     mutate: opts.mutate ?? vi.fn(),
-    mutateAsync: opts.mutate ?? vi.fn(async () => ({} as SendMessageResponse)),
+    mutateAsync: opts.mutate ?? vi.fn(async () => ({} as SendMessageResult)),
     isPending: opts.isPending ?? false,
     reset: vi.fn(),
   } as unknown as ReturnType<typeof useSendMessage>);

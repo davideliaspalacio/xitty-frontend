@@ -42,23 +42,17 @@ export function TodayCard({ item, className }: TodayCardProps) {
         className,
       )}
     >
-      {/* Cover photo */}
-      {place.cover_url ? (
+      {/* Cover photo — sin URL no renderizamos <img src=""> (forzaría al
+          navegador a re-descargar el documento como imagen). El gradiente +
+          aria-label del Link mantienen accesibilidad y estética. */}
+      {place.cover_photo_url ? (
         /* eslint-disable-next-line @next/next/no-img-element */
         <img
-          src={place.cover_url}
+          src={place.cover_photo_url}
           alt={place.name}
           className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
         />
-      ) : (
-        // Keep an accessible image even without a real URL so tests/screen readers find it.
-        /* eslint-disable-next-line @next/next/no-img-element */
-        <img
-          src=""
-          alt={place.name}
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-      )}
+      ) : null}
 
       {/* Diagonal coral -> teal overlay at 30% */}
       <div
