@@ -2,27 +2,28 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { discoverApi } from "@/features/discover/api";
+import type { TravelerType } from "@/lib/api/types";
 
-export function useRanking(limit = 10) {
+export function useRanking(limit = 10, travelerType?: TravelerType | null) {
   return useQuery({
-    queryKey: ["discover", "ranking", { limit }],
-    queryFn: () => discoverApi.ranking(limit),
+    queryKey: ["discover", "ranking", { limit, travelerType: travelerType ?? null }],
+    queryFn: () => discoverApi.ranking(limit, travelerType ?? null),
     staleTime: 60 * 60_000, // 1h — refreshes daily server-side
   });
 }
 
-export function useFeaturedCurrent() {
+export function useFeaturedCurrent(travelerType?: TravelerType | null) {
   return useQuery({
-    queryKey: ["discover", "featured", "current"],
-    queryFn: discoverApi.featuredCurrent,
+    queryKey: ["discover", "featured", "current", { travelerType: travelerType ?? null }],
+    queryFn: () => discoverApi.featuredCurrent(travelerType ?? null),
     staleTime: 30 * 60_000,
   });
 }
 
-export function useLocalPicksCurrent() {
+export function useLocalPicksCurrent(travelerType?: TravelerType | null) {
   return useQuery({
-    queryKey: ["discover", "local-picks", "current"],
-    queryFn: discoverApi.localPicksCurrent,
+    queryKey: ["discover", "local-picks", "current", { travelerType: travelerType ?? null }],
+    queryFn: () => discoverApi.localPicksCurrent(travelerType ?? null),
     staleTime: 30 * 60_000,
   });
 }

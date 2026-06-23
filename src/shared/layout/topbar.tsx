@@ -5,6 +5,7 @@ import { Bell, Search } from "lucide-react";
 import { useAuthStore } from "@/features/auth/store/auth-store";
 import { useLogout } from "@/features/auth/hooks/use-auth";
 import { Button } from "@/shared/ui/button";
+import { EmergencyButton } from "@/shared/ui/emergency-button";
 import { useRouter } from "next/navigation";
 
 export function Topbar() {
@@ -53,6 +54,8 @@ export function Topbar() {
         <Button variant="ghost" size="icon" aria-label="Notificaciones">
           <Bell className="h-[18px] w-[18px]" />
         </Button>
+
+        <EmergencyButton />
 
         <div className="flex items-center gap-3 pl-2">
           <div

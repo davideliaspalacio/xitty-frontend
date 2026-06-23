@@ -16,6 +16,8 @@ import { RankingCard } from "@/features/discover/components/ranking-card";
 import { FeaturedCard } from "@/features/discover/components/featured-card";
 import { LocalPickCard } from "@/features/discover/components/local-pick-card";
 import { ExperienceCard as ExperienceCardComponent } from "@/features/experiences/components/experience-card";
+import { TravelerTypeChips } from "@/features/preferences/components/traveler-type-chips";
+import { useTravelerFilter } from "@/features/preferences/hooks/use-traveler-filter";
 
 function CarouselSkeletons() {
   return (
@@ -45,9 +47,10 @@ export default function HomePage() {
   const user = useAuthStore((s) => s.user);
   const name = user?.full_name?.split(" ")[0] ?? "Hola";
 
-  const ranking = useRanking(8);
-  const featured = useFeaturedCurrent();
-  const localPicks = useLocalPicksCurrent();
+  const { travelerType, setTravelerType } = useTravelerFilter();
+  const ranking = useRanking(8, travelerType);
+  const featured = useFeaturedCurrent(travelerType);
+  const localPicks = useLocalPicksCurrent(travelerType);
   const experiences = useExperiences({ limit: 8, sort_by: "rating" });
 
   return (
@@ -71,6 +74,12 @@ export default function HomePage() {
           </Link>
         </div>
       </header>
+
+      {/* Traveler-type filter */}
+      <TravelerTypeChips
+        selected={travelerType}
+        onChange={setTravelerType}
+      />
 
       {/* Ranking */}
       <section>

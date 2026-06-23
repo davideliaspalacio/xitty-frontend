@@ -437,6 +437,7 @@ export interface ExperienceListQuery {
   experience_type?: ExperienceType;
   sort_by?: "rating" | "price_asc" | "price_desc" | "newest";
   tag?: string;
+  traveler_type?: TravelerType;
 }
 
 /* ───────── Experience management (owner/admin CRUD) ───────── */
