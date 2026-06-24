@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Bell, Search } from "lucide-react";
 import { useAuthStore } from "@/features/auth/store/auth-store";
 import { useLogout } from "@/features/auth/hooks/use-auth";
 import { Button } from "@/shared/ui/button";
 import { EmergencyButton } from "@/shared/ui/emergency-button";
 import { LanguageSelector } from "@/features/i18n/components/language-selector";
+import { Logo } from "@/shared/ui/logo";
 import { useRouter } from "next/navigation";
 
 export function Topbar() {
@@ -38,7 +40,14 @@ export function Topbar() {
       style={{ height: "var(--topbar-height)" }}
       className="sticky top-0 z-40 flex items-center gap-4 border-b border-[var(--border)] bg-[var(--bg)]/85 backdrop-blur px-6"
     >
-      <form onSubmit={handleSearchSubmit} className="flex-1 max-w-xl">
+      {/* Logo — solo en mobile (en desktop vive en la Sidebar) */}
+      <Link href="/" aria-label="Ir al inicio" className="md:hidden shrink-0">
+        <Logo size="sm" />
+      </Link>
+
+      {/* Buscador full — solo desktop. En mobile colapsa a un botón-lupa
+          (abajo) para no ahogar la barra en 390px. */}
+      <form onSubmit={handleSearchSubmit} className="hidden md:block flex-1 max-w-xl">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-soft)]" />
           <input
@@ -46,19 +55,34 @@ export function Topbar() {
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Buscar lugares, experiencias…"
-            className="h-10 w-full rounded-md border border-[var(--border)] bg-[var(--bg-subtle)] pl-10 pr-3 text-sm placeholder:text-[var(--text-soft)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/30 focus:border-[var(--accent)] focus:bg-[var(--surface)]"
+            className="h-10 w-full rounded-md border border-[var(--border)] bg-[var(--bg-subtle)] pl-10 pr-3 text-base md:text-sm placeholder:text-[var(--text-soft)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/30 focus:border-[var(--accent)] focus:bg-[var(--surface)]"
           />
         </div>
       </form>
 
-      <div className="flex items-center gap-2">
-        <Button variant="ghost" size="icon" aria-label="Notificaciones">
+      {/* Empuja las acciones a la derecha en mobile (no hay buscador inline) */}
+      <div className="flex-1 md:hidden" />
+
+      <div className="flex items-center gap-1.5 sm:gap-2">
+        {/* Lupa → /places, solo mobile */}
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label="Buscar"
+          className="md:hidden"
+          onClick={() => router.push("/places")}
+        >
+          <Search className="h-[18px] w-[18px]" />
+        </Button>
+
+        {/* Campana: solo desde sm para no saturar mobile */}
+        <Button variant="ghost" size="icon" aria-label="Notificaciones" className="hidden sm:inline-flex">
           <Bell className="h-[18px] w-[18px]" />
         </Button>
 
         <EmergencyButton />
 
-        <LanguageSelector />
+        <LanguageSelector className="hidden sm:flex" />
 
         <div className="flex items-center gap-3 pl-2">
           <div

@@ -2,51 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  Compass,
-  Search,
-  Heart,
-  CalendarCheck,
-  User,
-  Briefcase,
-  BarChart3,
-  Tag,
-  Shield,
-  Database,
-} from "lucide-react";
 import { Logo } from "@/shared/ui/logo";
 import { cn } from "@/shared/utils/cn";
 import type { Role } from "@/lib/api/types";
-
-interface NavItem {
-  href: string;
-  label: string;
-  icon: React.ComponentType<{ className?: string }>;
-}
-
-const navByRole: Record<Role, NavItem[]> = {
-  user: [
-    { href: "/", label: "Descubrir", icon: Compass },
-    { href: "/places", label: "Lugares", icon: Search },
-    { href: "/favorites", label: "Favoritos", icon: Heart },
-    { href: "/reservations", label: "Reservas", icon: CalendarCheck },
-    { href: "/profile", label: "Mi cuenta", icon: User },
-  ],
-  business: [
-    { href: "/dashboard", label: "Mi negocio", icon: Briefcase },
-    { href: "/dashboard/promotions", label: "Promociones", icon: Tag },
-    { href: "/dashboard/metrics", label: "Métricas", icon: BarChart3 },
-    { href: "/profile", label: "Mi cuenta", icon: User },
-  ],
-  admin: [
-    { href: "/admin", label: "Panel admin", icon: Shield },
-    { href: "/admin/featured", label: "Destacados", icon: Compass },
-    { href: "/admin/local-picks", label: "Local picks", icon: Heart },
-    { href: "/admin/scraping", label: "Scraping", icon: Database },
-    { href: "/admin/users", label: "Usuarios", icon: User },
-    { href: "/profile", label: "Mi cuenta", icon: User },
-  ],
-};
+import { navByRole } from "./nav-config";
 
 export function Sidebar({ role = "user" }: { role?: Role }) {
   const pathname = usePathname();
