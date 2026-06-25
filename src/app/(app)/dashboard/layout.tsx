@@ -35,29 +35,38 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </h1>
         </header>
 
-        <nav
-          className="flex gap-1 border-b border-[var(--border)] overflow-x-auto"
-          role="tablist"
-        >
-          {tabs.map(({ href, label, icon: Icon, exact }) => {
-            const active = exact ? pathname === href : pathname.startsWith(href);
-            return (
-              <Link
-                key={href}
-                href={href}
-                className={cn(
-                  "inline-flex items-center gap-2 px-3 py-3 text-sm font-medium border-b-2 transition-colors -mb-px",
-                  active
-                    ? "border-[var(--accent)] text-[var(--text)]"
-                    : "border-transparent text-[var(--text-muted)] hover:text-[var(--text)]",
-                )}
-              >
-                <Icon className="h-4 w-4" />
-                {label}
-              </Link>
-            );
-          })}
-        </nav>
+        {/* Wrapper relativo: el degradado lateral derecho insinúa que hay
+            más pestañas hacia la que scrollear en pantallas angostas. */}
+        <div className="relative border-b border-[var(--border)]">
+          <nav
+            className="flex gap-1 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+            role="tablist"
+          >
+            {tabs.map(({ href, label, icon: Icon, exact }) => {
+              const active = exact ? pathname === href : pathname.startsWith(href);
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  className={cn(
+                    "inline-flex shrink-0 items-center gap-2 whitespace-nowrap px-3 py-3 text-sm font-medium border-b-2 transition-colors -mb-px",
+                    active
+                      ? "border-[var(--accent)] text-[var(--text)]"
+                      : "border-transparent text-[var(--text-muted)] hover:text-[var(--text)]",
+                  )}
+                >
+                  <Icon className="h-4 w-4" />
+                  {label}
+                </Link>
+              );
+            })}
+          </nav>
+          {/* Sombra/degradado derecho — solo visible cuando hay overflow. */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-[var(--bg)] to-transparent"
+          />
+        </div>
 
         <div>{children}</div>
       </div>

@@ -188,6 +188,38 @@ describe("ModerationQueue", () => {
     promptSpy.mockRestore();
   });
 
+  it("reject NO se dispara si el usuario cancela el prompt (null)", async () => {
+    const rejectMutate = vi.fn(async () => makeItem(1, { status: "rejected" }));
+    setupHooks({ items: [makeItem(1)], rejectMutate });
+    const user = userEvent.setup();
+
+    // Cancelar el prompt del navegador devuelve null — no debe rechazar.
+    const promptSpy = vi.spyOn(window, "prompt").mockReturnValue(null);
+
+    render(<ModerationQueue />);
+    const card = screen.getByText("Item 1").closest("article")!;
+    await user.click(within(card).getByRole("button", { name: /rechazar/i }));
+
+    expect(rejectMutate).not.toHaveBeenCalled();
+    promptSpy.mockRestore();
+  });
+
+  it("reject con razon vacia se dispara sin reason", async () => {
+    const rejectMutate = vi.fn(async () => makeItem(1, { status: "rejected" }));
+    setupHooks({ items: [makeItem(1)], rejectMutate });
+    const user = userEvent.setup();
+
+    // Aceptar el prompt vacio ("") sigue siendo un rechazo, sin razon.
+    const promptSpy = vi.spyOn(window, "prompt").mockReturnValue("");
+
+    render(<ModerationQueue />);
+    const card = screen.getByText("Item 1").closest("article")!;
+    await user.click(within(card).getByRole("button", { name: /rechazar/i }));
+
+    expect(rejectMutate).toHaveBeenCalledWith({ id: "item-1", reason: undefined });
+    promptSpy.mockRestore();
+  });
+
   it("publish dispara la mutation", async () => {
     const publishMutate = vi.fn(async () => makeItem(1, { status: "published" }));
     setupHooks({ items: [makeItem(1)], publishMutate });

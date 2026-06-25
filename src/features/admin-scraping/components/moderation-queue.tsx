@@ -55,13 +55,15 @@ export function ModerationQueue({ status = "pending" }: ModerationQueueProps) {
   }
 
   async function handleReject(item: ScrapedItemEnriched) {
-    const reason =
-      typeof window !== "undefined"
-        ? window.prompt("Razón del rechazo (opcional):") ?? undefined
-        : undefined;
-    if (reason === null) return;
+    if (typeof window === "undefined") return;
+    // Capturar el raw primero: Cancelar devuelve null y debe abortar el
+    // rechazo. Si lo colapsamos a undefined antes del guard, el rechazo se
+    // dispara igual aunque el usuario haya cancelado.
+    const raw = window.prompt("Razón del rechazo (opcional):");
+    if (raw === null) return;
+    const reason = raw || undefined;
     try {
-      await reject.mutateAsync({ id: item.id, reason: reason || undefined });
+      await reject.mutateAsync({ id: item.id, reason });
       toast.success("Item rechazado");
     } catch (e) {
       toast.error(e instanceof ApiError ? e.message : "No se pudo rechazar");
