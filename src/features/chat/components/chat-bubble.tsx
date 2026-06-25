@@ -42,7 +42,8 @@ export function ChatBubble({ onClick, hasUnread, className }: ChatBubbleProps) {
         onClick={onClick}
         aria-label="Abrir asistente Xi"
         className={cn(
-          "fixed bottom-5 right-5 z-50",
+          // En mobile sube por encima del bottom-nav (h-16); en desktop, abajo.
+          "fixed right-5 z-50 bottom-[calc(5rem+env(safe-area-inset-bottom))] md:bottom-5",
           "h-14 w-14 rounded-full",
           "inline-flex items-center justify-center",
           "text-white",
