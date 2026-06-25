@@ -54,8 +54,8 @@ function TodaySubCard({ item }: { item: RecommendationItem }) {
 function TodaySkeleton() {
   return (
     <div className="flex flex-col gap-4">
-      <Skeleton className="mx-4 aspect-[4/3] sm:aspect-[16/9] min-h-[320px] sm:min-h-[440px] w-auto rounded-2xl" />
-      <div className="flex gap-3 overflow-x-auto px-4 pb-2">
+      <Skeleton className="aspect-[4/3] sm:aspect-[16/9] min-h-[320px] sm:min-h-[440px] w-auto rounded-2xl" />
+      <div className="-mx-2 flex gap-3 overflow-x-auto px-2 pb-2">
         {Array.from({ length: 3 }).map((_, i) => (
           <div key={i} className="shrink-0 w-[220px] sm:w-[260px]">
             <Skeleton className="aspect-[4/3] w-full rounded-lg" />
@@ -76,12 +76,10 @@ export function TodaySection() {
   if (isLoading) {
     return (
       <section className="flex flex-col gap-4">
-        <div className="px-4">
-          <SectionHeader
-            title="Qué vale la pena hacer hoy"
-            subtitle="Según tu perfil y momento"
-          />
-        </div>
+        <SectionHeader
+          title="Qué vale la pena hacer hoy"
+          subtitle="Según tu perfil y momento"
+        />
         <TodaySkeleton />
       </section>
     );
@@ -96,17 +94,15 @@ export function TodaySection() {
 
   return (
     <section className="flex flex-col gap-5">
-      <div className="px-4">
-        <SectionHeader
-          title="Qué vale la pena hacer hoy"
-          subtitle="Según tu perfil y momento"
-        />
-      </div>
+      <SectionHeader
+        title="Qué vale la pena hacer hoy"
+        subtitle="Según tu perfil y momento"
+      />
 
       <TodayCard item={hero} />
 
       {subItems.length > 0 ? (
-        <div className="flex gap-3 overflow-x-auto px-4 pb-2 -mx-0">
+        <div className="-mx-2 flex gap-3 overflow-x-auto px-2 pb-2">
           {subItems.map((item) => (
             <TodaySubCard key={item.place.id} item={item} />
           ))}

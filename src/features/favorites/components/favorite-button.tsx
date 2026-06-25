@@ -56,7 +56,11 @@ export function FavoriteButton({
       aria-pressed={isFav}
       aria-label={isFav ? "Quitar de favoritos" : "Guardar en favoritos"}
       className={cn(
-        "inline-flex items-center justify-center rounded-full transition-all duration-150 active:scale-90",
+        "relative inline-flex items-center justify-center rounded-full transition-all duration-150 active:scale-90",
+        // Invisible, centered hit area so the tappable target is >= 44px
+        // even when the visible chrome (sm/md) is smaller. Keeps the icon
+        // and absolute positioning of the visible circle unchanged.
+        "before:absolute before:left-1/2 before:top-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:min-h-[44px] before:min-w-[44px] before:content-['']",
         s.btn,
         variant === "solid"
           ? "bg-[var(--surface)] border border-[var(--border)] shadow-[var(--shadow-1)] hover:shadow-[var(--shadow-2)]"

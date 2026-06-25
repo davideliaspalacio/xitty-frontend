@@ -173,7 +173,11 @@ export default function HomePage() {
         ) : experiences.data?.data.length ? (
           <HorizontalCarousel>
             {experiences.data.data.map((exp) => (
-              <ExperienceCardComponent key={exp.id} experience={exp} />
+              <ExperienceCardComponent
+                key={exp.id}
+                experience={exp}
+                className="shrink-0 w-[280px] sm:w-[320px]"
+              />
             ))}
           </HorizontalCarousel>
         ) : (

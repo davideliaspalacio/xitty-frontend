@@ -33,7 +33,7 @@ export function TodayCard({ item, className }: TodayCardProps) {
       href={`/places/${place.id}`}
       aria-label={place.name}
       className={cn(
-        "group relative block mx-4 overflow-hidden rounded-2xl",
+        "group relative block overflow-hidden rounded-2xl",
         "aspect-[4/3] sm:aspect-[16/9]",
         "min-h-[320px] sm:min-h-[440px]",
         "bg-[var(--bg-subtle)]",

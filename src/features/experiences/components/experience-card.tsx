@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Clock } from "lucide-react";
 import { RatingStars } from "@/features/places/components/rating-stars";
 import { fmtCop } from "@/shared/utils/format";
+import { cn } from "@/shared/utils/cn";
 import type { ExperienceCard as ExperienceCardType } from "@/lib/api/types";
 
 function durationLabel(minutes: number) {
@@ -25,14 +26,28 @@ const typeLabels: Record<string, string> = {
   nightlife: "Nightlife",
 };
 
-export function ExperienceCard({ experience }: { experience: ExperienceCardType }) {
+export function ExperienceCard({
+  experience,
+  className,
+}: {
+  experience: ExperienceCardType;
+  /**
+   * Extra classes for the card root. Defaults to `w-full` so the card fills
+   * its grid cell. Pass a fixed width (e.g. `w-[280px] sm:w-[320px]`) when the
+   * card lives inside a horizontal carousel.
+   */
+  className?: string;
+}) {
   const duration = durationLabel(experience.duration_minutes);
 
   return (
     <Link
       href={`/experiences/${experience.id}`}
       aria-label={`${experience.title} — ${duration}`}
-      className="group relative shrink-0 w-[280px] sm:w-[320px] flex flex-col rounded-2xl border border-[var(--border)] bg-[var(--surface)] overflow-hidden transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[var(--shadow-flat)] hover:border-[var(--ink)]"
+      className={cn(
+        "group relative flex w-full flex-col rounded-2xl border border-[var(--border)] bg-[var(--surface)] overflow-hidden transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[var(--shadow-flat)] hover:border-[var(--ink)]",
+        className,
+      )}
     >
       <div className="relative aspect-[4/3] bg-[var(--bg-subtle)] overflow-hidden">
         {experience.cover_photo_url ? (
