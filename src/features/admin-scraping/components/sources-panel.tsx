@@ -9,6 +9,7 @@ import { Input } from "@/shared/ui/input";
 import { Field } from "@/shared/ui/field";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { ApiError } from "@/lib/api/types";
+import type { RunSummary } from "@/features/admin-scraping/api";
 import {
   useCreateSource,
   useRunSource,
@@ -21,6 +22,31 @@ import {
   type ScrapingSourceKind,
   type ScrapingSourceWithMeta,
 } from "@/features/admin-scraping/types";
+
+/**
+ * Deriva el texto del toast a partir del shape REAL del RunSummary.
+ *
+ * El backend no garantiza `status`, asi que armarlo a mano (antes mostraba
+ * "Run undefined"). Si el run falló preferimos el mensaje de error; si no,
+ * mostramos los items enriquecidos / encontrados que sí lleguen.
+ */
+function runSummaryMessage(summary: RunSummary): string {
+  if (summary.errored || summary.status === "failed") {
+    const reason = summary.error_message ?? summary.error;
+    return reason ? `Run con error · ${reason}` : "Run con error";
+  }
+
+  const enriched = summary.items_enriched ?? 0;
+  const found = summary.items_found;
+  const itemsText =
+    found !== undefined && found !== enriched
+      ? `${enriched}/${found} items`
+      : `${enriched} items`;
+
+  // `status` puede no venir: usamos un fallback legible en vez de "undefined".
+  const label = summary.status ?? "completado";
+  return `Run ${label} · ${itemsText}`;
+}
 
 /**
  * Panel de sources: lista las sources registradas en la DB con su toggle
@@ -56,9 +82,13 @@ export function SourcesPanel() {
   async function handleRun(source: ScrapingSourceWithMeta) {
     try {
       const summary = await run.mutateAsync(source.id);
-      toast.success(
-        `Run ${summary.status} · ${summary.items_enriched} items`,
-      );
+      const message = runSummaryMessage(summary);
+      const failed = summary.errored || summary.status === "failed";
+      if (failed) {
+        toast.error(message);
+      } else {
+        toast.success(message);
+      }
     } catch (e) {
       toast.error(e instanceof ApiError ? e.message : "No se pudo ejecutar");
     }

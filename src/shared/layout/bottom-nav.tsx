@@ -18,6 +18,7 @@ export function BottomNav({ role = "user" }: { role?: Role }) {
 
   return (
     <nav
+      id="tour-bottom-nav"
       aria-label="Navegación"
       className={cn(
         "md:hidden fixed bottom-0 inset-x-0 z-40",

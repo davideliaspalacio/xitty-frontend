@@ -59,4 +59,23 @@ describe("ExperienceCard", () => {
       link.getAttribute("aria-label") ?? link.textContent ?? "";
     expect(label.toLowerCase()).toContain("tour por el malec");
   });
+
+  it("defaults to a full-width card (no hard-coded carousel width)", () => {
+    render(<ExperienceCard experience={baseExperience} />);
+    const link = screen.getByRole("link");
+    expect(link.className).toContain("w-full");
+    // No fixed pixel width baked into the card by default — that breaks grids.
+    expect(link.className).not.toMatch(/w-\[\d+px\]/);
+  });
+
+  it("accepts a className so a carousel can give it a fixed width", () => {
+    render(
+      <ExperienceCard
+        experience={baseExperience}
+        className="w-[280px] sm:w-[320px]"
+      />,
+    );
+    const link = screen.getByRole("link");
+    expect(link.className).toContain("w-[280px]");
+  });
 });

@@ -11,6 +11,7 @@ import { LocationBanner } from "@/features/geo/components/location-banner";
 import { useGeoHeartbeat } from "@/features/geo/hooks/use-geo-heartbeat";
 import { ChatBubble, ChatPanel } from "@/features/chat";
 import { ContextToast } from "@/features/suggestions";
+import { OnboardingTour } from "@/features/onboarding";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const role = useAuthStore((s) => s.user?.role) ?? "user";
@@ -53,6 +54,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         conversationId={conversationId}
         onConversationIdChange={setConversationId}
       />
+
+      {/* Tour de bienvenida — auto-arranca para usuarios nuevos sobre el home. */}
+      <OnboardingTour />
     </AuthGate>
   );
 }

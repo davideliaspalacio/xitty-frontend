@@ -19,13 +19,23 @@ function qs(params: object): string {
   return s ? `?${s}` : "";
 }
 
+/**
+ * Resumen del run que devuelve `POST /sources/:id/run`.
+ *
+ * El backend no siempre manda `status`: cuando falla suele venir con
+ * `errored: true` + `error_message`, y cuando va bien manda los contadores
+ * (`items_*`). Por eso todos los campos descriptivos son opcionales y la UI
+ * deriva el texto del toast del shape real que llegue (ver `sources-panel`).
+ */
 export interface RunSummary {
   run_id?: string;
   source_id: string;
-  status: "succeeded" | "failed" | "partial";
-  items_found: number;
-  items_enriched: number;
-  items_failed: number;
+  status?: "succeeded" | "failed" | "partial";
+  items_found?: number;
+  items_enriched?: number;
+  items_failed?: number;
+  errored?: boolean;
+  error_message?: string | null;
   error?: string | null;
 }
 

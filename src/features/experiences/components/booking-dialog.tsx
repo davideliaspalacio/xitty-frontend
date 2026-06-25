@@ -119,9 +119,10 @@ export function BookingDialog({ experience, slot, open, onClose }: Props) {
             <div className="inline-flex items-center gap-3 rounded-pill border border-[var(--border-strong)] px-2 h-12">
               <button
                 type="button"
+                aria-label="Quitar un participante"
                 disabled={participants <= min}
                 onClick={() => setParticipants((p) => Math.max(min, p - 1))}
-                className="h-8 w-8 rounded-full border border-[var(--border-strong)] text-lg leading-none disabled:opacity-30"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--border-strong)] text-lg leading-none disabled:opacity-30"
               >
                 −
               </button>
@@ -130,9 +131,10 @@ export function BookingDialog({ experience, slot, open, onClose }: Props) {
               </span>
               <button
                 type="button"
+                aria-label="Agregar un participante"
                 disabled={participants >= max}
                 onClick={() => setParticipants((p) => Math.min(max, p + 1))}
-                className="h-8 w-8 rounded-full border border-[var(--border-strong)] text-lg leading-none disabled:opacity-30"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--border-strong)] text-lg leading-none disabled:opacity-30"
               >
                 +
               </button>

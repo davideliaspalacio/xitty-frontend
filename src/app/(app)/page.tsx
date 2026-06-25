@@ -63,7 +63,7 @@ export default function HomePage() {
   return (
     <div className="flex flex-col space-y-12">
       {/* Greeting / hero */}
-      <header className="flex flex-col gap-3 max-w-3xl">
+      <header id="tour-hero" className="flex flex-col gap-3 max-w-3xl">
         <p className="eyebrow">Hoy en Barranquilla</p>
         <h1 className="text-[36px] sm:text-[44px] font-semibold leading-[1.05] tracking-[-0.02em]">
           {t("home.greeting", { name })}
@@ -86,16 +86,20 @@ export default function HomePage() {
       <AdsHero />
 
       {/* 2. Today — "Qué vale la pena hacer hoy" */}
-      <TodaySection />
+      <div id="tour-today">
+        <TodaySection />
+      </div>
 
       {/* 3. Traveler-type filter */}
-      <TravelerTypeChips
-        selected={travelerType}
-        onChange={setTravelerType}
-      />
+      <div id="tour-chips">
+        <TravelerTypeChips
+          selected={travelerType}
+          onChange={setTravelerType}
+        />
+      </div>
 
       {/* 4. Ranking */}
-      <section>
+      <section id="tour-ranking">
         <SectionHeader
           eyebrow="Top de la ciudad"
           title="Ranking en Barranquilla"
@@ -152,7 +156,7 @@ export default function HomePage() {
       </section>
 
       {/* 7. Categories grid */}
-      <section>
+      <section id="tour-categories">
         <SectionHeader
           title="Explora por categoría"
           subtitle="Encuentra lo que buscas, organizado por tipo de lugar."
@@ -161,7 +165,7 @@ export default function HomePage() {
       </section>
 
       {/* 8. Experiences */}
-      <section>
+      <section id="tour-experiences">
         <SectionHeader
           eyebrow="Experiencias"
           title="Vive algo único"
@@ -173,7 +177,11 @@ export default function HomePage() {
         ) : experiences.data?.data.length ? (
           <HorizontalCarousel>
             {experiences.data.data.map((exp) => (
-              <ExperienceCardComponent key={exp.id} experience={exp} />
+              <ExperienceCardComponent
+                key={exp.id}
+                experience={exp}
+                className="shrink-0 w-[280px] sm:w-[320px]"
+              />
             ))}
           </HorizontalCarousel>
         ) : (

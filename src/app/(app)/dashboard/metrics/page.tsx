@@ -124,7 +124,9 @@ export default function MetricsPage() {
         <CardHeader>
           <CardTitle className="text-lg">Tendencia</CardTitle>
         </CardHeader>
-        <CardContent className="h-[320px]">
+        {/* px reducido en mobile + min-w-0/overflow-hidden para que el
+            ResponsiveContainer pueda encogerse y no desborde en 390px. */}
+        <CardContent className="h-[320px] w-full min-w-0 overflow-hidden px-2 sm:px-6">
           {series.isLoading ? (
             <Skeleton className="h-full w-full rounded-md" />
           ) : chartData.length === 0 ? (
@@ -133,10 +135,19 @@ export default function MetricsPage() {
             </div>
           ) : (
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData}>
+              <BarChart data={chartData} margin={{ top: 4, right: 8, left: -12, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-                <XAxis dataKey="bucket" tick={{ fontSize: 12, fill: "var(--text-muted)" }} />
-                <YAxis tick={{ fontSize: 12, fill: "var(--text-muted)" }} />
+                <XAxis
+                  dataKey="bucket"
+                  tick={{ fontSize: 11, fill: "var(--text-muted)" }}
+                  interval="preserveStartEnd"
+                  minTickGap={16}
+                  tickMargin={6}
+                />
+                <YAxis
+                  width={36}
+                  tick={{ fontSize: 11, fill: "var(--text-muted)" }}
+                />
                 <Tooltip
                   contentStyle={{
                     background: "var(--surface)",
