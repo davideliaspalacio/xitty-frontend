@@ -80,7 +80,9 @@ export function Topbar() {
           <Bell className="h-[18px] w-[18px]" />
         </Button>
 
-        <EmergencyButton />
+        <span id="tour-sos" className="inline-flex">
+          <EmergencyButton />
+        </span>
 
         <LanguageSelector className="hidden sm:flex" />
 

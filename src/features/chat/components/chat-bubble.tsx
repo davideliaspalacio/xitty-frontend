@@ -38,6 +38,7 @@ export function ChatBubble({ onClick, hasUnread, className }: ChatBubbleProps) {
         dangerouslySetInnerHTML={{ __html: BREATH_KEYFRAMES }}
       />
       <button
+        id="tour-chat-fab"
         type="button"
         onClick={onClick}
         aria-label="Abrir asistente Xi"

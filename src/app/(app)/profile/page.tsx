@@ -15,16 +15,25 @@ import { PreferencesSummary } from "@/features/preferences/components/preference
 import { useProfileSummary } from "@/features/auth/hooks/use-profile-summary";
 import { useLogout } from "@/features/auth/hooks/use-auth";
 import { useAuthStore } from "@/features/auth/store/auth-store";
+import { useOnboarding } from "@/features/onboarding";
 
 export default function ProfilePage() {
   const router = useRouter();
   const user = useAuthStore((s) => s.user);
   const { data: summary, isLoading } = useProfileSummary();
   const logout = useLogout();
+  const { startTour } = useOnboarding();
 
   function handleLogout() {
     logout();
     router.replace("/login");
+  }
+
+  function handleStartTour() {
+    // El tour vive sobre el home; navegamos allí y lo lanzamos. El componente
+    // <OnboardingTour/> (montado en el layout) espera a que el home se monte.
+    router.push("/");
+    startTour();
   }
 
   const stats = [
@@ -82,6 +91,22 @@ export default function ProfilePage() {
         </CardHeader>
         <CardContent>
           <PreferencesSummary />
+        </CardContent>
+      </Card>
+
+      {/* Ayuda */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-xl">Ayuda</CardTitle>
+          <CardDescription>
+            ¿Quieres repasar cómo funciona Xitty? Vuelve a ver el tour de
+            bienvenida cuando quieras.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button variant="secondary" onClick={handleStartTour}>
+            Ver tour de bienvenida
+          </Button>
         </CardContent>
       </Card>
 
