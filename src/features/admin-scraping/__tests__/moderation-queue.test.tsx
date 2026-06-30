@@ -245,6 +245,52 @@ describe("ModerationQueue", () => {
     expect(titleInput.value).toBe("Item 1");
   });
 
+  it("cambiar el filtro de estado consulta ese status", async () => {
+    setupHooks({ items: [makeItem(1)] });
+    const user = userEvent.setup();
+
+    render(<ModerationQueue />);
+    // Por defecto consulta los pendientes.
+    expect(mockedUseItems).toHaveBeenCalledWith({ status: "pending" });
+
+    await user.click(screen.getByRole("tab", { name: /aprobados/i }));
+    expect(mockedUseItems).toHaveBeenCalledWith({ status: "approved" });
+  });
+
+  it("un item publicado oculta Aprobar/Publicar y se marca como Publicado", () => {
+    const published = makeItem(1, {
+      status: "published",
+      published_place_id: "place-xyz",
+    });
+    setupHooks({ items: [published] });
+
+    render(<ModerationQueue />);
+    const card = screen.getByText("Item 1").closest("article")!;
+
+    expect(
+      within(card).queryByRole("button", { name: /aprobar/i }),
+    ).toBeNull();
+    expect(
+      within(card).queryByRole("button", { name: /publicar/i }),
+    ).toBeNull();
+    expect(within(card).getByText("Publicado")).toBeInTheDocument();
+  });
+
+  it("un item aprobado oculta Aprobar pero deja Publicar", () => {
+    const approved = makeItem(1, { status: "approved" });
+    setupHooks({ items: [approved] });
+
+    render(<ModerationQueue />);
+    const card = screen.getByText("Item 1").closest("article")!;
+
+    expect(
+      within(card).queryByRole("button", { name: /aprobar/i }),
+    ).toBeNull();
+    expect(
+      within(card).getByRole("button", { name: /publicar/i }),
+    ).toBeInTheDocument();
+  });
+
   it("guardar en el modal dispara updateItem con los cambios", async () => {
     const updateMutate = vi.fn(async () => makeItem(1, { title: "Nuevo titulo" }));
     setupHooks({ items: [makeItem(1)], updateMutate });
