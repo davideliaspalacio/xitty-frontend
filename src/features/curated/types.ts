@@ -38,10 +38,16 @@ export interface CuratedItem {
   ends_at: string | null;
   /** Score in [0, 1] produced by the quality pipeline. */
   quality_score: number;
-  /** Original URL on the source site. */
-  source_url: string | null;
-  /** ISO timestamp when the source was scraped. */
-  scraped_at: string;
+  /**
+   * Original URL on the source site. Solo presente en el detalle
+   * (`GET /discover/curated/:id`); el card DTO del listado no lo incluye.
+   */
+  source_url?: string | null;
+  /**
+   * ISO timestamp when the source was scraped. Solo presente en el detalle;
+   * ausente en las cards del listado.
+   */
+  scraped_at?: string | null;
 }
 
 export interface GetCuratedParams {

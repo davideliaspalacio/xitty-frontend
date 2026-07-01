@@ -97,4 +97,28 @@ describe("CuratedCard", () => {
     expect(screen.getByText(/via/i)).toBeInTheDocument();
     expect(screen.getByText(/not-a-real-url/i)).toBeInTheDocument();
   });
+
+  it("no muestra atribución ni 'NaN' cuando el item no trae fuente (card DTO)", () => {
+    render(
+      <CuratedCard
+        item={{ ...baseItem, source_url: null, scraped_at: null }}
+      />,
+    );
+    expect(screen.queryByText(/via/i)).toBeNull();
+    expect(screen.queryByText(/nan/i)).toBeNull();
+    // La tarjeta sigue mostrando su contenido principal.
+    expect(
+      screen.getByRole("heading", { name: /concierto en el malec[oó]n/i }),
+    ).toBeInTheDocument();
+  });
+
+  it("renderiza un placeholder (sin <img>) cuando image_url es null", () => {
+    const { container } = render(
+      <CuratedCard item={{ ...baseItem, image_url: null }} />,
+    );
+    expect(container.querySelector("img")).toBeNull();
+    expect(
+      screen.getByRole("heading", { name: /concierto en el malec[oó]n/i }),
+    ).toBeInTheDocument();
+  });
 });
