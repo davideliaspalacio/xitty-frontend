@@ -4,6 +4,7 @@ import Link from "next/link";
 import { MapPin, Calendar } from "lucide-react";
 import { AiCuratedBadge } from "@/shared/ui/ai-curated-badge";
 import { SourceAttribution } from "@/shared/ui/source-attribution";
+import { CuratedImageFallback } from "@/shared/ui/curated-image-fallback";
 import { cn } from "@/shared/utils/cn";
 import type { CuratedItem } from "@/features/curated/types";
 
@@ -50,7 +51,9 @@ export function CuratedCard({ item, className }: CuratedCardProps) {
               alt={item.title}
               className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.04]"
             />
-          ) : null}
+          ) : (
+            <CuratedImageFallback label={item.title} />
+          )}
 
           {/* AI-curated sticker, top-left */}
           <AiCuratedBadge className="absolute top-2.5 left-2.5" />
@@ -80,13 +83,17 @@ export function CuratedCard({ item, className }: CuratedCardProps) {
       </Link>
 
       {/* Footer attribution — kept OUTSIDE the card link so the source
-          link is reachable and announced separately by assistive tech. */}
-      <footer className="px-4 pb-3 pt-1 border-t border-[var(--border)] mt-auto">
-        <SourceAttribution
-          sourceUrl={item.source_url ?? ""}
-          scrapedAt={item.scraped_at}
-        />
-      </footer>
+          link is reachable and announced separately by assistive tech.
+          Solo se pinta si el item trae fuente (el card DTO del listado no la
+          incluye, así evitamos un footer vacío / "Hace NaN años"). */}
+      {item.source_url ? (
+        <footer className="px-4 pb-3 pt-1 border-t border-[var(--border)] mt-auto">
+          <SourceAttribution
+            sourceUrl={item.source_url}
+            scrapedAt={item.scraped_at}
+          />
+        </footer>
+      ) : null}
     </article>
   );
 }

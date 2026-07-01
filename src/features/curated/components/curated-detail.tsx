@@ -3,6 +3,7 @@
 import { ExternalLink, MapPin, Calendar, AlertTriangle } from "lucide-react";
 import { AiCuratedBadge } from "@/shared/ui/ai-curated-badge";
 import { SourceAttribution } from "@/shared/ui/source-attribution";
+import { CuratedImageFallback } from "@/shared/ui/curated-image-fallback";
 import { fmtCop } from "@/shared/utils/format";
 import { cn } from "@/shared/utils/cn";
 import type { CuratedItem } from "@/features/curated/types";
@@ -39,22 +40,22 @@ export function CuratedDetail({ item, className }: CuratedDetailProps) {
 
   return (
     <article className={cn("flex flex-col gap-6", className)}>
-      {/* Hero image */}
-      {item.image_url ? (
-        <div className="relative aspect-[16/9] rounded-2xl overflow-hidden bg-[var(--bg-subtle)]">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
+      {/* Hero image (o placeholder de marca cuando el item no tiene foto) */}
+      <div className="relative aspect-[16/9] rounded-2xl overflow-hidden bg-[var(--bg-subtle)]">
+        {item.image_url ? (
+          /* eslint-disable-next-line @next/next/no-img-element */
           <img
             src={item.image_url}
             alt={item.title}
             className="absolute inset-0 h-full w-full object-cover"
           />
-          <div className="absolute top-3 left-3">
-            <AiCuratedBadge />
-          </div>
+        ) : (
+          <CuratedImageFallback label={item.title} />
+        )}
+        <div className="absolute top-3 left-3">
+          <AiCuratedBadge />
         </div>
-      ) : (
-        <AiCuratedBadge />
-      )}
+      </div>
 
       <header className="flex flex-col gap-3">
         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight leading-tight">
