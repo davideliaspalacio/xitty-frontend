@@ -157,19 +157,45 @@ describe("ModerationQueue", () => {
     ).toBeGreaterThan(0);
   });
 
-  it("approve dispara la mutation con el id del item", async () => {
-    const approveMutate = vi.fn(async () => makeItem(1, { status: "approved" }));
-    setupHooks({ items: [makeItem(1)], approveMutate });
-    const user = userEvent.setup();
-
+  it("flujo de un solo paso: en pending muestra Publicar y NO Aprobar", () => {
+    setupHooks({ items: [makeItem(1)] });
     render(<ModerationQueue />);
 
     const card = screen.getByText("Item 1").closest("article")!;
-    const approveBtn = within(card).getByRole("button", { name: /aprobar/i });
-    await user.click(approveBtn);
+    expect(
+      within(card).getByRole("button", { name: /publicar/i }),
+    ).toBeInTheDocument();
+    expect(
+      within(card).queryByRole("button", { name: /aprobar/i }),
+    ).toBeNull();
+  });
 
-    expect(approveMutate).toHaveBeenCalledTimes(1);
-    expect(approveMutate).toHaveBeenCalledWith("item-1");
+  it("'Publicar todos' publica todos los items publicables de la vista", async () => {
+    const publishMutate = vi.fn(async () => makeItem(1, { status: "published" }));
+    setupHooks({ items: [makeItem(1), makeItem(2), makeItem(3)], publishMutate });
+    const user = userEvent.setup();
+    const confirmSpy = vi.spyOn(window, "confirm").mockReturnValue(true);
+
+    render(<ModerationQueue />);
+    await user.click(screen.getByRole("button", { name: /publicar todos/i }));
+
+    expect(publishMutate).toHaveBeenCalledTimes(3);
+    expect(publishMutate).toHaveBeenCalledWith("item-1");
+    expect(publishMutate).toHaveBeenCalledWith("item-3");
+    confirmSpy.mockRestore();
+  });
+
+  it("'Publicar todos' NO publica si el usuario cancela el confirm", async () => {
+    const publishMutate = vi.fn(async () => makeItem(1, { status: "published" }));
+    setupHooks({ items: [makeItem(1), makeItem(2)], publishMutate });
+    const user = userEvent.setup();
+    const confirmSpy = vi.spyOn(window, "confirm").mockReturnValue(false);
+
+    render(<ModerationQueue />);
+    await user.click(screen.getByRole("button", { name: /publicar todos/i }));
+
+    expect(publishMutate).not.toHaveBeenCalled();
+    confirmSpy.mockRestore();
   });
 
   it("reject dispara la mutation con id y razon", async () => {

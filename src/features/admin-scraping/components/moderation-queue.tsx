@@ -3,20 +3,13 @@
 import { useState } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
-import {
-  Check,
-  ExternalLink,
-  Pencil,
-  Trash2,
-  Upload,
-} from "lucide-react";
+import { Check, ExternalLink, Pencil, Trash2, Upload } from "lucide-react";
 import { Card } from "@/shared/ui/card";
 import { Button } from "@/shared/ui/button";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { cn } from "@/shared/utils/cn";
 import { ApiError } from "@/lib/api/types";
 import {
-  useApproveItem,
   useItems,
   usePublishItem,
   useRejectItem,
@@ -31,12 +24,6 @@ interface ModerationQueueProps {
   status?: EnrichedItemStatus;
 }
 
-/**
- * Sub-filtros por estado dentro de la cola. Sin esto, aprobar un item lo
- * mandaba a `approved` y desaparecia de la vista (que solo mostraba
- * `pending`), dejando el boton "Publicar" inalcanzable. El admin ahora
- * alterna estados y publica los aprobados.
- */
 const STATUS_FILTERS: { id: EnrichedItemStatus; label: string }[] = [
   { id: "pending", label: "Pendientes" },
   { id: "approved", label: "Aprobados" },
@@ -44,34 +31,31 @@ const STATUS_FILTERS: { id: EnrichedItemStatus; label: string }[] = [
   { id: "rejected", label: "Rechazados" },
 ];
 
+const isPublishable = (item: ScrapedItemEnriched) =>
+  item.status === "pending" || item.status === "approved";
+
 /**
- * Cola de moderacion: lista los enriched items por estado y deja
- * approve / reject / edit / publish item-by-item.
+ * Cola de moderación con flujo de UN SOLO PASO.
  *
- * El ciclo de vida es pending -> approved -> published (o rejected). Cada
- * accion se muestra solo cuando aplica al estado del item: aprobar solo en
- * pending; publicar en pending o approved (el backend acepta ambos); los
- * publicados muestran un enlace al place/experience creado.
- *
- * Mantiene un solo `editingItem` para el modal compartido.
+ * "Publicar" es la acción primaria: el admin corre el scraper y publica
+ * directo (no hay "Aprobar" previo — ese doble flujo dejaba items atrapados en
+ * `approved`). "Publicar todos" publica de una toda la vista. Editar/Rechazar
+ * quedan como acciones secundarias.
  */
-export function ModerationQueue({ status: initialStatus = "pending" }: ModerationQueueProps) {
+export function ModerationQueue({
+  status: initialStatus = "pending",
+}: ModerationQueueProps) {
   const [status, setStatus] = useState<EnrichedItemStatus>(initialStatus);
   const { data: items, isLoading } = useItems({ status });
-  const approve = useApproveItem();
   const reject = useRejectItem();
   const publish = usePublishItem();
 
-  const [editingItem, setEditingItem] = useState<ScrapedItemEnriched | null>(null);
+  const [editingItem, setEditingItem] = useState<ScrapedItemEnriched | null>(
+    null,
+  );
+  const [publishingAll, setPublishingAll] = useState(false);
 
-  async function handleApprove(item: ScrapedItemEnriched) {
-    try {
-      await approve.mutateAsync(item.id);
-      toast.success("Item aprobado");
-    } catch (e) {
-      toast.error(e instanceof ApiError ? e.message : "No se pudo aprobar");
-    }
-  }
+  const publishable = (items ?? []).filter(isPublishable);
 
   async function handleReject(item: ScrapedItemEnriched) {
     if (typeof window === "undefined") return;
@@ -92,36 +76,71 @@ export function ModerationQueue({ status: initialStatus = "pending" }: Moderatio
   async function handlePublish(item: ScrapedItemEnriched) {
     try {
       await publish.mutateAsync(item.id);
-      toast.success("Item publicado");
+      toast.success("Publicado — ya aparece en el catálogo y en Descubre");
     } catch (e) {
       toast.error(e instanceof ApiError ? e.message : "No se pudo publicar");
     }
   }
 
+  async function handlePublishAll() {
+    if (publishable.length === 0 || publishingAll) return;
+    if (
+      typeof window !== "undefined" &&
+      !window.confirm(
+        `¿Publicar ${publishable.length} item(s)? Aparecerán en el catálogo y en Descubre.`,
+      )
+    ) {
+      return;
+    }
+    setPublishingAll(true);
+    let ok = 0;
+    let fail = 0;
+    // Secuencial para no saturar el backend ni el rate limit.
+    for (const item of publishable) {
+      try {
+        await publish.mutateAsync(item.id);
+        ok += 1;
+      } catch {
+        fail += 1;
+      }
+    }
+    setPublishingAll(false);
+    if (fail === 0) toast.success(`${ok} item(s) publicados`);
+    else toast.error(`${ok} publicados, ${fail} fallaron`);
+  }
+
   return (
     <div className="flex flex-col gap-4">
-      <div
-        role="tablist"
-        aria-label="Filtrar por estado"
-        className="flex flex-wrap gap-1.5"
-      >
-        {STATUS_FILTERS.map((f) => (
-          <button
-            key={f.id}
-            type="button"
-            role="tab"
-            aria-selected={status === f.id}
-            onClick={() => setStatus(f.id)}
-            className={cn(
-              "h-8 px-3 rounded-pill text-xs font-medium border transition-colors",
-              status === f.id
-                ? "bg-[var(--accent)] text-[var(--accent-fg)] border-[var(--accent)]"
-                : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--text)] hover:border-[var(--border-strong)]",
-            )}
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div role="tablist" aria-label="Filtrar por estado" className="flex flex-wrap gap-1.5">
+          {STATUS_FILTERS.map((f) => (
+            <button
+              key={f.id}
+              type="button"
+              role="tab"
+              aria-selected={status === f.id}
+              onClick={() => setStatus(f.id)}
+              className={cn(
+                "h-8 px-3 rounded-pill text-xs font-medium border transition-colors",
+                status === f.id
+                  ? "bg-[var(--accent)] text-[var(--accent-fg)] border-[var(--accent)]"
+                  : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--text)] hover:border-[var(--border-strong)]",
+              )}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+
+        {publishable.length > 0 ? (
+          <Button
+            size="sm"
+            onClick={handlePublishAll}
+            loading={publishingAll}
           >
-            {f.label}
-          </button>
-        ))}
+            <Upload className="h-4 w-4" /> Publicar todos ({publishable.length})
+          </Button>
+        ) : null}
       </div>
 
       {isLoading ? (
@@ -141,13 +160,9 @@ export function ModerationQueue({ status: initialStatus = "pending" }: Moderatio
       ) : (
         <div className="flex flex-col gap-3">
           {items.map((item) => {
-            const canApprove = item.status === "pending";
-            const canEdit =
-              item.status === "pending" || item.status === "approved";
-            const canPublish =
-              item.status === "pending" || item.status === "approved";
-            const canReject =
-              item.status === "pending" || item.status === "approved";
+            const canPublish = isPublishable(item);
+            const canEdit = isPublishable(item);
+            const canReject = isPublishable(item);
             const publishedHref = item.published_place_id
               ? `/places/${item.published_place_id}`
               : item.published_experience_id
@@ -208,13 +223,13 @@ export function ModerationQueue({ status: initialStatus = "pending" }: Moderatio
                 </header>
 
                 <div className="flex flex-wrap items-center gap-2 pt-1">
-                  {canApprove ? (
+                  {canPublish ? (
                     <Button
                       size="sm"
-                      onClick={() => handleApprove(item)}
-                      loading={approve.isPending}
+                      onClick={() => handlePublish(item)}
+                      loading={publish.isPending}
                     >
-                      <Check className="h-4 w-4" /> Aprobar
+                      <Upload className="h-4 w-4" /> Publicar
                     </Button>
                   ) : null}
                   {canEdit ? (
@@ -224,16 +239,6 @@ export function ModerationQueue({ status: initialStatus = "pending" }: Moderatio
                       onClick={() => setEditingItem(item)}
                     >
                       <Pencil className="h-4 w-4" /> Editar
-                    </Button>
-                  ) : null}
-                  {canPublish ? (
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      onClick={() => handlePublish(item)}
-                      loading={publish.isPending}
-                    >
-                      <Upload className="h-4 w-4" /> Publicar
                     </Button>
                   ) : null}
                   {canReject ? (
