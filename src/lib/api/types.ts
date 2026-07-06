@@ -160,6 +160,15 @@ export interface PlaceCard {
   cover_photo_url: string | null;
 }
 
+/** Reseña importada de la fuente (Google). Display-only, con atribución. */
+export interface SourceReview {
+  author: string | null;
+  rating: number | null;
+  text: string | null;
+  relative_time: string | null;
+  publish_time: string | null;
+}
+
 export interface PlaceDetail extends PlaceCard {
   phone: string | null;
   website: string | null;
@@ -174,6 +183,8 @@ export interface PlaceDetail extends PlaceCard {
   is_sponsored: boolean;
   sponsored_until: string | null;
   photos: PlacePhoto[];
+  /** Opiniones importadas de Google (si el lugar vino del scraper). */
+  source_reviews: SourceReview[] | null;
   created_at: string;
   updated_at: string;
 }
