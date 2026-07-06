@@ -34,7 +34,7 @@ function AdminScrapingInner() {
     <div className="flex flex-col gap-6">
       <header className="flex flex-col gap-2">
         <p className="eyebrow">Admin</p>
-        <h1 className="text-[32px] font-semibold leading-[1.1] tracking-[-0.02em]">
+        <h1 className="text-[32px] font-semibold leading-[1.1] tracking-normal">
           Scraping & Moderación
         </h1>
         <p className="text-[var(--text-muted)] text-[15px] max-w-2xl">
@@ -44,7 +44,7 @@ function AdminScrapingInner() {
       </header>
 
       <div
-        role="tablist"
+        role="group"
         aria-label="Secciones de scraping"
         className="flex gap-1 border-b border-[var(--border)]"
       >
@@ -52,11 +52,10 @@ function AdminScrapingInner() {
           <button
             key={t.id}
             type="button"
-            role="tab"
-            aria-selected={tab === t.id}
+            aria-pressed={tab === t.id}
             onClick={() => setTab(t.id)}
             className={cn(
-              "relative h-10 px-4 text-sm font-medium transition-colors -mb-px",
+              "relative min-h-11 px-4 text-sm font-semibold transition-colors -mb-px",
               "border-b-2 border-transparent",
               tab === t.id
                 ? "text-[var(--accent)] border-[var(--accent)]"
@@ -76,7 +75,7 @@ function AdminScrapingInner() {
         ))}
       </div>
 
-      <section role="tabpanel">
+      <section>
         {tab === "sources" && <SourcesPanel />}
         {tab === "runs" && <RunsHistory />}
         {tab === "moderation" && <ModerationQueue />}

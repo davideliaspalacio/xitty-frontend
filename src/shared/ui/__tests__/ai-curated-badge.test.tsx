@@ -23,10 +23,10 @@ describe("AiCuratedBadge", () => {
     expect(svg).toHaveAttribute("aria-hidden", "true");
   });
 
-  it("defaults to the solid variant with cream background", () => {
+  it("defaults to the solid variant with warm surface background", () => {
     render(<AiCuratedBadge data-testid="badge" />);
     const badge = screen.getByTestId("badge");
-    expect(badge.className).toMatch(/--cream/);
+    expect(badge.className).toMatch(/--surface-warm/);
   });
 
   it("supports an outline variant with transparent background", () => {

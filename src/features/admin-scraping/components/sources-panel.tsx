@@ -151,7 +151,7 @@ export function SourcesPanel() {
                 id="src-kind"
                 value={newKind}
                 onChange={(e) => setNewKind(e.target.value as ScrapingSourceKind)}
-                className="flex h-11 w-full rounded-md border border-[var(--border-strong)] bg-[var(--surface)] px-3.5 py-2 text-sm"
+                className="flex h-11 w-full rounded-lg border border-[var(--border-strong)] bg-[var(--surface)] px-3.5 py-2 text-base text-[var(--text)] focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/25 sm:text-sm"
               >
                 {SCRAPER_SOURCES.map((s) => (
                   <option key={s.kind} value={s.kind}>
@@ -181,7 +181,10 @@ export function SourcesPanel() {
           {sources.map((s) => {
             const meta = getScraperSource(s.kind);
             return (
-              <Card key={s.id} className="p-4 flex items-center justify-between gap-3">
+              <Card
+                key={s.id}
+                className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between"
+              >
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 flex-wrap">
                     <h3 className="text-sm font-semibold truncate">{s.name}</h3>
@@ -215,8 +218,8 @@ export function SourcesPanel() {
                     ) : null}
                   </p>
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <label className="inline-flex items-center gap-2 text-xs text-[var(--text-muted)] cursor-pointer">
+                <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center sm:shrink-0">
+                  <label className="inline-flex min-h-11 items-center gap-2 text-xs font-semibold text-[var(--text-muted)] cursor-pointer">
                     <input
                       type="checkbox"
                       checked={s.enabled}
@@ -231,6 +234,7 @@ export function SourcesPanel() {
                     onClick={() => handleRun(s)}
                     loading={run.isPending}
                     disabled={!s.enabled}
+                    className="w-full sm:w-auto"
                   >
                     <Play className="h-4 w-4" /> Run now
                   </Button>

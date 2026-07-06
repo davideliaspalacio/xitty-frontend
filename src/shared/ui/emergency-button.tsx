@@ -41,7 +41,7 @@ export function EmergencyButton({ className }: EmergencyButtonProps) {
         aria-label="Llamar emergencia"
         onClick={() => setOpen(true)}
         className={cn(
-          "inline-flex h-9 items-center gap-1.5 rounded-full border-[1.5px] border-[#DC2626] bg-[var(--surface,#FFF8F1)] px-3 text-xs font-semibold uppercase tracking-wide text-[#DC2626] transition-colors hover:bg-[#FEE2E2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#DC2626] focus-visible:ring-offset-2",
+          "inline-flex h-11 items-center gap-1.5 rounded-pill border-[1.5px] border-[var(--danger)] bg-[var(--danger-soft)] px-3 text-xs font-semibold uppercase tracking-wide text-[var(--danger)] transition-colors hover:bg-[var(--surface)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--danger)] focus-visible:ring-offset-2 sm:h-9",
           className,
         )}
       >
@@ -60,7 +60,8 @@ export function EmergencyButton({ className }: EmergencyButtonProps) {
             alignItems: "center",
             justifyContent: "center",
             padding: "1rem",
-            backgroundColor: "rgba(0,0,0,0.55)",
+            backgroundColor:
+              "color-mix(in srgb, var(--ink) 55%, transparent)",
             backdropFilter: "blur(2px)",
           }}
           onClick={handleClose}
@@ -71,42 +72,42 @@ export function EmergencyButton({ className }: EmergencyButtonProps) {
             aria-labelledby="emergency-title"
             aria-describedby="emergency-desc"
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-sm rounded-3xl bg-[var(--surface,#ffffff)] p-6 text-center shadow-2xl"
+            className="relative w-full max-w-sm rounded-xl bg-[var(--surface)] p-6 text-center shadow-[var(--shadow-3)]"
           >
             {/* Cerrar (X) */}
             <button
               type="button"
               onClick={handleClose}
               aria-label="Cerrar"
-              className="absolute right-3 top-3 inline-flex h-8 w-8 items-center justify-center rounded-full text-[var(--text-muted,#6b7280)] transition-colors hover:bg-black/5"
+              className="absolute right-3 top-3 inline-flex h-10 w-10 items-center justify-center rounded-pill text-[var(--text-muted)] transition-colors hover:bg-[var(--surface-hover)]"
             >
               <X className="h-4 w-4" aria-hidden="true" />
             </button>
 
             {/* Ícono en círculo rojo suave */}
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#FEE2E2]">
-              <ShieldAlert className="h-8 w-8 text-[#DC2626]" aria-hidden="true" />
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-pill bg-[var(--danger-soft)]">
+              <ShieldAlert className="h-8 w-8 text-[var(--danger)]" aria-hidden="true" />
             </div>
 
             <h2
               id="emergency-title"
-              className="text-xl font-bold tracking-tight text-[var(--text,#111827)]"
+              className="text-xl font-bold tracking-normal text-[var(--text)]"
             >
               ¿Llamar a emergencias?
             </h2>
             <p
               id="emergency-desc"
-              className="mt-2 text-sm leading-relaxed text-[var(--text-muted,#6b7280)]"
+              className="mt-2 text-sm leading-relaxed text-[var(--text-muted)]"
             >
               Te conectaremos con la línea{" "}
-              <span className="font-semibold text-[var(--text,#111827)]">123</span>{" "}
+              <span className="font-semibold text-[var(--text)]">123</span>{" "}
               (Policía Nacional de Colombia).
             </p>
 
             <div className="mt-6 flex flex-col gap-2.5">
               <a
                 href="tel:123"
-                className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-[#DC2626] text-base font-semibold text-white shadow-[0_6px_18px_-6px_rgba(220,38,38,0.6)] transition-transform hover:bg-[#C11D1D] active:scale-[0.98]"
+                className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-pill bg-[var(--danger)] text-base font-semibold text-white shadow-[0_3px_0_var(--ink)] transition-transform hover:brightness-95 active:scale-[0.98] motion-reduce:transition-none motion-reduce:active:scale-100"
               >
                 <Phone className="h-4 w-4" aria-hidden="true" />
                 Llamar 123
@@ -114,7 +115,7 @@ export function EmergencyButton({ className }: EmergencyButtonProps) {
               <button
                 type="button"
                 onClick={handleClose}
-                className="inline-flex h-11 w-full items-center justify-center rounded-2xl border border-[var(--border,#e5e7eb)] bg-transparent text-sm font-semibold text-[var(--text,#374151)] transition-colors hover:bg-black/5"
+                className="inline-flex h-11 w-full items-center justify-center rounded-pill border border-[var(--border)] bg-transparent text-sm font-semibold text-[var(--text)] transition-colors hover:bg-[var(--surface-hover)]"
               >
                 Cancelar
               </button>

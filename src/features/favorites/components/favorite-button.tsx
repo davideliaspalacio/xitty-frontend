@@ -56,7 +56,7 @@ export function FavoriteButton({
       aria-pressed={isFav}
       aria-label={isFav ? "Quitar de favoritos" : "Guardar en favoritos"}
       className={cn(
-        "relative inline-flex items-center justify-center rounded-full transition-all duration-150 active:scale-90",
+        "relative inline-flex items-center justify-center rounded-full transition-all duration-150 active:scale-90 motion-reduce:transition-none motion-reduce:active:scale-100",
         // Invisible, centered hit area so the tappable target is >= 44px
         // even when the visible chrome (sm/md) is smaller. Keeps the icon
         // and absolute positioning of the visible circle unchanged.
@@ -69,6 +69,7 @@ export function FavoriteButton({
       )}
     >
       <Heart
+        aria-hidden="true"
         className={cn(
           s.icon,
           "transition-colors",

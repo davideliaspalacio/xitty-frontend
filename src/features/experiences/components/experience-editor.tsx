@@ -18,7 +18,7 @@ export function ExperienceEditor({
   return (
     <div className="flex flex-col gap-6">
       <section>
-        <h4 className="text-sm font-semibold tracking-tight mb-3">Datos</h4>
+        <h4 className="text-sm font-semibold tracking-normal mb-3">Datos</h4>
         <ExperienceForm
           existing={experience}
           onSuccess={onClose}
@@ -29,7 +29,7 @@ export function ExperienceEditor({
       <div className="border-t border-[var(--border)]" />
 
       <section>
-        <h4 className="text-sm font-semibold tracking-tight mb-3">
+        <h4 className="text-sm font-semibold tracking-normal mb-3">
           Cupos y horarios
         </h4>
         <SlotsManager experienceId={experience.id} />
@@ -38,7 +38,7 @@ export function ExperienceEditor({
       <div className="border-t border-[var(--border)]" />
 
       <section>
-        <h4 className="text-sm font-semibold tracking-tight mb-3">Fotos</h4>
+        <h4 className="text-sm font-semibold tracking-normal mb-3">Fotos</h4>
         <PhotosEditor
           photos={experience.photos ?? []}
           onAdd={(p) => addPhoto.mutateAsync(p)}

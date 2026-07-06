@@ -28,7 +28,7 @@ export default function PromotionsFeedPage() {
       <main className="mx-auto max-w-5xl px-6 py-10 flex flex-col gap-6">
         <div className="flex flex-col gap-2 max-w-3xl">
           <p className="eyebrow">Activas ahora</p>
-          <h1 className="text-[40px] sm:text-[48px] font-semibold leading-[1.05] tracking-[-0.025em]">
+          <h1 className="text-[40px] sm:text-[48px] font-semibold leading-[1.05] tracking-normal">
             Promociones en Barranquilla
           </h1>
           <p className="text-[var(--text-muted)] text-[15px] max-w-2xl">
@@ -66,7 +66,7 @@ export default function PromotionsFeedPage() {
                     <p className="text-xs text-[var(--text-muted)] mb-1">
                       {p.places?.name ?? "Lugar"}
                     </p>
-                    <h3 className="text-lg font-semibold tracking-tight">
+                    <h3 className="text-lg font-semibold tracking-normal">
                       {p.title}
                     </h3>
                   </div>

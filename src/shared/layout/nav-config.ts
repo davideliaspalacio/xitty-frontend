@@ -26,7 +26,7 @@ export interface NavItem {
  */
 export const navByRole: Record<Role, NavItem[]> = {
   user: [
-    { href: "/", label: "Descubrir", icon: Compass },
+    { href: "/home", label: "Descubrir", icon: Compass },
     { href: "/places", label: "Lugares", icon: Search },
     { href: "/favorites", label: "Favoritos", icon: Heart },
     { href: "/reservations", label: "Reservas", icon: CalendarCheck },

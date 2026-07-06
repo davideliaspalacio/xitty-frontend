@@ -2,10 +2,12 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
+import { CalendarCheck } from "lucide-react";
 import { useMyReservations } from "@/features/reservations";
 import { ReservationCard } from "@/features/reservations/components/reservation-card";
 import { Skeleton } from "@/shared/ui/skeleton";
-import { Button } from "@/shared/ui/button";
+import { buttonVariants } from "@/shared/ui/button";
+import { EmptyState } from "@/shared/ui/empty-state";
 import { cn } from "@/shared/utils/cn";
 import type { Reservation } from "@/lib/api/types";
 
@@ -58,7 +60,7 @@ export default function ReservationsPage() {
     <div className="flex flex-col gap-6">
       <header className="flex flex-col gap-2">
         <p className="eyebrow">Mis reservas</p>
-        <h1 className="text-[32px] font-semibold leading-[1.1] tracking-[-0.02em]">
+        <h1 className="text-[32px] font-semibold leading-[1.1] tracking-normal">
           Tu agenda en Xitty
         </h1>
         <p className="text-[var(--text-muted)] text-[15px]">
@@ -68,7 +70,8 @@ export default function ReservationsPage() {
 
       <nav
         className="flex gap-1 border-b border-[var(--border)] overflow-x-auto"
-        role="tablist"
+        role="group"
+        aria-label="Filtrar reservas"
       >
         {tabs.map((t) => {
           const count = buckets[t.key].length;
@@ -77,8 +80,7 @@ export default function ReservationsPage() {
             <button
               key={t.key}
               type="button"
-              role="tab"
-              aria-selected={active}
+              aria-pressed={active}
               onClick={() => setTab(t.key)}
               className={cn(
                 "inline-flex items-center gap-2 px-3 py-3 text-sm font-medium border-b-2 transition-colors -mb-px",
@@ -101,24 +103,25 @@ export default function ReservationsPage() {
           ))}
         </div>
       ) : visible.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-[var(--border)] bg-[var(--bg-subtle)] px-6 py-16 text-center">
+        <div>
           {tab === "upcoming" ? (
-            <>
-              <h2 className="text-lg font-semibold mb-2">
-                Aún no tienes reservas próximas
-              </h2>
-              <p className="text-sm text-[var(--text-muted)] mb-6 max-w-md mx-auto">
-                Reserva una experiencia para empezar a llenar tu agenda en
-                Barranquilla.
-              </p>
-              <Link href="/experiences">
-                <Button>Ver experiencias</Button>
-              </Link>
-            </>
+            <EmptyState
+              icon={CalendarCheck}
+              title="Aún no tienes reservas próximas"
+              description="Reserva una experiencia para empezar a llenar tu agenda en Barranquilla."
+              action={
+                <Link href="/experiences" className={buttonVariants()}>
+                  Ver experiencias
+                </Link>
+              }
+            />
           ) : (
-            <p className="text-sm text-[var(--text-muted)]">
-              Nada por aquí todavía.
-            </p>
+            <EmptyState
+              icon={CalendarCheck}
+              tone="neutral"
+              title="Nada por aquí todavía"
+              description="Cuando tengas reservas en esta categoría, las verás en esta lista."
+            />
           )}
         </div>
       ) : (

@@ -128,7 +128,7 @@ export function OnboardingWizard() {
     try {
       await save.mutateAsync(payload);
       toast.success("Listo. Personalizamos Barranquilla para ti.");
-      router.replace("/");
+      router.replace("/home");
     } catch (e) {
       toast.error(e instanceof ApiError ? e.message : "No se pudo guardar.");
     }
@@ -138,7 +138,7 @@ export function OnboardingWizard() {
     try {
       await skip.mutateAsync();
       toast.info("Puedes completarlo más tarde desde tu perfil.");
-      router.replace("/");
+      router.replace("/home");
     } catch (e) {
       toast.error(e instanceof ApiError ? e.message : "No se pudo continuar.");
     }

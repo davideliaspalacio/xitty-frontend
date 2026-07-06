@@ -24,7 +24,7 @@ export function CategoryChips({
         {Array.from({ length: 6 }).map((_, i) => (
           <div
             key={i}
-            className="h-9 w-24 shrink-0 rounded-pill bg-[var(--bg-subtle)] animate-pulse"
+            className="h-11 w-24 shrink-0 animate-pulse rounded-pill bg-[var(--bg-subtle)]"
           />
         ))}
       </div>
@@ -39,7 +39,8 @@ export function CategoryChips({
         "flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 scroll-px-1",
         className,
       )}
-      role="tablist"
+      role="group"
+      aria-label="Filtrar por categoría"
     >
       <Chip
         active={selectedId === null}
@@ -70,13 +71,12 @@ function Chip({
   return (
     <button
       type="button"
-      role="tab"
-      aria-selected={active}
+      aria-pressed={active}
       onClick={onClick}
       className={cn(
-        "shrink-0 inline-flex items-center h-9 px-4 rounded-pill text-sm font-medium transition-all duration-150",
+        "inline-flex h-11 shrink-0 items-center rounded-pill px-4 text-sm font-semibold transition-all duration-150",
         active
-          ? "bg-[var(--text)] text-[var(--text-inverse)] border border-[var(--text)]"
+          ? "border border-[var(--ink)] bg-[var(--ink)] text-[var(--text-inverse)]"
           : "bg-[var(--surface)] text-[var(--text-muted)] border border-[var(--border)] hover:border-[var(--border-strong)] hover:text-[var(--text)]",
       )}
     >

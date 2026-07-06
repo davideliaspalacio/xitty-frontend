@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useOwnedPlace } from "@/features/places/hooks/use-owned-place";
+import { BusinessPlaceRequired } from "@/features/places/components/business-place-required";
 import { useMetricsSummary } from "@/features/metrics";
 import { usePromotionsForPlace } from "@/features/promotions";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/shared/ui/card";
@@ -33,14 +34,7 @@ export default function DashboardOverviewPage() {
   }
 
   if (!place) {
-    return (
-      <div className="rounded-lg border border-dashed border-[var(--border)] bg-[var(--bg-subtle)] px-6 py-16 text-center">
-        <h2 className="text-lg font-semibold mb-2">Aún no eres dueño de ningún lugar</h2>
-        <p className="text-sm text-[var(--text-muted)] mb-6 max-w-md mx-auto">
-          Contacta al equipo Xitty para registrar tu negocio en la plataforma.
-        </p>
-      </div>
-    );
+    return <BusinessPlaceRequired />;
   }
 
   const activePromosCount = (promos.data ?? []).filter(
@@ -68,7 +62,7 @@ export default function DashboardOverviewPage() {
       </Card>
 
       <section>
-        <h2 className="text-lg font-semibold tracking-tight mb-4">
+        <h2 className="text-lg font-semibold tracking-normal mb-4">
           Resumen últimos 30 días
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">

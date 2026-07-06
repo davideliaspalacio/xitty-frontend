@@ -29,12 +29,12 @@ function TodaySubCard({ item }: { item: RecommendationItem }) {
           className="absolute inset-0 opacity-50"
           style={{
             backgroundImage:
-              "linear-gradient(135deg, rgba(255,90,78,0.20) 0%, rgba(14,159,140,0.20) 100%)",
+              "linear-gradient(135deg, color-mix(in srgb, var(--accent) 20%, transparent) 0%, color-mix(in srgb, var(--secondary) 20%, transparent) 100%)",
           }}
         />
       </div>
       <div className="p-3 flex flex-col gap-1.5">
-        <h4 className="text-[14px] font-semibold tracking-tight line-clamp-1">
+        <h4 className="text-[14px] font-semibold tracking-normal line-clamp-1">
           {place.name}
         </h4>
         {reason ? (
@@ -54,7 +54,7 @@ function TodaySubCard({ item }: { item: RecommendationItem }) {
 function TodaySkeleton() {
   return (
     <div className="flex flex-col gap-4">
-      <Skeleton className="aspect-[4/3] sm:aspect-[16/9] min-h-[320px] sm:min-h-[440px] w-auto rounded-2xl" />
+      <Skeleton className="aspect-[4/3] min-h-[320px] w-auto rounded-lg sm:aspect-[16/9] sm:min-h-[440px]" />
       <div className="-mx-2 flex gap-3 overflow-x-auto px-2 pb-2">
         {Array.from({ length: 3 }).map((_, i) => (
           <div key={i} className="shrink-0 w-[220px] sm:w-[260px]">

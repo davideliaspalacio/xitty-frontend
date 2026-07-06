@@ -92,7 +92,7 @@ export default function PlaceDetailPage({
 
         <div className="flex items-start justify-between gap-4">
           <div className="flex flex-col gap-2 min-w-0">
-            <h1 className="text-[36px] sm:text-[44px] font-semibold leading-[1.05] tracking-[-0.02em]">
+            <h1 className="text-[36px] sm:text-[44px] font-semibold leading-[1.05] tracking-normal">
               {place.name}
             </h1>
             <div className="flex flex-wrap items-center gap-4 text-sm text-[var(--text-muted)]">
@@ -126,7 +126,7 @@ export default function PlaceDetailPage({
         <div className="flex flex-col gap-8 min-w-0">
           {place.description ? (
             <section>
-              <h2 className="text-xl font-semibold tracking-tight mb-3">
+              <h2 className="text-xl font-semibold tracking-normal mb-3">
                 Sobre el lugar
               </h2>
               <p className="text-[15px] leading-relaxed text-[var(--text)] whitespace-pre-wrap">
@@ -149,7 +149,7 @@ export default function PlaceDetailPage({
           ) : null}
 
           <section>
-            <h2 className="text-xl font-semibold tracking-tight mb-4">
+            <h2 className="text-xl font-semibold tracking-normal mb-4">
               Reseñas ({place.total_reviews})
             </h2>
             <div className="flex flex-col gap-6">

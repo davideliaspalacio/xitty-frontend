@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { toast } from "sonner";
 import { Sparkles, X } from "lucide-react";
 import { usePlaces } from "@/features/places";
@@ -16,7 +15,6 @@ import { Button } from "@/shared/ui/button";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { Input } from "@/shared/ui/input";
 import { Field } from "@/shared/ui/field";
-import { cn } from "@/shared/utils/cn";
 import { ApiError } from "@/lib/api/types";
 
 function DurationDialog({
@@ -57,13 +55,13 @@ function DurationDialog({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-sm bg-[var(--surface)] rounded-2xl shadow-[var(--shadow-3)] overflow-hidden"
+        className="w-full max-w-sm overflow-hidden rounded-xl bg-[var(--surface)] shadow-[var(--shadow-3)]"
         onClick={(e) => e.stopPropagation()}
       >
         <header className="flex items-start justify-between p-5 border-b border-[var(--border)]">
           <div>
             <p className="eyebrow">Patrocinar</p>
-            <h2 className="text-lg font-semibold tracking-tight">{placeName}</h2>
+            <h2 className="text-lg font-semibold tracking-normal">{placeName}</h2>
           </div>
           <button
             type="button"
@@ -192,7 +190,7 @@ export default function AdminSponsorshipsPage() {
       <div className="flex flex-col gap-6">
         <header className="flex flex-col gap-2">
           <p className="eyebrow">Admin</p>
-          <h1 className="text-[32px] font-semibold leading-[1.1] tracking-[-0.02em]">
+          <h1 className="text-[32px] font-semibold leading-[1.1] tracking-normal">
             Patrocinios
           </h1>
           <p className="text-[var(--text-muted)] text-[15px] max-w-2xl">

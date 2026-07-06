@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useOwnedPlace } from "@/features/places/hooks/use-owned-place";
+import { BusinessPlaceRequired } from "@/features/places/components/business-place-required";
 import {
   usePromotionsForPlace,
   useDeletePromotion,
@@ -23,7 +24,7 @@ export default function PromotionsAdminPage() {
   const [creating, setCreating] = useState(false);
 
   if (isLoading) return <Skeleton className="h-64 rounded-lg" />;
-  if (!place) return null;
+  if (!place) return <BusinessPlaceRequired />;
 
   async function handleDelete(p: Promotion) {
     if (!confirm(`¿Borrar "${p.title}"? Esta acción no se puede deshacer.`)) return;
@@ -88,11 +89,11 @@ export default function PromotionsAdminPage() {
           {list.map((p) => (
             <Card
               key={p.id}
-              className="flex items-start justify-between gap-4 p-5"
+              className="flex flex-col gap-4 p-5 sm:flex-row sm:items-start sm:justify-between"
             >
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
-                  <h3 className="text-base font-semibold tracking-tight">
+                  <h3 className="text-base font-semibold tracking-normal">
                     {p.title}
                   </h3>
                   {p.is_active ? (
@@ -120,14 +121,15 @@ export default function PromotionsAdminPage() {
                   {new Date(p.ends_at).toLocaleDateString("es-CO")}
                 </p>
               </div>
-              <div className="flex gap-1 shrink-0">
+              <div className="flex w-full gap-1 sm:w-auto sm:shrink-0">
                 <Button
                   variant="ghost"
                   size="icon"
                   aria-label="Editar"
                   onClick={() => setEditing(p)}
+                  className="flex-1 sm:flex-none"
                 >
-                  <Pencil className="h-4 w-4" />
+                  <Pencil className="h-4 w-4" aria-hidden="true" />
                 </Button>
                 <Button
                   variant="ghost"
@@ -135,8 +137,12 @@ export default function PromotionsAdminPage() {
                   aria-label="Borrar"
                   onClick={() => handleDelete(p)}
                   disabled={remove.isPending}
+                  className="flex-1 sm:flex-none"
                 >
-                  <Trash2 className="h-4 w-4 text-[var(--danger)]" />
+                  <Trash2
+                    className="h-4 w-4 text-[var(--danger)]"
+                    aria-hidden="true"
+                  />
                 </Button>
               </div>
             </Card>

@@ -87,7 +87,7 @@ export default async function MicrositePage({ params }: PageProps) {
         {/* Hero */}
         <section className="flex flex-col gap-5">
           <p className="eyebrow">{microsite.categories?.name ?? "Lugar"}</p>
-          <h1 className="text-[40px] sm:text-[56px] font-semibold leading-[1.02] tracking-[-0.025em]">
+          <h1 className="text-[40px] sm:text-[56px] font-semibold leading-[1.02] tracking-normal">
             {microsite.name}
           </h1>
           <div className="flex flex-wrap items-center gap-4 text-sm text-[var(--text-muted)]">
@@ -123,7 +123,7 @@ export default async function MicrositePage({ params }: PageProps) {
         {/* Active promotions */}
         {microsite.active_promotions.length > 0 ? (
           <section>
-            <h2 className="text-2xl font-semibold tracking-tight mb-4">
+            <h2 className="text-2xl font-semibold tracking-normal mb-4">
               Promociones activas
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -133,7 +133,7 @@ export default async function MicrositePage({ params }: PageProps) {
                   className="rounded-lg border border-[var(--accent-soft)] bg-[var(--accent-soft)]/30 p-5 flex flex-col gap-2"
                 >
                   <div className="flex items-start justify-between gap-3">
-                    <h3 className="text-base font-semibold tracking-tight">
+                    <h3 className="text-base font-semibold tracking-normal">
                       {p.title}
                     </h3>
                     {p.discount_percentage != null ? (
@@ -164,7 +164,7 @@ export default async function MicrositePage({ params }: PageProps) {
         {/* About */}
         {microsite.description ? (
           <section>
-            <h2 className="text-2xl font-semibold tracking-tight mb-3">
+            <h2 className="text-2xl font-semibold tracking-normal mb-3">
               Sobre {microsite.name}
             </h2>
             <p className="text-[15px] leading-relaxed whitespace-pre-wrap">

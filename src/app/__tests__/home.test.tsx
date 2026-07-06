@@ -77,7 +77,7 @@ vi.mock("next/link", () => ({
   ),
 }));
 
-import HomePage from "@/app/(app)/page";
+import HomePage from "@/app/(app)/home/page";
 
 describe("HomePage", () => {
   beforeEach(() => {

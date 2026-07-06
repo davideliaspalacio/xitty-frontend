@@ -26,6 +26,7 @@ export function Topbar() {
     e.preventDefault();
     const trimmed = q.trim();
     router.push(trimmed ? `/places?q=${encodeURIComponent(trimmed)}` : "/places");
+    setQ("");
   }
 
   const initials = (user?.full_name || user?.email || "?")
@@ -41,7 +42,7 @@ export function Topbar() {
       className="sticky top-0 z-40 flex items-center gap-4 border-b border-[var(--border)] bg-[var(--bg)]/85 backdrop-blur px-6"
     >
       {/* Logo — solo en mobile (en desktop vive en la Sidebar) */}
-      <Link href="/" aria-label="Ir al inicio" className="md:hidden shrink-0">
+      <Link href="/home" aria-label="Ir al inicio" className="md:hidden shrink-0">
         <Logo size="sm" />
       </Link>
 
@@ -49,13 +50,20 @@ export function Topbar() {
           (abajo) para no ahogar la barra en 390px. */}
       <form onSubmit={handleSearchSubmit} className="hidden md:block flex-1 max-w-xl">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-soft)]" />
+          <label htmlFor="topbar-search" className="sr-only">
+            Buscar lugares y experiencias
+          </label>
+          <Search
+            className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--text-muted)]"
+            aria-hidden="true"
+          />
           <input
+            id="topbar-search"
             type="search"
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Buscar lugares, experiencias…"
-            className="h-10 w-full rounded-md border border-[var(--border)] bg-[var(--bg-subtle)] pl-10 pr-3 text-base md:text-sm placeholder:text-[var(--text-soft)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/30 focus:border-[var(--accent)] focus:bg-[var(--surface)]"
+            className="h-11 w-full rounded-pill border border-[var(--border)] bg-[var(--bg-subtle)] pl-10 pr-4 text-base text-[var(--text)] placeholder:text-[var(--text-muted)] focus:border-[var(--accent)] focus:bg-[var(--surface)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/25 md:text-sm"
           />
         </div>
       </form>
@@ -72,12 +80,12 @@ export function Topbar() {
           className="md:hidden"
           onClick={() => router.push("/places")}
         >
-          <Search className="h-[18px] w-[18px]" />
+          <Search className="h-[18px] w-[18px]" aria-hidden="true" />
         </Button>
 
         {/* Campana: solo desde sm para no saturar mobile */}
         <Button variant="ghost" size="icon" aria-label="Notificaciones" className="hidden sm:inline-flex">
-          <Bell className="h-[18px] w-[18px]" />
+          <Bell className="h-[18px] w-[18px]" aria-hidden="true" />
         </Button>
 
         <span id="tour-sos" className="inline-flex">
@@ -88,7 +96,7 @@ export function Topbar() {
 
         <div className="flex items-center gap-3 pl-2">
           <div
-            className="h-9 w-9 rounded-full bg-[var(--accent-soft)] text-[var(--accent)] flex items-center justify-center text-xs font-semibold"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--accent-soft)] text-xs font-bold text-[var(--accent)]"
             aria-hidden
           >
             {initials}

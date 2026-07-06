@@ -70,7 +70,7 @@ export default function ExperienceDetailPage({
 
       <header className="flex flex-col gap-4">
         <p className="eyebrow">{exp.experience_type}</p>
-        <h1 className="text-[36px] sm:text-[44px] font-semibold leading-[1.05] tracking-[-0.02em]">
+        <h1 className="text-[36px] sm:text-[44px] font-semibold leading-[1.05] tracking-normal">
           {exp.title}
         </h1>
         <div className="flex flex-wrap items-center gap-4 text-sm text-[var(--text-muted)]">
@@ -97,7 +97,7 @@ export default function ExperienceDetailPage({
         <div className="flex flex-col gap-8 min-w-0">
           {exp.description ? (
             <section>
-              <h2 className="text-xl font-semibold tracking-tight mb-3">
+              <h2 className="text-xl font-semibold tracking-normal mb-3">
                 Sobre la experiencia
               </h2>
               <p className="text-[15px] leading-relaxed">{exp.description}</p>
@@ -118,7 +118,7 @@ export default function ExperienceDetailPage({
           ) : null}
 
           <section>
-            <h2 className="text-xl font-semibold tracking-tight mb-4">
+            <h2 className="text-xl font-semibold tracking-normal mb-4">
               Elige fecha y hora
             </h2>
             {slots.isLoading ? (

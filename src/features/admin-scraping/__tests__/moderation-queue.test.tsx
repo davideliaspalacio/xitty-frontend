@@ -279,7 +279,7 @@ describe("ModerationQueue", () => {
     // Por defecto consulta los pendientes.
     expect(mockedUseItems).toHaveBeenCalledWith({ status: "pending" });
 
-    await user.click(screen.getByRole("tab", { name: /aprobados/i }));
+    await user.click(screen.getByRole("button", { name: /aprobados/i }));
     expect(mockedUseItems).toHaveBeenCalledWith({ status: "approved" });
   });
 

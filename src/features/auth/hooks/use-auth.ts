@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { authApi } from "@/features/auth/api";
 import { useAuthStore } from "@/features/auth/store/auth-store";
@@ -73,8 +74,8 @@ export function useUpdateMe() {
 export function useLogout() {
   const logout = useAuthStore((s) => s.logout);
   const qc = useQueryClient();
-  return () => {
+  return useCallback(() => {
     logout();
     qc.clear();
-  };
+  }, [logout, qc]);
 }

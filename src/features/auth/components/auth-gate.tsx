@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore } from "@/features/auth/store/auth-store";
-import { useMe } from "@/features/auth/hooks/use-auth";
+import { useLogout, useMe } from "@/features/auth/hooks/use-auth";
 import { usePreferences } from "@/features/preferences/hooks/use-preferences";
 
 const EXEMPT_FROM_ONBOARDING = ["/onboarding"];
@@ -14,6 +14,7 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
   const accessToken = useAuthStore((s) => s.accessToken);
   const hydrated = useAuthStore((s) => s.hydrated);
   const setUser = useAuthStore((s) => s.setUser);
+  const logout = useLogout();
 
   const { data: me, error: meError } = useMe(!!accessToken);
   const { data: prefs } = usePreferences(!!accessToken);
@@ -35,6 +36,12 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
     if (me) setUser(me);
   }, [me, setUser]);
 
+  useEffect(() => {
+    if (!meError) return;
+    logout();
+    router.replace("/login?reason=session_expired");
+  }, [logout, meError, router]);
+
   // Send users without completed wizard to /onboarding (unless already there)
   useEffect(() => {
     if (!hydrated || !accessToken || !prefs || !pathname) return;
@@ -47,7 +54,9 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
   if (!hydrated || (!accessToken && hydrated)) {
     return (
       <div className="flex h-screen items-center justify-center text-sm text-[var(--text-muted)]">
-        Cargando…
+        <span role="status" aria-live="polite">
+          Cargando…
+        </span>
       </div>
     );
   }
@@ -55,7 +64,9 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
   if (meError) {
     return (
       <div className="flex h-screen items-center justify-center text-sm text-[var(--text-muted)]">
-        Sesión inválida — redirigiendo…
+        <span role="status" aria-live="assertive">
+          Sesión inválida. Redirigiendo…
+        </span>
       </div>
     );
   }

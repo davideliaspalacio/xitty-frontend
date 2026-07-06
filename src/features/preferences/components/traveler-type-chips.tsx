@@ -1,5 +1,7 @@
 "use client";
 
+import type { ComponentType } from "react";
+import { BriefcaseBusiness, Compass, Heart, Route, Users } from "lucide-react";
 import { cn } from "@/shared/utils/cn";
 import { usePreferences } from "@/features/preferences/hooks/use-preferences";
 import type { TravelerType } from "@/lib/api/types";
@@ -15,15 +17,15 @@ interface TravelerTypeChipsProps {
 interface ChipOption {
   value: TravelerType;
   label: string;
-  emoji: string;
+  icon: ComponentType<{ className?: string }>;
 }
 
 const OPTIONS: ChipOption[] = [
-  { value: "nomada", label: "Nómada", emoji: "🧭" },
-  { value: "pareja", label: "Pareja", emoji: "💞" },
-  { value: "familia", label: "Familia", emoji: "👨‍👩‍👧" },
-  { value: "negocios", label: "Negocios", emoji: "💼" },
-  { value: "excursion", label: "Excursión", emoji: "🥾" },
+  { value: "nomada", label: "Nómada", icon: Compass },
+  { value: "pareja", label: "Pareja", icon: Heart },
+  { value: "familia", label: "Familia", icon: Users },
+  { value: "negocios", label: "Negocios", icon: BriefcaseBusiness },
+  { value: "excursion", label: "Excursión", icon: Route },
 ];
 
 export function TravelerTypeChips({
@@ -51,6 +53,7 @@ export function TravelerTypeChips({
     >
       {OPTIONS.map((opt) => {
         const isActive = active === opt.value;
+        const Icon = opt.icon;
         return (
           <button
             key={opt.value}
@@ -59,17 +62,15 @@ export function TravelerTypeChips({
             onClick={() => onChange(isActive ? null : opt.value)}
             className={cn(
               "shrink-0 snap-start inline-flex items-center gap-1.5",
-              "rounded-full px-4 py-2 text-sm font-medium",
+              "min-h-11 rounded-pill px-4 py-2 text-sm font-semibold",
               "transition-all duration-150",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]/30",
               isActive
-                ? "bg-[var(--accent)] text-white border border-transparent shadow-[var(--shadow-1)]"
+                ? "bg-[var(--accent)] text-[var(--accent-fg)] border border-transparent shadow-[var(--shadow-1)]"
                 : "bg-[var(--surface,white)] text-[var(--text)] border border-[var(--border)] hover:border-[var(--border-strong)]",
             )}
           >
-            <span aria-hidden className="text-base leading-none">
-              {opt.emoji}
-            </span>
+            <Icon className="h-4 w-4" aria-hidden="true" />
             <span>{opt.label}</span>
           </button>
         );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { Plus, X } from "lucide-react";
 import { Button } from "@/shared/ui/button";
@@ -23,9 +23,17 @@ export function ExperienceReviewForm({
 }) {
   const accessToken = useAuthStore((s) => s.accessToken);
   const isEdit = !!myReview;
+  const reviewSource = [
+    myReview?.id ?? "new",
+    myReview?.rating ?? 0,
+    myReview?.comment ?? "",
+  ].join(":");
 
-  const [rating, setRating] = useState(myReview?.rating ?? 0);
-  const [comment, setComment] = useState(myReview?.comment ?? "");
+  const [reviewDraft, setReviewDraft] = useState(() => ({
+    source: reviewSource,
+    rating: myReview?.rating ?? 0,
+    comment: myReview?.comment ?? "",
+  }));
   const [photoUrls, setPhotoUrls] = useState<string[]>([]);
   const [showPhotos, setShowPhotos] = useState(false);
 
@@ -33,11 +41,30 @@ export function ExperienceReviewForm({
   const update = useUpdateExperienceReview(experienceId);
   const del = useDeleteExperienceReview(experienceId);
 
-  // Sync local state when the user's existing review resolves or changes.
-  useEffect(() => {
-    setRating(myReview?.rating ?? 0);
-    setComment(myReview?.comment ?? "");
-  }, [myReview?.id, myReview?.rating, myReview?.comment]);
+  const rating =
+    reviewDraft.source === reviewSource
+      ? reviewDraft.rating
+      : myReview?.rating ?? 0;
+  const comment =
+    reviewDraft.source === reviewSource
+      ? reviewDraft.comment
+      : myReview?.comment ?? "";
+
+  function setRating(next: number) {
+    setReviewDraft({
+      source: reviewSource,
+      rating: next,
+      comment,
+    });
+  }
+
+  function setComment(next: string) {
+    setReviewDraft({
+      source: reviewSource,
+      rating,
+      comment: next,
+    });
+  }
 
   if (!accessToken) {
     return (
@@ -88,8 +115,7 @@ export function ExperienceReviewForm({
   async function handleDelete() {
     try {
       await del.mutateAsync();
-      setRating(0);
-      setComment("");
+      setReviewDraft({ source: reviewSource, rating: 0, comment: "" });
       toast.success("Reseña eliminada");
     } catch (err) {
       toast.error(
@@ -107,14 +133,18 @@ export function ExperienceReviewForm({
         <RatingInput value={rating} onChange={setRating} disabled={busy} />
       </div>
 
+      <label htmlFor={`experience-review-comment-${experienceId}`} className="sr-only">
+        Comentario de la reseña
+      </label>
       <textarea
+        id={`experience-review-comment-${experienceId}`}
         value={comment}
         onChange={(e) => setComment(e.target.value)}
         placeholder="Comparte los detalles: el guía, el recorrido, lo que más te gustó (opcional)"
         rows={4}
         maxLength={2000}
         disabled={busy}
-        className="w-full rounded-md border border-[var(--border-strong)] bg-[var(--surface)] px-3.5 py-2.5 text-sm placeholder:text-[var(--text-soft)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/30 focus:border-[var(--accent)] resize-y disabled:opacity-60"
+        className="w-full resize-y rounded-lg border border-[var(--border-strong)] bg-[var(--surface)] px-3.5 py-2.5 text-base text-[var(--text)] placeholder:text-[var(--text-muted)] focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/25 disabled:opacity-60 sm:text-sm"
       />
 
       {!isEdit ? (
@@ -128,7 +158,7 @@ export function ExperienceReviewForm({
               }}
               className="inline-flex items-center gap-1.5 self-start text-xs font-medium text-[var(--accent)] hover:underline underline-offset-4"
             >
-              <Plus className="h-3.5 w-3.5" /> Agregar fotos (enlaces)
+              <Plus className="h-3.5 w-3.5" aria-hidden="true" /> Agregar fotos (enlaces)
             </button>
           ) : (
             <div className="flex flex-col gap-2 rounded-md border border-[var(--border)] bg-[var(--bg-subtle)] p-3">
@@ -156,7 +186,7 @@ export function ExperienceReviewForm({
                     className="shrink-0 text-[var(--text-soft)] hover:text-[var(--danger)] p-1"
                     aria-label="Quitar enlace"
                   >
-                    <X className="h-4 w-4" />
+                    <X className="h-4 w-4" aria-hidden="true" />
                   </button>
                 </div>
               ))}
@@ -166,7 +196,7 @@ export function ExperienceReviewForm({
                   onClick={() => setPhotoUrls([...photoUrls, ""])}
                   className="inline-flex items-center gap-1.5 self-start text-xs font-medium text-[var(--accent)] hover:underline underline-offset-4"
                 >
-                  <Plus className="h-3.5 w-3.5" /> Otro enlace
+                  <Plus className="h-3.5 w-3.5" aria-hidden="true" /> Otro enlace
                 </button>
               ) : null}
             </div>

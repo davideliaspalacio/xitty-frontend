@@ -21,7 +21,7 @@ export function Sidebar({ role = "user" }: { role?: Role }) {
         style={{ height: "var(--topbar-height)" }}
         className="flex items-center px-6 border-b border-[var(--border)]"
       >
-        <Link href="/" aria-label="Ir al inicio">
+        <Link href="/home" aria-label="Ir al inicio">
           <Logo size="md" />
         </Link>
       </div>
@@ -30,21 +30,21 @@ export function Sidebar({ role = "user" }: { role?: Role }) {
         <ul className="flex flex-col gap-0.5">
           {items.map(({ href, label, icon: Icon }) => {
             const active =
-              href === "/"
-                ? pathname === "/"
+              href === "/home"
+                ? pathname === "/home"
                 : pathname === href || pathname.startsWith(`${href}/`);
             return (
               <li key={href}>
                 <Link
                   href={href}
                   className={cn(
-                    "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
+                    "flex min-h-11 items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                     active
                       ? "bg-[var(--surface)] text-[var(--text)] shadow-[var(--shadow-1)]"
                       : "text-[var(--text-muted)] hover:bg-[var(--surface)] hover:text-[var(--text)]",
                   )}
                 >
-                  <Icon className="h-[18px] w-[18px]" />
+                  <Icon className="h-[18px] w-[18px]" aria-hidden="true" />
                   <span>{label}</span>
                 </Link>
               </li>

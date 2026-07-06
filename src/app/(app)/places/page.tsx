@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Search as SearchIcon, X } from "lucide-react";
 import { Input } from "@/shared/ui/input";
@@ -18,7 +18,12 @@ import type { PlaceSortBy } from "@/lib/api/types";
 export default function PlacesPage() {
   const params = useSearchParams();
   const initialQ = params.get("q") ?? "";
-  const [q, setQ] = useState(initialQ);
+  const [draftSearch, setDraftSearch] = useState(() => ({
+    source: initialQ,
+    value: initialQ,
+  }));
+  const q =
+    draftSearch.source === initialQ ? draftSearch.value : initialQ;
   const debouncedQ = useDebouncedValue(q, 300);
 
   const [categoryId, setCategoryId] = useState<string | null>(null);
@@ -63,7 +68,7 @@ export default function PlacesPage() {
     <div className="flex flex-col gap-6">
       <header className="flex flex-col gap-2">
         <p className="eyebrow">Directorio</p>
-        <h1 className="text-[32px] font-semibold leading-[1.1] tracking-[-0.02em]">
+        <h1 className="text-[32px] font-semibold leading-[1.1] tracking-normal text-[var(--text)]">
           Explora lugares en Barranquilla
         </h1>
         <p className="text-[var(--text-muted)] text-[15px] max-w-2xl">
@@ -73,22 +78,31 @@ export default function PlacesPage() {
       </header>
 
       <div className="relative">
-        <SearchIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-soft)]" />
+        <label htmlFor="places-search" className="sr-only">
+          Buscar lugares
+        </label>
+        <SearchIcon
+          className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[var(--text-muted)]"
+          aria-hidden="true"
+        />
         <Input
+          id="places-search"
           type="search"
           value={q}
-          onChange={(e) => setQ(e.target.value)}
+          onChange={(e) =>
+            setDraftSearch({ source: initialQ, value: e.target.value })
+          }
           placeholder="Buscar por nombre, tipo o palabra clave…"
-          className="h-12 pl-10 pr-10 text-[15px]"
+          className="h-12 rounded-pill pl-12 pr-12 text-base"
         />
         {q ? (
           <button
             type="button"
             aria-label="Limpiar"
-            onClick={() => setQ("")}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-soft)] hover:text-[var(--text)]"
+            onClick={() => setDraftSearch({ source: initialQ, value: "" })}
+            className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-pill text-[var(--text-muted)] hover:bg-[var(--surface-hover)] hover:text-[var(--text)]"
           >
-            <X className="h-4 w-4" />
+            <X className="h-4 w-4" aria-hidden="true" />
           </button>
         ) : null}
       </div>
@@ -110,7 +124,10 @@ export default function PlacesPage() {
       ) : (
         <div className="flex items-center justify-between border-y border-[var(--border)] py-3 text-sm text-[var(--text-muted)]">
           <span>
-            Resultados para <strong className="text-[var(--text)]">"{debouncedQ}"</strong>
+            Resultados para{" "}
+            <strong className="text-[var(--text)]">
+              &ldquo;{debouncedQ}&rdquo;
+            </strong>
           </span>
           {total > 0 ? (
             <span className="text-xs">{total} encontrados</span>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 
 import { useAuthStore } from "@/features/auth/store/auth-store";
 import { AuthGate } from "@/features/auth/components/auth-gate";
@@ -15,6 +16,9 @@ import { OnboardingTour } from "@/features/onboarding";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const role = useAuthStore((s) => s.user?.role) ?? "user";
+  const pathname = usePathname() ?? "";
+  const isOpsSurface =
+    pathname.startsWith("/dashboard") || pathname.startsWith("/admin");
 
   // Start the geo heartbeat — internally no-ops when the user is not authed or
   // tracking is disabled.
@@ -25,13 +29,13 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthGate>
-      <div className="min-h-screen flex bg-[var(--bg)]">
+      <div className="flex min-h-screen bg-[var(--bg)]">
         <Sidebar role={role} />
-        <div className="flex-1 flex flex-col min-w-0">
+        <div className="flex min-w-0 flex-1 flex-col">
           <Topbar />
           <main
             style={{ maxWidth: "var(--container-max)" }}
-            className="flex-1 px-4 py-5 sm:px-6 sm:py-8 md:px-10 w-full mx-auto pb-24 md:pb-10"
+            className="mx-auto w-full flex-1 px-4 py-5 pb-24 sm:px-6 sm:py-8 md:px-10 md:pb-10"
           >
             <LocationBanner />
             {children}
@@ -47,7 +51,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <ContextToast />
 
       {/* Floating chat FAB + panel, fixed bottom-right of the viewport. */}
-      <ChatBubble onClick={() => setChatOpen(true)} />
+      <ChatBubble
+        onClick={() => setChatOpen(true)}
+        className={isOpsSurface ? "max-md:hidden" : undefined}
+      />
       <ChatPanel
         open={chatOpen}
         onClose={() => setChatOpen(false)}

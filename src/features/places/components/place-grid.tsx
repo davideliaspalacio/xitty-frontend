@@ -1,7 +1,9 @@
 "use client";
 
+import { MapPinned } from "lucide-react";
 import { PlaceCard } from "./place-card";
 import { Skeleton } from "@/shared/ui/skeleton";
+import { EmptyState } from "@/shared/ui/empty-state";
 import { cn } from "@/shared/utils/cn";
 import type { PlaceCard as PlaceCardType } from "@/lib/api/types";
 
@@ -39,9 +41,11 @@ export function PlaceGrid({
 
   if (!places?.length) {
     return (
-      <div className="rounded-lg border border-dashed border-[var(--border)] bg-[var(--bg-subtle)] px-6 py-16 text-center">
-        <p className="text-sm text-[var(--text-muted)]">{emptyMessage}</p>
-      </div>
+      <EmptyState
+        icon={MapPinned}
+        title="No encontramos lugares"
+        description={emptyMessage}
+      />
     );
   }
 

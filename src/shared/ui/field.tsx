@@ -12,16 +12,40 @@ interface FieldProps {
 }
 
 export function Field({ label, htmlFor, error, hint, className, children }: FieldProps) {
+  const generatedId = React.useId();
+  const child = React.isValidElement<Record<string, unknown>>(children)
+    ? children
+    : null;
+  const childId =
+    typeof child?.props.id === "string" ? child.props.id : undefined;
+  const controlId = htmlFor ?? childId ?? generatedId;
+  const helpId = `${controlId}-help`;
+  const describedBy =
+    error || hint
+      ? [child?.props["aria-describedby"], helpId].filter(Boolean).join(" ")
+      : child?.props["aria-describedby"];
+  const control = child
+    ? React.cloneElement(child, {
+        id: controlId,
+        "aria-invalid": error ? true : child.props["aria-invalid"],
+        "aria-describedby": describedBy || undefined,
+      })
+    : children;
+
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
       {label ? (
-        <Label htmlFor={htmlFor}>{label}</Label>
+        <Label htmlFor={controlId}>{label}</Label>
       ) : null}
-      {children}
+      {control}
       {error ? (
-        <p className="text-xs text-[var(--danger)]">{error}</p>
+        <p id={helpId} className="text-xs font-medium text-[var(--danger)]">
+          {error}
+        </p>
       ) : hint ? (
-        <p className="text-xs text-[var(--text-soft)]">{hint}</p>
+        <p id={helpId} className="text-xs text-[var(--text-muted)]">
+          {hint}
+        </p>
       ) : null}
     </div>
   );

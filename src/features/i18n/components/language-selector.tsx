@@ -7,16 +7,15 @@ import { cn } from "@/shared/utils/cn";
 
 interface LangOption {
   value: Lang;
-  flag: string;
   label: string;
   code: string;
 }
 
 const OPTIONS: LangOption[] = [
-  { value: "es", flag: "🇪🇸", label: "Español", code: "ES" },
-  { value: "en", flag: "🇬🇧", label: "English", code: "EN" },
-  { value: "fr", flag: "🇫🇷", label: "Français", code: "FR" },
-  { value: "pt", flag: "🇧🇷", label: "Português", code: "PT" },
+  { value: "es", label: "Español", code: "ES" },
+  { value: "en", label: "English", code: "EN" },
+  { value: "fr", label: "Français", code: "FR" },
+  { value: "pt", label: "Português", code: "PT" },
 ];
 
 export function LanguageSelector({ className }: { className?: string }) {
@@ -64,15 +63,12 @@ export function LanguageSelector({ className }: { className?: string }) {
       <button
         type="button"
         aria-label="Cambiar idioma"
-        aria-haspopup="menu"
+        aria-haspopup="true"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
-        className="inline-flex h-9 items-center gap-2 rounded-md border border-[var(--border)] bg-[var(--bg-subtle)] px-2.5 text-sm text-[var(--text)] transition-colors hover:bg-[var(--surface-hover)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]/40"
+        className="inline-flex h-11 items-center gap-2 rounded-pill border border-[var(--border)] bg-[var(--bg-subtle)] px-3 text-sm font-semibold text-[var(--text)] transition-colors hover:bg-[var(--surface-hover)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]/40 sm:h-10"
       >
-        <Globe className="h-4 w-4 text-[var(--text-muted)]" />
-        <span aria-hidden className="text-base leading-none">
-          {current.flag}
-        </span>
+        <Globe className="h-4 w-4 text-[var(--text-muted)]" aria-hidden="true" />
         <span className="text-xs font-medium tracking-wide">{current.code}</span>
       </button>
 
@@ -80,7 +76,7 @@ export function LanguageSelector({ className }: { className?: string }) {
         <div
           role="menu"
           aria-label="Cambiar idioma"
-          className="absolute right-0 z-50 mt-2 min-w-[180px] overflow-hidden rounded-md border border-[var(--border)] bg-[var(--surface)] shadow-[var(--shadow-2)]"
+          className="absolute right-0 z-50 mt-2 min-w-[180px] overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--surface)] shadow-[var(--shadow-2)]"
         >
           {OPTIONS.map((opt) => {
             const selected = opt.value === lang;
@@ -92,21 +88,21 @@ export function LanguageSelector({ className }: { className?: string }) {
                 onClick={() => handleSelect(opt.value)}
                 aria-current={selected ? "true" : undefined}
                 className={cn(
-                  "flex w-full items-center gap-3 px-3 py-2 text-left text-sm transition-colors",
+                  "flex min-h-11 w-full items-center gap-3 px-3 py-2 text-left text-sm transition-colors",
                   selected
                     ? "bg-[var(--surface-hover)] text-[var(--text)]"
                     : "text-[var(--text-muted)] hover:bg-[var(--surface-hover)] hover:text-[var(--text)]",
                 )}
               >
-                <span aria-hidden className="text-base leading-none">
-                  {opt.flag}
-                </span>
                 <span className="flex-1">{opt.label}</span>
-                <span className="text-xs text-[var(--text-soft)]">
+                <span className="text-xs font-semibold text-[var(--text-muted)]">
                   {opt.code}
                 </span>
                 {selected ? (
-                  <Check className="h-3.5 w-3.5 text-[var(--accent)]" />
+                  <Check
+                    className="h-3.5 w-3.5 text-[var(--accent)]"
+                    aria-hidden="true"
+                  />
                 ) : null}
               </button>
             );

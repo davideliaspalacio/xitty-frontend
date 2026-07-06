@@ -33,12 +33,12 @@ export function TodayCard({ item, className }: TodayCardProps) {
       href={`/places/${place.id}`}
       aria-label={place.name}
       className={cn(
-        "group relative block overflow-hidden rounded-2xl",
+        "group relative block overflow-hidden rounded-lg",
         "aspect-[4/3] sm:aspect-[16/9]",
         "min-h-[320px] sm:min-h-[440px]",
         "bg-[var(--bg-subtle)]",
         "transition-transform duration-300 hover:-translate-y-0.5",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A4E] focus-visible:ring-offset-2",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 motion-reduce:transition-none motion-reduce:hover:translate-y-0",
         className,
       )}
     >
@@ -54,13 +54,12 @@ export function TodayCard({ item, className }: TodayCardProps) {
         />
       ) : null}
 
-      {/* Diagonal coral -> teal overlay at 30% */}
       <div
         aria-hidden="true"
         className="absolute inset-0"
         style={{
           backgroundImage:
-            "linear-gradient(135deg, rgba(255,90,78,0.30) 0%, rgba(14,159,140,0.30) 100%)",
+            "linear-gradient(135deg, color-mix(in srgb, var(--accent) 30%, transparent) 0%, color-mix(in srgb, var(--secondary) 30%, transparent) 100%)",
         }}
       />
 
@@ -75,15 +74,15 @@ export function TodayCard({ item, className }: TodayCardProps) {
         <span
           className={cn(
             "inline-flex items-center h-8 px-3 rounded-pill",
-            "bg-[#FFF7F0] text-[#1A1A1A]",
-            "border-[1.5px] border-[#1A1A1A]",
+            "bg-[var(--surface-warm)] text-[var(--ink)]",
+            "border-[1.5px] border-[var(--ink)]",
             "text-[11px] font-bold uppercase tracking-wider",
-            "shadow-[2px_2px_0_0_rgba(26,26,26,0.18)]",
+            "shadow-[2px_2px_0_var(--ink)]",
           )}
         >
           HOY · {today}
         </span>
-        <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/90 drop-shadow">
+        <span className="text-[10px] font-semibold uppercase tracking-wide text-white/90 drop-shadow">
           Para ti
         </span>
       </div>
@@ -91,7 +90,7 @@ export function TodayCard({ item, className }: TodayCardProps) {
       {/* Bottom block: title + reason + CTA */}
       <div className="absolute inset-x-4 bottom-4 flex items-end justify-between gap-4">
         <div className="min-w-0 flex flex-col gap-1.5 max-w-[70%]">
-          <h3 className="text-white text-2xl sm:text-3xl font-bold leading-tight tracking-tight line-clamp-2 drop-shadow">
+          <h3 className="text-white text-2xl sm:text-3xl font-bold leading-tight tracking-normal line-clamp-2 drop-shadow">
             {place.name}
           </h3>
           {reason ? (
@@ -104,14 +103,14 @@ export function TodayCard({ item, className }: TodayCardProps) {
         <span
           className={cn(
             "shrink-0 inline-flex items-center gap-1.5 h-10 px-4 rounded-pill",
-            "bg-[#FF5A4E] text-white",
+            "bg-[var(--accent)] text-[var(--accent-fg)]",
             "text-sm font-semibold",
-            "shadow-[0_6px_18px_-6px_rgba(255,90,78,0.55)]",
+            "shadow-[var(--shadow-flat)]",
             "transition-transform duration-200 group-hover:translate-x-0.5",
           )}
         >
           Ver el lugar
-          <ArrowRight className="h-4 w-4" />
+          <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </span>
       </div>
     </Link>

@@ -35,7 +35,7 @@ export default function AdminHomePage() {
       <div className="flex flex-col gap-6">
         <header className="flex flex-col gap-2">
           <p className="eyebrow">Admin</p>
-          <h1 className="text-[32px] font-semibold leading-[1.1] tracking-[-0.02em]">
+          <h1 className="text-[32px] font-semibold leading-[1.1] tracking-normal">
             Panel de administración
           </h1>
           <p className="text-[var(--text-muted)] text-[15px] max-w-2xl">
@@ -56,7 +56,7 @@ export default function AdminHomePage() {
                     <ArrowRight className="h-5 w-5 text-[var(--text-muted)] transition-transform group-hover:translate-x-1 group-hover:text-[var(--accent)]" />
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <h2 className="text-lg font-semibold tracking-tight">
+                    <h2 className="text-lg font-semibold tracking-normal">
                       {section.title}
                     </h2>
                     <p className="text-sm text-[var(--text-muted)]">

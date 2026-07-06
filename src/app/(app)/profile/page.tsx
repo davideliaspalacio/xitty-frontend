@@ -32,7 +32,7 @@ export default function ProfilePage() {
   function handleStartTour() {
     // El tour vive sobre el home; navegamos allí y lo lanzamos. El componente
     // <OnboardingTour/> (montado en el layout) espera a que el home se monte.
-    router.push("/");
+    router.push("/home");
     startTour();
   }
 
@@ -47,7 +47,7 @@ export default function ProfilePage() {
     <div className="flex flex-col gap-10 max-w-4xl">
       <header className="flex flex-col gap-2">
         <p className="eyebrow">Mi cuenta</p>
-        <h1 className="text-[34px] font-semibold leading-[1.1] tracking-[-0.02em] text-[var(--text)]">
+        <h1 className="text-[34px] font-semibold leading-[1.1] tracking-normal text-[var(--text)]">
           {user?.full_name ?? "Tu perfil"}
         </h1>
         <p className="text-[var(--text-muted)] text-[15px]">{user?.email}</p>

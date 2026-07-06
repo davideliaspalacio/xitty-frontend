@@ -53,16 +53,20 @@ export function ReviewForm({ placeId }: { placeId: string }) {
         <p className="text-sm font-medium mb-2">¿Cómo fue tu experiencia?</p>
         <RatingInput value={rating} onChange={setRating} />
       </div>
+      <label htmlFor={`review-comment-${placeId}`} className="sr-only">
+        Comentario de la reseña
+      </label>
       <textarea
+        id={`review-comment-${placeId}`}
         value={comment}
         onChange={(e) => setComment(e.target.value)}
         placeholder="Cuéntale a otros viajeros qué tal estuvo (opcional)"
         rows={4}
         maxLength={1000}
-        className="w-full rounded-md border border-[var(--border-strong)] bg-[var(--surface)] px-3.5 py-2.5 text-sm placeholder:text-[var(--text-soft)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/30 focus:border-[var(--accent)] resize-y"
+        className="w-full resize-y rounded-lg border border-[var(--border-strong)] bg-[var(--surface)] px-3.5 py-2.5 text-base text-[var(--text)] placeholder:text-[var(--text-muted)] focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/25 sm:text-sm"
       />
       <div className="flex items-center justify-between">
-        <p className="text-xs text-[var(--text-soft)]">{comment.length}/1000</p>
+        <p className="text-xs text-[var(--text-muted)]">{comment.length}/1000</p>
         <Button type="submit" loading={create.isPending} disabled={rating === 0}>
           Publicar reseña
         </Button>

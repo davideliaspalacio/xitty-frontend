@@ -40,7 +40,7 @@ export function VerifyEmailForm() {
     try {
       await verify.mutateAsync(values);
       toast.success("Cuenta verificada");
-      router.replace("/");
+      router.replace("/home");
     } catch (e) {
       const msg =
         e instanceof ApiError
