@@ -16,7 +16,7 @@ export function Logo({ className, size = "md" }: LogoProps) {
     <div className={cn("relative inline-flex items-center", className)}>
       <span
         className={cn(
-          "font-semibold tracking-[-0.04em] uppercase text-[var(--text)]",
+          "font-semibold tracking-normal uppercase text-[var(--text)]",
           sizes[size],
         )}
       >

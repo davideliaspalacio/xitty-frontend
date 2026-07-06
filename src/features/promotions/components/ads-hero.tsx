@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { cn } from "@/shared/utils/cn";
 import { useHeroPromotions } from "@/features/promotions/hooks/use-hero-promotions";
@@ -13,23 +13,25 @@ export function AdsHero() {
   const { data, isLoading } = useHeroPromotions();
   const trackImpression = useTrackImpression();
 
-  const items = data ?? [];
+  const items = useMemo(() => data ?? [], [data]);
   const [index, setIndex] = useState(0);
+  const safeIndex = items.length > 0 ? index % items.length : 0;
 
   // Rotate slides every 5s while there's more than one item.
   useEffect(() => {
     if (items.length < 2) return;
+    if (
+      typeof window !== "undefined" &&
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      return;
+    }
     const id = setInterval(() => {
       setIndex((i) => (i + 1) % items.length);
     }, ROTATE_MS);
     return () => clearInterval(id);
   }, [items.length]);
-
-  // If the underlying list shrinks, clamp the index so we never index out of range.
-  useEffect(() => {
-    if (items.length === 0) return;
-    if (index >= items.length) setIndex(0);
-  }, [index, items.length]);
 
   // Track impressions: fire once per slide per session as it enters the viewport.
   const rootRef = useRef<HTMLDivElement | null>(null);
@@ -47,7 +49,7 @@ export function AdsHero() {
         if (entry.target !== el) continue;
         isVisibleRef.current = entry.isIntersecting;
         if (entry.isIntersecting) {
-          const current = items[index];
+          const current = items[safeIndex];
           if (current && !trackedRef.current.has(current.id)) {
             trackedRef.current.add(current.id);
             trackImpression(current.id);
@@ -59,17 +61,17 @@ export function AdsHero() {
     io.observe(el);
     return () => io.disconnect();
     // Re-bind when items/index change so we capture the latest slide id.
-  }, [items, index, trackImpression]);
+  }, [items, safeIndex, trackImpression]);
 
   // When the active slide changes while we're visible, track the new one.
   useEffect(() => {
     if (!isVisibleRef.current) return;
-    const current = items[index];
+    const current = items[safeIndex];
     if (!current) return;
     if (trackedRef.current.has(current.id)) return;
     trackedRef.current.add(current.id);
     trackImpression(current.id);
-  }, [index, items, trackImpression]);
+  }, [safeIndex, items, trackImpression]);
 
   if (isLoading) {
     return (
@@ -81,7 +83,7 @@ export function AdsHero() {
 
   if (items.length === 0) return null;
 
-  const active = items[index] ?? items[0];
+  const active = items[safeIndex] ?? items[0];
   const placeId = active.places?.id ?? active.place_id;
   const placeName = active.places?.name ?? "";
   const photo = active.hero_image_url;

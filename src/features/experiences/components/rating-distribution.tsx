@@ -24,7 +24,7 @@ export function RatingDistributionPanel({
   return (
     <div className="flex flex-col sm:flex-row gap-6 sm:gap-8 rounded-lg border border-[var(--border)] bg-[var(--surface)] p-5">
       <div className="flex flex-col items-center justify-center text-center sm:w-40 shrink-0">
-        <p className="text-5xl font-semibold tracking-tight leading-none">
+        <p className="text-5xl font-semibold tracking-normal leading-none">
           {data.average.toFixed(1)}
         </p>
         <div className="mt-2">

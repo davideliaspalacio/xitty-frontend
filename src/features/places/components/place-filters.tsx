@@ -35,7 +35,9 @@ export function PlaceFilters({
       )}
     >
       <div className="flex items-center gap-2">
-        <span className="text-xs text-[var(--text-muted)] mr-1">Precio</span>
+        <span className="mr-1 text-xs font-semibold text-[var(--text-muted)]">
+          Precio
+        </span>
         {[1, 2, 3, 4].map((p) => {
           const active = priceRange === p;
           return (
@@ -45,9 +47,9 @@ export function PlaceFilters({
               onClick={() => onPriceRangeChange(active ? null : p)}
               aria-pressed={active}
               className={cn(
-                "h-8 px-3 rounded-pill text-xs font-medium border transition-all",
+                "h-11 rounded-pill border px-3 text-xs font-semibold transition-all sm:h-9",
                 active
-                  ? "bg-[var(--text)] text-[var(--text-inverse)] border-[var(--text)]"
+                  ? "border-[var(--ink)] bg-[var(--ink)] text-[var(--text-inverse)]"
                   : "bg-[var(--surface)] text-[var(--text-muted)] border-[var(--border)] hover:border-[var(--border-strong)] hover:text-[var(--text)]",
               )}
             >
@@ -58,12 +60,17 @@ export function PlaceFilters({
       </div>
 
       <label className="flex items-center gap-2 text-sm">
-        <ArrowUpDown className="h-4 w-4 text-[var(--text-muted)]" />
-        <span className="text-xs text-[var(--text-muted)]">Ordenar</span>
+        <ArrowUpDown
+          className="h-4 w-4 text-[var(--text-muted)]"
+          aria-hidden="true"
+        />
+        <span className="text-xs font-semibold text-[var(--text-muted)]">
+          Ordenar
+        </span>
         <select
           value={sortBy}
           onChange={(e) => onSortByChange(e.target.value as PlaceSortBy)}
-          className="h-8 rounded-md border border-[var(--border)] bg-[var(--surface)] px-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/30 focus:border-[var(--accent)]"
+          className="h-11 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 text-base text-[var(--text)] focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/25 sm:h-9 sm:text-sm"
         >
           {(Object.keys(sortLabels) as PlaceSortBy[]).map((k) => (
             <option key={k} value={k}>

@@ -110,7 +110,7 @@ export function ChatPanel({
           "h-[85vh]",
           "flex flex-col",
           "bg-[var(--surface)] text-[var(--text)]",
-          "rounded-t-2xl sm:rounded-2xl sm:mb-4",
+          "rounded-t-xl sm:rounded-xl sm:mb-4",
           "shadow-[var(--shadow-3)]",
           "overflow-hidden",
         )}
@@ -122,7 +122,7 @@ export function ChatPanel({
             className="h-10 w-10 rounded-full flex items-center justify-center text-white font-bold text-base shrink-0"
             style={{
               backgroundImage:
-                "linear-gradient(135deg, #FF5A4E 0%, #0E9F8C 100%)",
+                "linear-gradient(135deg, var(--accent) 0%, var(--secondary) 100%)",
             }}
           >
             Xi
@@ -201,18 +201,22 @@ export function ChatPanel({
           onSubmit={handleSubmit}
           className="border-t border-[var(--border)] p-3 flex items-end gap-2"
         >
+          <label htmlFor="xi-chat-message" className="sr-only">
+            Mensaje para Xi
+          </label>
           <textarea
+            id="xi-chat-message"
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Pregúntale a Xi…"
             rows={1}
             className={cn(
-              "flex-1 resize-none rounded-2xl px-4 py-2.5",
-              "bg-[var(--bg-subtle)] text-[var(--text)] placeholder:text-[var(--text-soft)]",
+              "flex-1 resize-none rounded-lg px-4 py-2.5",
+              "bg-[var(--bg-subtle)] text-[var(--text)] placeholder:text-[var(--text-muted)]",
               "border border-[var(--border)]",
               "focus:outline-none focus:border-[var(--accent)]",
-              "text-sm leading-relaxed",
+              "text-base leading-relaxed sm:text-sm",
               "max-h-32",
             )}
           />
@@ -221,17 +225,17 @@ export function ChatPanel({
             aria-label="Enviar"
             disabled={!draft.trim() || send.isPending}
             className={cn(
-              "shrink-0 h-10 w-10 rounded-full inline-flex items-center justify-center",
+              "inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full",
               "text-white",
               "disabled:opacity-40 disabled:pointer-events-none",
-              "transition-transform active:scale-95",
+              "transition-transform active:scale-95 motion-reduce:transition-none motion-reduce:active:scale-100",
             )}
             style={{
               backgroundImage:
-                "linear-gradient(135deg, #FF5A4E 0%, #0E9F8C 100%)",
+                "linear-gradient(135deg, var(--accent) 0%, var(--secondary) 100%)",
             }}
           >
-            <Send className="h-4 w-4" />
+            <Send className="h-4 w-4" aria-hidden="true" />
           </button>
         </form>
       </div>
@@ -252,13 +256,13 @@ function EmptyState({ onPick, disabled }: EmptyStateProps) {
         className="h-14 w-14 rounded-full flex items-center justify-center text-white"
         style={{
           backgroundImage:
-            "linear-gradient(135deg, #FF5A4E 0%, #0E9F8C 100%)",
+            "linear-gradient(135deg, var(--accent) 0%, var(--secondary) 100%)",
         }}
       >
-        <Sparkles className="h-6 w-6" />
+        <Sparkles className="h-6 w-6" aria-hidden="true" />
       </div>
       <div className="flex flex-col gap-1">
-        <h2 className="text-lg font-semibold tracking-tight">
+        <h2 className="text-lg font-semibold tracking-normal">
           Hola, soy Xi
         </h2>
         <p className="text-sm text-[var(--text-muted)] max-w-[280px]">
@@ -275,7 +279,7 @@ function EmptyState({ onPick, disabled }: EmptyStateProps) {
             onClick={() => onPick(q)}
             className={cn(
               "w-full text-left rounded-pill px-4 py-2.5",
-              "bg-[var(--cream)] text-[var(--cream-fg)]",
+              "bg-[var(--surface-warm)] text-[var(--ink)]",
               "border border-[var(--ink)]",
               "text-sm font-medium",
               "hover:bg-[var(--accent)] hover:text-[var(--accent-fg)] hover:border-[var(--accent)]",

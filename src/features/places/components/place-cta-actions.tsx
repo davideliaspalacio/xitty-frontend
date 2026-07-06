@@ -53,14 +53,29 @@ export function PlaceCtaActions({ place }: PlaceCtaActionsProps) {
   }
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+    <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
+      {place.reservation_url ? (
+        <a
+          href={place.reservation_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => track.mutate({ interaction_type: "reservation_click" })}
+          className={cn(
+            buttonVariants({ variant: "primary", size: "md" }),
+            "col-span-2 md:col-span-1",
+          )}
+        >
+          <CalendarCheck className="h-4 w-4" aria-hidden="true" /> Reservar
+        </a>
+      ) : null}
+
       {ctaPhone ? (
         <a
           href={`tel:${ctaPhone}`}
           onClick={() => track.mutate({ interaction_type: "call_click" })}
           className={cn(buttonVariants({ variant: "secondary", size: "md" }))}
         >
-          <Phone className="h-4 w-4" /> Llamar
+          <Phone className="h-4 w-4" aria-hidden="true" /> Llamar
         </a>
       ) : null}
 
@@ -72,7 +87,7 @@ export function PlaceCtaActions({ place }: PlaceCtaActionsProps) {
           onClick={() => track.mutate({ interaction_type: "whatsapp_click" })}
           className={cn(buttonVariants({ variant: "secondary", size: "md" }))}
         >
-          <MessageCircle className="h-4 w-4" /> WhatsApp
+          <MessageCircle className="h-4 w-4" aria-hidden="true" /> WhatsApp
         </a>
       ) : null}
 
@@ -84,19 +99,7 @@ export function PlaceCtaActions({ place }: PlaceCtaActionsProps) {
           onClick={() => track.mutate({ interaction_type: "directions_click" })}
           className={cn(buttonVariants({ variant: "secondary", size: "md" }))}
         >
-          <Navigation className="h-4 w-4" /> Cómo llegar
-        </a>
-      ) : null}
-
-      {place.reservation_url ? (
-        <a
-          href={place.reservation_url}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={() => track.mutate({ interaction_type: "reservation_click" })}
-          className={cn(buttonVariants({ variant: "primary", size: "md" }))}
-        >
-          <CalendarCheck className="h-4 w-4" /> Reservar
+          <Navigation className="h-4 w-4" aria-hidden="true" /> Cómo llegar
         </a>
       ) : null}
 
@@ -105,7 +108,7 @@ export function PlaceCtaActions({ place }: PlaceCtaActionsProps) {
         onClick={handleShare}
         className={cn(buttonVariants({ variant: "ghost", size: "md" }))}
       >
-        <Share2 className="h-4 w-4" /> Compartir
+        <Share2 className="h-4 w-4" aria-hidden="true" /> Compartir
       </button>
     </div>
   );

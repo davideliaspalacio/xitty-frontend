@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
+import { Compass, MapPin, Search, Sparkles } from "lucide-react";
 import { useAuthStore } from "@/features/auth/store/auth-store";
 import {
   useFeaturedCurrent,
@@ -11,7 +13,9 @@ import { useExperiences } from "@/features/experiences";
 import { HorizontalCarousel } from "@/shared/layout/horizontal-carousel";
 import { SectionHeader } from "@/shared/layout/section-header";
 import { Skeleton } from "@/shared/ui/skeleton";
-import { Button } from "@/shared/ui/button";
+import { Button, buttonVariants } from "@/shared/ui/button";
+import { Badge } from "@/shared/ui/badge";
+import { EmptyState } from "@/shared/ui/empty-state";
 import { RankingCard } from "@/features/discover/components/ranking-card";
 import { FeaturedCard } from "@/features/discover/components/featured-card";
 import { LocalPickCard } from "@/features/discover/components/local-pick-card";
@@ -28,7 +32,7 @@ function CarouselSkeletons() {
   return (
     <div className="flex gap-4 px-2">
       {Array.from({ length: 4 }).map((_, i) => (
-        <div key={i} className="shrink-0 w-[320px]">
+        <div key={i} className="w-[min(82vw,320px)] shrink-0">
           <Skeleton className="aspect-[4/3] w-full rounded-lg" />
           <div className="mt-3 flex flex-col gap-2">
             <Skeleton className="h-4 w-2/3" />
@@ -42,15 +46,19 @@ function CarouselSkeletons() {
 
 function EmptyMini({ message }: { message: string }) {
   return (
-    <div className="rounded-lg border border-dashed border-[var(--border)] bg-[var(--bg-subtle)] px-6 py-10 text-center">
-      <p className="text-sm text-[var(--text-muted)]">{message}</p>
-    </div>
+    <EmptyState
+      icon={Sparkles}
+      title="Estamos preparando esta sección"
+      description={message}
+      className="py-8"
+    />
   );
 }
 
 export default function HomePage() {
   const user = useAuthStore((s) => s.user);
   const name = user?.full_name?.split(" ")[0] ?? "Hola";
+  const [heroQuery, setHeroQuery] = useState("");
   const t = useT();
 
   const { travelerType, setTravelerType } = useTravelerFilter();
@@ -61,25 +69,87 @@ export default function HomePage() {
   const curated = useCurated({ limit: 12 });
 
   return (
-    <div className="flex flex-col space-y-12">
+    <div className="flex flex-col space-y-10 sm:space-y-12">
       {/* Greeting / hero */}
-      <header id="tour-hero" className="flex flex-col gap-3 max-w-3xl">
-        <p className="eyebrow">Hoy en Barranquilla</p>
-        <h1 className="text-[36px] sm:text-[44px] font-semibold leading-[1.05] tracking-[-0.02em]">
-          {t("home.greeting", { name })}
-        </h1>
-        <p className="text-[var(--text-muted)] text-[15px] leading-relaxed max-w-2xl">
-          Selección curada de lugares, destacados de la semana y experiencias
-          únicas en el Caribe colombiano.
-        </p>
-        <div className="mt-2 flex flex-wrap gap-3">
-          <Link href="/places">
-            <Button variant="primary">Explorar lugares</Button>
-          </Link>
-          <Link href="/experiences">
-            <Button variant="secondary">Ver experiencias</Button>
-          </Link>
+      <header
+        id="tour-hero"
+        className="grid gap-5 rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[var(--shadow-1)] sm:p-6 lg:grid-cols-[1fr_320px]"
+      >
+        <div className="flex min-w-0 flex-col gap-4">
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="eyebrow">Hoy en Barranquilla</p>
+            <Badge variant="secondary">
+              <MapPin className="h-3.5 w-3.5" aria-hidden="true" />
+              Caribe colombiano
+            </Badge>
+          </div>
+          <div className="max-w-3xl">
+            <h1 className="text-[34px] font-semibold leading-[1.05] tracking-normal text-[var(--text)] sm:text-[44px]">
+              {t("home.greeting", { name })}
+            </h1>
+            <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-[var(--text-muted)]">
+              Selección curada de lugares, destacados de la semana y
+              experiencias únicas para moverte por la ciudad con confianza.
+            </p>
+          </div>
+
+          <form
+            action="/places"
+            method="get"
+            className="flex flex-col gap-2 sm:max-w-2xl sm:flex-row"
+          >
+            <div className="relative min-w-0 flex-1">
+              <label htmlFor="home-search" className="sr-only">
+                Buscar en Barranquilla
+              </label>
+              <Search
+                className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[var(--text-muted)]"
+                aria-hidden="true"
+              />
+              <input
+                id="home-search"
+                name="q"
+                type="search"
+                value={heroQuery}
+                onChange={(e) => setHeroQuery(e.target.value)}
+                placeholder="Busca restaurantes, planes o barrios"
+                className="h-12 w-full rounded-pill border border-[var(--border-strong)] bg-[var(--bg)] pl-12 pr-4 text-base text-[var(--text)] placeholder:text-[var(--text-muted)] focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/25"
+              />
+            </div>
+            <Button type="submit" size="lg">
+              <Search className="h-4 w-4" aria-hidden="true" />
+              Buscar
+            </Button>
+          </form>
+
+          <div className="flex flex-wrap gap-2">
+            <Link href="/places" className={buttonVariants({ variant: "soft" })}>
+              Explorar lugares
+            </Link>
+            <Link
+              href="/experiences"
+              className={buttonVariants({ variant: "secondary" })}
+            >
+              Ver experiencias
+            </Link>
+          </div>
         </div>
+
+        <aside className="grid gap-3 rounded-lg bg-[var(--surface-mint)] p-4">
+          <Badge variant="secondary">Guía rápida</Badge>
+          <div className="grid gap-3">
+            <HeroCue
+              icon={Compass}
+              title="Plan del día"
+              description="Ideas según tu estilo, energía y tiempo disponible."
+            />
+            <HeroCue
+              icon={Sparkles}
+              title="Curaduría local"
+              description="Destacados, secretos y experiencias verificadas."
+            />
+          </div>
+        </aside>
       </header>
 
       {/* 1. Ads — promotional slot, no section header */}
@@ -208,6 +278,33 @@ export default function HomePage() {
           <EmptyMini message="Los locales aún no han compartido sus secretos esta semana." />
         )}
       </section>
+    </div>
+  );
+}
+
+function HeroCue({
+  icon: Icon,
+  title,
+  description,
+}: {
+  icon: typeof Compass;
+  title: string;
+  description: string;
+}) {
+  return (
+    <div className="flex gap-3 rounded-lg bg-[var(--surface)] p-3 shadow-[var(--shadow-1)]">
+      <span
+        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-pill bg-[var(--accent-soft)] text-[var(--accent)]"
+        aria-hidden="true"
+      >
+        <Icon className="h-5 w-5" />
+      </span>
+      <div className="min-w-0">
+        <p className="text-sm font-semibold text-[var(--text)]">{title}</p>
+        <p className="text-xs leading-relaxed text-[var(--text-muted)]">
+          {description}
+        </p>
+      </div>
     </div>
   );
 }

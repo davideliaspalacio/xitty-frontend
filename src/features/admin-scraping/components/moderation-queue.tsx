@@ -112,16 +112,15 @@ export function ModerationQueue({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <div role="tablist" aria-label="Filtrar por estado" className="flex flex-wrap gap-1.5">
+        <div role="group" aria-label="Filtrar por estado" className="flex flex-wrap gap-1.5">
           {STATUS_FILTERS.map((f) => (
             <button
               key={f.id}
               type="button"
-              role="tab"
-              aria-selected={status === f.id}
+              aria-pressed={status === f.id}
               onClick={() => setStatus(f.id)}
               className={cn(
-                "h-8 px-3 rounded-pill text-xs font-medium border transition-colors",
+                "min-h-11 rounded-pill border px-3 text-xs font-semibold transition-colors sm:min-h-9",
                 status === f.id
                   ? "bg-[var(--accent)] text-[var(--accent-fg)] border-[var(--accent)]"
                   : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--text)] hover:border-[var(--border-strong)]",
@@ -138,7 +137,7 @@ export function ModerationQueue({
             onClick={handlePublishAll}
             loading={publishingAll}
           >
-            <Upload className="h-4 w-4" /> Publicar todos ({publishable.length})
+            <Upload className="h-4 w-4" aria-hidden="true" /> Publicar todos ({publishable.length})
           </Button>
         ) : null}
       </div>
@@ -177,7 +176,7 @@ export function ModerationQueue({
                 <header className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="text-base font-semibold tracking-tight truncate">
+                      <h3 className="text-base font-semibold tracking-normal truncate">
                         {item.title}
                       </h3>
                       {item.category_hint ? (
@@ -207,7 +206,7 @@ export function ModerationQueue({
                           rel="noreferrer"
                           className="inline-flex items-center gap-1 hover:text-[var(--accent)]"
                         >
-                          Fuente <ExternalLink className="h-3 w-3" />
+                          Fuente <ExternalLink className="h-3 w-3" aria-hidden="true" />
                         </a>
                       ) : null}
                     </div>
@@ -229,7 +228,7 @@ export function ModerationQueue({
                       onClick={() => handlePublish(item)}
                       loading={publish.isPending}
                     >
-                      <Upload className="h-4 w-4" /> Publicar
+                      <Upload className="h-4 w-4" aria-hidden="true" /> Publicar
                     </Button>
                   ) : null}
                   {canEdit ? (
@@ -238,7 +237,7 @@ export function ModerationQueue({
                       variant="secondary"
                       onClick={() => setEditingItem(item)}
                     >
-                      <Pencil className="h-4 w-4" /> Editar
+                      <Pencil className="h-4 w-4" aria-hidden="true" /> Editar
                     </Button>
                   ) : null}
                   {canReject ? (
@@ -248,16 +247,15 @@ export function ModerationQueue({
                       onClick={() => handleReject(item)}
                       loading={reject.isPending}
                     >
-                      <Trash2 className="h-4 w-4" /> Rechazar
+                      <Trash2 className="h-4 w-4" aria-hidden="true" /> Rechazar
                     </Button>
                   ) : null}
 
                   {item.status === "published" ? (
                     <span
-                      className="inline-flex items-center gap-1 text-xs font-medium"
-                      style={{ color: "#0E9F8C" }}
+                      className="inline-flex items-center gap-1 text-xs font-medium text-[var(--success)]"
                     >
-                      <Check className="h-4 w-4" /> Publicado
+                      <Check className="h-4 w-4" aria-hidden="true" /> Publicado
                     </span>
                   ) : null}
                   {item.status === "published" && publishedHref ? (
@@ -265,7 +263,7 @@ export function ModerationQueue({
                       href={publishedHref}
                       className="inline-flex items-center gap-1 text-xs text-[var(--accent)] hover:underline"
                     >
-                      Ver publicado <ExternalLink className="h-3 w-3" />
+                      Ver publicado <ExternalLink className="h-3 w-3" aria-hidden="true" />
                     </Link>
                   ) : null}
                   {item.status === "rejected" ? (

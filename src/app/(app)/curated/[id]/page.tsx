@@ -29,7 +29,7 @@ export default function CuratedDetailPage() {
   return (
     <div className="flex flex-col gap-6 max-w-3xl mx-auto">
       <Link
-        href="/"
+        href="/home"
         className="inline-flex items-center gap-1 self-start text-sm text-[var(--text-muted)] hover:text-[var(--text)] transition-colors"
       >
         <ArrowLeft className="h-4 w-4" aria-hidden="true" /> Volver a Descubre
@@ -37,7 +37,7 @@ export default function CuratedDetailPage() {
 
       {isLoading ? (
         <div className="flex flex-col gap-6">
-          <Skeleton className="aspect-[16/9] w-full rounded-2xl" />
+          <Skeleton className="aspect-[16/9] w-full rounded-lg" />
           <Skeleton className="h-9 w-2/3 rounded-md" />
           <Skeleton className="h-24 w-full rounded-md" />
         </div>
@@ -47,7 +47,7 @@ export default function CuratedDetailPage() {
           <p className="text-sm text-[var(--text-muted)] max-w-sm">
             Puede que ya no esté disponible o que el enlace haya cambiado.
           </p>
-          <Link href="/" className="text-sm font-medium text-[var(--accent)] hover:underline">
+          <Link href="/home" className="text-sm font-medium text-[var(--accent)] hover:underline">
             Volver al inicio
           </Link>
         </Card>

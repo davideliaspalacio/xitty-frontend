@@ -30,7 +30,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <div className="flex flex-col gap-8">
         <header className="flex flex-col gap-1">
           <p className="eyebrow">Mi negocio</p>
-          <h1 className="text-[28px] font-semibold tracking-[-0.02em]">
+          <h1 className="text-[28px] font-semibold tracking-normal">
             Dashboard
           </h1>
         </header>
@@ -40,7 +40,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="relative border-b border-[var(--border)]">
           <nav
             className="flex gap-1 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-            role="tablist"
+            aria-label="Secciones del dashboard"
           >
             {tabs.map(({ href, label, icon: Icon, exact }) => {
               const active = exact ? pathname === href : pathname.startsWith(href);
@@ -49,13 +49,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   key={href}
                   href={href}
                   className={cn(
-                    "inline-flex shrink-0 items-center gap-2 whitespace-nowrap px-3 py-3 text-sm font-medium border-b-2 transition-colors -mb-px",
+                    "inline-flex min-h-11 shrink-0 items-center gap-2 whitespace-nowrap border-b-2 px-3 py-3 text-sm font-semibold transition-colors -mb-px",
                     active
                       ? "border-[var(--accent)] text-[var(--text)]"
                       : "border-transparent text-[var(--text-muted)] hover:text-[var(--text)]",
                   )}
                 >
-                  <Icon className="h-4 w-4" />
+                  <Icon className="h-4 w-4" aria-hidden="true" />
                   {label}
                 </Link>
               );

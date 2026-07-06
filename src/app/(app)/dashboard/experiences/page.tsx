@@ -89,7 +89,7 @@ export default function DashboardExperiencesPage() {
               <Card className="flex items-start justify-between gap-4 p-5">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <h3 className="text-base font-semibold tracking-tight truncate">
+                    <h3 className="text-base font-semibold tracking-normal truncate">
                       {exp.title}
                     </h3>
                     <span className="inline-flex items-center h-5 px-2 rounded-pill text-[10px] font-semibold uppercase bg-[var(--bg-subtle)] text-[var(--text-muted)]">

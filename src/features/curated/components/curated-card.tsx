@@ -34,7 +34,7 @@ export function CuratedCard({ item, className }: CuratedCardProps) {
   return (
     <article
       className={cn(
-        "group relative shrink-0 w-[280px] sm:w-[320px] flex flex-col rounded-2xl border border-[var(--border)] bg-[var(--surface)] overflow-hidden transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[var(--shadow-flat)] hover:border-[var(--ink)]",
+        "group relative flex w-[280px] shrink-0 flex-col overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--surface)] shadow-[var(--shadow-1)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--ink)] hover:shadow-[var(--shadow-flat)] motion-reduce:hover:translate-y-0 sm:w-[320px]",
         className,
       )}
     >
@@ -60,7 +60,7 @@ export function CuratedCard({ item, className }: CuratedCardProps) {
         </div>
 
         <div className="p-4 flex flex-col gap-2">
-          <h3 className="text-[15px] font-semibold tracking-tight line-clamp-2 leading-snug">
+          <h3 className="text-[15px] font-semibold tracking-normal line-clamp-2 leading-snug">
             {item.title}
           </h3>
 

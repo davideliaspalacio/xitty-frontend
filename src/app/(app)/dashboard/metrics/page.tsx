@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Bar,
   BarChart,
@@ -12,6 +12,7 @@ import {
   YAxis,
 } from "recharts";
 import { useOwnedPlace } from "@/features/places/hooks/use-owned-place";
+import { BusinessPlaceRequired } from "@/features/places/components/business-place-required";
 import { useMetricsSummary, useMetricsTimeseries } from "@/features/metrics";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Skeleton } from "@/shared/ui/skeleton";
@@ -23,24 +24,39 @@ const RANGES = [
   { label: "90 días", days: 90 },
 ];
 
-function isoDaysAgo(d: number) {
-  const date = new Date();
+function isoDaysAgo(d: number, now = new Date()) {
+  const date = new Date(now);
   date.setDate(date.getDate() - d);
   date.setHours(0, 0, 0, 0);
   return date.toISOString();
 }
 
 export default function MetricsPage() {
-  const { data: place } = useOwnedPlace();
+  const { data: place, isLoading: placeLoading } = useOwnedPlace();
   const [days, setDays] = useState(30);
-  const from = isoDaysAgo(days);
-  const to = new Date().toISOString();
+  const range = useMemo(() => {
+    const now = new Date();
+    return {
+      from: isoDaysAgo(days, now),
+      to: now.toISOString(),
+      granularity: days > 60 ? "week" : "day",
+    } as const;
+  }, [days]);
 
-  const summary = useMetricsSummary(place?.id, from, to);
-  const series = useMetricsTimeseries(place?.id, from, to, days > 60 ? "week" : "day");
+  const summary = useMetricsSummary(place?.id, range.from, range.to);
+  const series = useMetricsTimeseries(
+    place?.id,
+    range.from,
+    range.to,
+    range.granularity,
+  );
+
+  if (placeLoading) {
+    return <Skeleton className="h-64 rounded-lg" />;
+  }
 
   if (!place) {
-    return <Skeleton className="h-64 rounded-lg" />;
+    return <BusinessPlaceRequired />;
   }
 
   const chartData =
@@ -59,21 +75,22 @@ export default function MetricsPage() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between flex-wrap gap-2">
         <div>
-          <p className="eyebrow">Period</p>
-          <h2 className="text-lg font-semibold tracking-tight">
+          <p className="eyebrow">Periodo</p>
+          <h2 className="text-lg font-semibold tracking-normal">
             Últimos {days} días
           </h2>
         </div>
-        <div className="flex gap-1">
+        <div className="flex gap-1 overflow-x-auto">
           {RANGES.map((r) => (
             <button
               key={r.days}
               type="button"
               onClick={() => setDays(r.days)}
+              aria-pressed={days === r.days}
               className={
-                "h-8 px-3 rounded-pill text-xs font-medium border transition-all " +
+                "h-11 px-3 rounded-pill text-xs font-semibold border transition-all sm:h-9 " +
                 (days === r.days
-                  ? "bg-[var(--text)] text-[var(--text-inverse)] border-[var(--text)]"
+                  ? "bg-[var(--ink)] text-[var(--text-inverse)] border-[var(--ink)]"
                   : "bg-[var(--surface)] text-[var(--text-muted)] border-[var(--border)] hover:border-[var(--border-strong)] hover:text-[var(--text)]")
               }
             >
@@ -82,6 +99,11 @@ export default function MetricsPage() {
           ))}
         </div>
       </div>
+      {summary.isFetching || series.isFetching ? (
+        <p className="text-xs font-medium text-[var(--text-muted)]" role="status">
+          Actualizando métricas…
+        </p>
+      ) : null}
 
       {/* KPI grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">

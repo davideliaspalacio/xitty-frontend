@@ -23,14 +23,14 @@ export function BottomNav({ role = "user" }: { role?: Role }) {
       className={cn(
         "md:hidden fixed bottom-0 inset-x-0 z-40",
         "flex items-stretch",
-        "border-t border-[var(--border)] bg-[var(--bg)]/95 backdrop-blur",
+        "border-t border-[var(--border)] bg-[var(--bg)]/96 shadow-[var(--shadow-2)] backdrop-blur",
         "pb-[env(safe-area-inset-bottom)]",
       )}
     >
       {items.map(({ href, label, icon: Icon }) => {
         const active =
-          href === "/"
-            ? pathname === "/"
+          href === "/home"
+            ? pathname === "/home"
             : pathname === href || pathname.startsWith(`${href}/`);
         return (
           <Link
@@ -38,14 +38,14 @@ export function BottomNav({ role = "user" }: { role?: Role }) {
             href={href}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "flex-1 flex flex-col items-center justify-center gap-0.5 h-16 min-w-0",
-              "text-[10px] font-medium transition-colors",
+              "flex h-16 min-w-0 flex-1 flex-col items-center justify-center gap-0.5",
+              "text-[10px] font-semibold transition-colors",
               active
                 ? "text-[var(--accent)]"
                 : "text-[var(--text-muted)] active:text-[var(--text)]",
             )}
           >
-            <Icon className="h-[22px] w-[22px] shrink-0" />
+            <Icon className="h-[22px] w-[22px] shrink-0" aria-hidden="true" />
             <span className="truncate max-w-full px-1">{label}</span>
           </Link>
         );

@@ -15,50 +15,51 @@ import { TOUR_STEPS, type TourStep } from "@/features/onboarding/lib/tour-steps"
  */
 const TOUR_STYLES = `
 .xitty-tour-popover.driver-popover {
-  background: var(--surface, #ffffff);
-  color: var(--text, #111827);
-  border-radius: 18px;
-  box-shadow: 0 18px 48px -12px rgba(0,0,0,0.35);
+  background: var(--surface);
+  color: var(--text);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-3);
   max-width: 340px;
   padding: 20px;
 }
 .xitty-tour-popover .driver-popover-title {
   font-size: 18px;
   font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--text, #111827);
+  letter-spacing: 0;
+  color: var(--text);
 }
 .xitty-tour-popover .driver-popover-description {
   font-size: 14px;
   line-height: 1.55;
-  color: var(--text-muted, #6a6a6a);
+  color: var(--text-muted);
 }
 .xitty-tour-popover .driver-popover-progress-text {
   font-size: 12px;
   font-weight: 600;
-  color: var(--accent, #ff5a4e);
+  color: var(--accent);
 }
 .xitty-tour-popover .driver-popover-footer button {
   text-shadow: none;
   border-radius: 9999px;
   font-weight: 600;
   font-size: 13px;
+  min-height: 44px;
 }
 .xitty-tour-popover .driver-popover-next-btn {
-  background: var(--accent, #ff5a4e);
-  color: var(--accent-fg, #ffffff);
+  background: var(--accent);
+  color: var(--accent-fg);
   border: none;
 }
 .xitty-tour-popover .driver-popover-next-btn:hover {
-  background: var(--accent-hover, #e5483c);
+  background: var(--accent-hover);
 }
 .xitty-tour-popover .driver-popover-prev-btn {
   background: transparent;
-  color: var(--text-muted, #6a6a6a);
-  border: 1px solid var(--border, #e8e8e8);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
 }
 .xitty-tour-popover .driver-popover-arrow {
-  color: var(--surface, #ffffff);
+  color: var(--surface);
 }
 .xitty-tour-controls {
   display: flex;
@@ -71,11 +72,12 @@ const TOUR_STYLES = `
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  min-height: 44px;
   padding: 7px 12px;
   border-radius: 9999px;
-  border: 1px solid var(--accent, #ff5a4e);
-  background: var(--accent-soft, #ffe3df);
-  color: var(--accent, #ff5a4e);
+  border: 1px solid var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -87,15 +89,22 @@ const TOUR_STYLES = `
 .xitty-tour-skip-btn {
   background: transparent;
   border: none;
-  color: var(--text-muted, #6a6a6a);
+  color: var(--text-muted);
   font-size: 12px;
   font-weight: 600;
   text-decoration: underline;
   cursor: pointer;
+  min-height: 44px;
   padding: 4px;
 }
 .xitty-tour-skip-btn:hover {
-  color: var(--text, #111827);
+  color: var(--text);
+}
+@media (prefers-reduced-motion: reduce) {
+  .xitty-tour-popover * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
 }
 `;
 
@@ -237,7 +246,7 @@ export function OnboardingTour() {
       stagePadding: 6,
       stageRadius: 12,
       popoverClass: "xitty-tour-popover",
-      overlayColor: "#000000",
+      overlayColor: "var(--ink)",
       overlayOpacity: 0.6,
       onHighlighted: () => {
         // Auto-narra al avanzar de paso si la voz quedó activa.
@@ -263,7 +272,7 @@ export function OnboardingTour() {
     driverRef.current = d;
 
     // El ancla del primer paso solo existe en el home. Si el usuario relanza el
-    // tour desde otra vista (p. ej. /profile navega a "/"), esperamos a que el
+    // tour desde otra vista (p. ej. /profile navega a "/home"), esperamos a que el
     // home se monte antes de arrancar — con reintentos acotados.
     let attempts = 0;
     let startTimer: ReturnType<typeof setTimeout> | undefined;

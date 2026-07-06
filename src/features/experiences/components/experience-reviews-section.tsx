@@ -40,7 +40,7 @@ export function ExperienceReviewsSection({
 
   return (
     <section className="flex flex-col gap-6">
-      <h2 className="text-xl font-semibold tracking-tight">
+      <h2 className="text-xl font-semibold tracking-normal">
         Reseñas {total > 0 ? `(${total})` : ""}
       </h2>
 

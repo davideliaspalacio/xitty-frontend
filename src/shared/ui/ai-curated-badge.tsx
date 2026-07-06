@@ -5,16 +5,16 @@ import { cn } from "@/shared/utils/cn";
 
 /**
  * Sticker-style pill used to flag AI-curated content across the app.
- * 24px tall, cream + ink border to match the editorial sticker layer
+ * 24px tall, warm surface + ink border to match the sticker layer
  * already used by experience/place cards.
  */
 const aiCuratedBadgeVariants = cva(
-  "inline-flex h-6 items-center gap-1 rounded-pill px-2 text-[11px] font-semibold leading-none tracking-tight whitespace-nowrap",
+  "inline-flex h-6 items-center gap-1 rounded-pill px-2 text-[11px] font-semibold leading-none tracking-normal whitespace-nowrap",
   {
     variants: {
       variant: {
         solid:
-          "bg-[var(--cream)] text-[var(--ink)] border border-[var(--ink)]",
+          "bg-[var(--surface-warm)] text-[var(--ink)] border border-[var(--ink)]",
         outline:
           "bg-transparent text-[var(--accent)] border border-[var(--accent)]",
       },

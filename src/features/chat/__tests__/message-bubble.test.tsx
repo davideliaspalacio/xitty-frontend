@@ -32,7 +32,7 @@ describe("MessageBubble", () => {
     expect(bubble.className).toMatch(/text-white|--accent-fg/);
   });
 
-  it("applies assistant styling (cream bg + ink border, left-aligned) for role=assistant", () => {
+  it("applies assistant styling (warm bg + ink border, left-aligned) for role=assistant", () => {
     const { container } = render(
       <MessageBubble
         message={makeMessage({ role: "assistant", content: "Hola humano" })}
@@ -43,8 +43,7 @@ describe("MessageBubble", () => {
 
     const bubble = screen.getByTestId("message-bubble");
     expect(bubble.getAttribute("data-role")).toBe("assistant");
-    // cream bg via inline class or var
-    expect(bubble.className).toMatch(/cream|--cream/);
+    expect(bubble.className).toMatch(/--surface-warm/);
   });
 
   it("renders inline markdown bold as <strong>", () => {

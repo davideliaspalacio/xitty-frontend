@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import type { TravelerType } from "@/lib/api/types";
 import { usePreferences } from "@/features/preferences/hooks/use-preferences";
 
@@ -53,8 +53,6 @@ export function useTravelerFilter() {
   const prefs = usePreferences();
   const prefsTraveler = prefs.data?.traveler_type ?? null;
 
-  // Initialise from sessionStorage; if none, fall back to the preferences value
-  // once it has loaded.
   const [travelerType, setTravelerTypeState] = useState<TravelerType | null>(
     () => readSession(),
   );
@@ -62,20 +60,14 @@ export function useTravelerFilter() {
     () => readSession() !== null,
   );
 
-  // When preferences arrive, hydrate the filter only if there is no
-  // explicit session override yet.
-  useEffect(() => {
-    if (hasSessionValue) return;
-    if (prefsTraveler && travelerType !== prefsTraveler) {
-      setTravelerTypeState(prefsTraveler);
-    }
-  }, [prefsTraveler, hasSessionValue, travelerType]);
-
   const setTravelerType = useCallback((next: TravelerType | null) => {
     setTravelerTypeState(next);
     setHasSessionValue(next !== null);
     writeSession(next);
   }, []);
 
-  return { travelerType, setTravelerType };
+  return {
+    travelerType: hasSessionValue ? travelerType : travelerType ?? prefsTraveler,
+    setTravelerType,
+  };
 }

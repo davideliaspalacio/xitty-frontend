@@ -1,5 +1,6 @@
 "use client";
 
+import { useSyncExternalStore } from "react";
 import Link from "next/link";
 import { Calendar, Users, MapPin } from "lucide-react";
 import { toast } from "sonner";
@@ -25,8 +26,21 @@ const statusColor: Record<string, string> = {
   completed: "bg-[var(--info)]/20 text-[var(--info)]",
 };
 
+const subscribeToMinute = (onStoreChange: () => void) => {
+  const id = window.setInterval(onStoreChange, 60_000);
+  return () => window.clearInterval(id);
+};
+
+const getCurrentTime = () => Date.now();
+const getServerTime = () => 0;
+
 export function ReservationCard({ reservation }: { reservation: Reservation }) {
   const cancel = useCancelReservation();
+  const now = useSyncExternalStore(
+    subscribeToMinute,
+    getCurrentTime,
+    getServerTime,
+  );
   const exp = reservation.experience;
   const slot = reservation.slot;
 
@@ -44,7 +58,7 @@ export function ReservationCard({ reservation }: { reservation: Reservation }) {
   const canCancel =
     reservation.status === "confirmed" &&
     date != null &&
-    date.getTime() - Date.now() > 0;
+    date.getTime() - now > 0;
 
   return (
     <Card className="flex flex-col sm:flex-row overflow-hidden">
@@ -64,7 +78,7 @@ export function ReservationCard({ reservation }: { reservation: Reservation }) {
       <div className="flex-1 p-5 flex flex-col gap-3">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <h3 className="text-base font-semibold tracking-tight">
+            <h3 className="text-base font-semibold tracking-normal">
               {exp?.title ?? "Experiencia"}
             </h3>
           </div>
@@ -81,7 +95,7 @@ export function ReservationCard({ reservation }: { reservation: Reservation }) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1.5 text-sm text-[var(--text-muted)]">
           {date ? (
             <div className="inline-flex items-center gap-1.5">
-              <Calendar className="h-4 w-4" />
+              <Calendar className="h-4 w-4" aria-hidden="true" />
               {date.toLocaleDateString("es-CO", {
                 weekday: "short",
                 day: "numeric",
@@ -96,12 +110,12 @@ export function ReservationCard({ reservation }: { reservation: Reservation }) {
             </div>
           ) : null}
           <div className="inline-flex items-center gap-1.5">
-            <Users className="h-4 w-4" />
+            <Users className="h-4 w-4" aria-hidden="true" />
             {reservation.participants} participante{reservation.participants > 1 ? "s" : ""}
           </div>
           {exp?.id ? (
             <div className="inline-flex items-center gap-1.5">
-              <MapPin className="h-4 w-4" />
+              <MapPin className="h-4 w-4" aria-hidden="true" />
               <Link
                 href={`/experiences/${exp.id}`}
                 className="hover:text-[var(--text)] underline-offset-4 hover:underline"

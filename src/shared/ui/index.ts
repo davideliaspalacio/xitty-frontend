@@ -13,6 +13,8 @@ export {
 export { Logo } from "./logo";
 export { Skeleton } from "./skeleton";
 export { Separator } from "./separator";
+export { Badge, badgeVariants, type BadgeProps } from "./badge";
+export { EmptyState } from "./empty-state";
 export {
   AiCuratedBadge,
   type AiCuratedBadgeProps,

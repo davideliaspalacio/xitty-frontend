@@ -41,7 +41,7 @@ export function CuratedDetail({ item, className }: CuratedDetailProps) {
   return (
     <article className={cn("flex flex-col gap-6", className)}>
       {/* Hero image (o placeholder de marca cuando el item no tiene foto) */}
-      <div className="relative aspect-[16/9] rounded-2xl overflow-hidden bg-[var(--bg-subtle)]">
+      <div className="relative aspect-[16/9] overflow-hidden rounded-lg bg-[var(--bg-subtle)]">
         {item.image_url ? (
           /* eslint-disable-next-line @next/next/no-img-element */
           <img
@@ -58,7 +58,7 @@ export function CuratedDetail({ item, className }: CuratedDetailProps) {
       </div>
 
       <header className="flex flex-col gap-3">
-        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight leading-tight">
+        <h1 className="text-3xl sm:text-4xl font-bold tracking-normal leading-tight">
           {item.title}
         </h1>
 

@@ -127,11 +127,11 @@ export function MessageBubble({ message, className }: MessageBubbleProps) {
         data-testid="message-bubble"
         data-role={message.role}
         className={cn(
-          "max-w-[80%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed whitespace-pre-wrap break-words",
+          "max-w-[80%] rounded-lg px-4 py-2.5 text-sm leading-relaxed whitespace-pre-wrap break-words",
           isUser &&
-            "bg-[var(--accent)] text-[var(--accent-fg)] text-white rounded-br-md",
+            "bg-[var(--accent)] text-[var(--accent-fg)] rounded-br-sm",
           isAssistant &&
-            "bg-[var(--cream)] text-[var(--cream-fg)] border border-[var(--ink)] rounded-bl-md",
+            "bg-[var(--surface-warm)] text-[var(--ink)] border border-[var(--ink)] rounded-bl-sm",
           message.role === "system" &&
             "bg-[var(--bg-subtle)] text-[var(--text-muted)] italic text-xs",
         )}

@@ -20,46 +20,53 @@ export function LocalPickCard({ item }: { item: LocalPickItem }) {
   const TagIcon = meta?.icon ?? Compass;
 
   return (
-    <Link
-      href={`/places/${place.id}`}
-      className="group relative shrink-0 w-[300px] sm:w-[340px] flex flex-col rounded-lg border border-[var(--border)] bg-[var(--surface)] overflow-hidden transition-all hover:shadow-[var(--shadow-2)] hover:border-[var(--border-strong)]"
-    >
-      <div className="relative aspect-[4/3] bg-[var(--bg-subtle)]">
-        {photo ? (
-          /* eslint-disable-next-line @next/next/no-img-element */
-          <img
-            src={photo}
-            alt={place.name}
-            className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-          />
-        ) : null}
+    <article className="relative flex w-[300px] shrink-0 flex-col overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--surface)] transition-all hover:border-[var(--border-strong)] hover:shadow-[var(--shadow-2)] sm:w-[340px]">
+      <Link
+        href={`/places/${place.id}`}
+        aria-label={place.name}
+        className="group flex flex-col"
+      >
+        <div className="relative aspect-[4/3] bg-[var(--bg-subtle)]">
+          {photo ? (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img
+              src={photo}
+              alt={place.name}
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+            />
+          ) : null}
 
-        <span className="absolute top-2.5 left-2.5 inline-flex items-center gap-1.5 h-7 px-3 rounded-pill text-[11px] font-semibold uppercase tracking-wider bg-white/95 text-[var(--text)] backdrop-blur">
-          <TagIcon className="h-3 w-3" />
-          {meta?.label ?? pick_tag}
-        </span>
-
-        <div className="absolute top-2.5 right-2.5">
-          <FavoriteButton placeId={place.id} size="sm" />
+          <span className="absolute left-2.5 top-2.5 inline-flex h-7 items-center gap-1.5 rounded-pill bg-white/95 px-3 text-[11px] font-semibold uppercase tracking-wider text-[var(--text)] backdrop-blur">
+            <TagIcon className="h-3 w-3" aria-hidden="true" />
+            {meta?.label ?? pick_tag}
+          </span>
         </div>
-      </div>
 
-      <div className="p-4 flex flex-col gap-2">
-        <h3 className="text-[15px] font-semibold tracking-tight line-clamp-1">{place.name}</h3>
-        {short_pitch ? (
-          <p className="text-sm text-[var(--text-muted)] line-clamp-2 italic leading-relaxed">
-            “{short_pitch}”
-          </p>
-        ) : null}
-        <div className="flex items-center justify-between mt-1">
-          <RatingStars
-            value={place.average_rating}
-            count={place.total_reviews}
-            size="sm"
-          />
-          <span className="text-xs text-[var(--text-soft)]">— {curator_name}</span>
+        <div className="flex flex-col gap-2 p-4">
+          <h3 className="line-clamp-1 text-[15px] font-semibold tracking-normal">
+            {place.name}
+          </h3>
+          {short_pitch ? (
+            <p className="line-clamp-2 text-sm italic leading-relaxed text-[var(--text-muted)]">
+              “{short_pitch}”
+            </p>
+          ) : null}
+          <div className="mt-1 flex items-center justify-between">
+            <RatingStars
+              value={place.average_rating}
+              count={place.total_reviews}
+              size="sm"
+            />
+            <span className="text-xs text-[var(--text-soft)]">
+              — {curator_name}
+            </span>
+          </div>
         </div>
+      </Link>
+
+      <div className="absolute right-2.5 top-2.5 z-10">
+        <FavoriteButton placeId={place.id} size="sm" />
       </div>
-    </Link>
+    </article>
   );
 }

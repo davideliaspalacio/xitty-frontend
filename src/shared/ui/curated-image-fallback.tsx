@@ -23,12 +23,12 @@ export function CuratedImageFallback({ label, className }: CuratedImageFallbackP
       )}
       style={{
         backgroundImage:
-          "linear-gradient(135deg, #FFE7E3 0%, #FFF4E8 50%, #DCF3EF 100%)",
+          "linear-gradient(135deg, var(--accent-soft) 0%, var(--surface-warm) 50%, var(--surface-mint) 100%)",
       }}
     >
       <span
         className="font-bold leading-none text-6xl sm:text-7xl"
-        style={{ color: "rgba(26,26,26,0.10)" }}
+        style={{ color: "color-mix(in srgb, var(--ink) 10%, transparent)" }}
       >
         {initial}
       </span>

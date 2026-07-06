@@ -20,13 +20,18 @@ const BREATH_KEYFRAMES = `
 .xitty-chat-bubble-breath:hover {
   animation: none;
 }
+@media (prefers-reduced-motion: reduce) {
+  .xitty-chat-bubble-breath {
+    animation: none;
+  }
+}
 `;
 
 /**
  * Floating action button that opens the Xi chat panel.
  *
  * 56x56 px circle, fixed at the bottom-right of the viewport,
- * with a coral->teal gradient and a subtle "breath" animation
+ * with an accent-to-secondary gradient and a subtle "breath" animation
  * every 8 seconds (no framer-motion).
  */
 export function ChatBubble({ onClick, hasUnread, className }: ChatBubbleProps) {
@@ -34,7 +39,6 @@ export function ChatBubble({ onClick, hasUnread, className }: ChatBubbleProps) {
     <>
       {/* Keyframes are inlined once; CSS rules dedupe by name. */}
       <style
-        // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: BREATH_KEYFRAMES }}
       />
       <button
@@ -48,16 +52,16 @@ export function ChatBubble({ onClick, hasUnread, className }: ChatBubbleProps) {
           "h-14 w-14 rounded-full",
           "inline-flex items-center justify-center",
           "text-white",
-          "shadow-[0_12px_32px_-8px_rgba(255,90,78,0.55)]",
+          "shadow-[var(--shadow-2)]",
           "transition-transform duration-200",
-          "hover:scale-[1.04] active:scale-[0.96]",
+          "hover:scale-[1.04] active:scale-[0.96] motion-reduce:hover:scale-100 motion-reduce:active:scale-100",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)]",
           "xitty-chat-bubble-breath",
           className,
         )}
         style={{
           backgroundImage:
-            "linear-gradient(135deg, #FF5A4E 0%, #0E9F8C 100%)",
+            "linear-gradient(135deg, var(--accent) 0%, var(--secondary) 100%)",
         }}
       >
         <MessageCircle className="h-6 w-6" aria-hidden="true" />

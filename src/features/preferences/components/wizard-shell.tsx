@@ -44,7 +44,7 @@ export function WizardShell({
             <p className="eyebrow mb-2">Personalización</p>
             <h1
               className={cn(
-                "text-[32px] sm:text-[38px] font-semibold leading-[1.1] tracking-[-0.02em] text-[var(--text)]",
+                "text-[32px] sm:text-[38px] font-semibold leading-[1.1] tracking-normal text-[var(--text)]",
               )}
             >
               {title}

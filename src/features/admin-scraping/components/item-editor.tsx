@@ -100,13 +100,13 @@ function ItemEditorBody({ item, onClose, onSaved }: ItemEditorProps) {
       aria-label="Editar item"
     >
       <div
-        className="w-full max-w-lg bg-[var(--surface)] rounded-2xl shadow-[var(--shadow-3)] overflow-hidden max-h-[90vh] flex flex-col"
+        className="flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-xl bg-[var(--surface)] shadow-[var(--shadow-3)]"
         onClick={(e) => e.stopPropagation()}
       >
         <header className="flex items-start justify-between p-5 border-b border-[var(--border)]">
           <div>
             <p className="eyebrow">Moderacion</p>
-            <h2 className="text-lg font-semibold tracking-tight">Editar item</h2>
+            <h2 className="text-lg font-semibold tracking-normal">Editar item</h2>
           </div>
           <button
             type="button"
