@@ -13,6 +13,7 @@ import { useGeoHeartbeat } from "@/features/geo/hooks/use-geo-heartbeat";
 import { ChatBubble, ChatPanel } from "@/features/chat";
 import { ContextToast } from "@/features/suggestions";
 import { OnboardingTour } from "@/features/onboarding";
+import { featureFlags } from "@/lib/feature-flags";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const role = useAuthStore((s) => s.user?.role) ?? "user";
@@ -20,9 +21,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const isOpsSurface =
     pathname.startsWith("/dashboard") || pathname.startsWith("/admin");
 
-  // Start the geo heartbeat — internally no-ops when the user is not authed or
-  // tracking is disabled.
-  useGeoHeartbeat();
+  // Start the geo heartbeat — internally no-ops when disabled by flag, when
+  // the user is not authed, or when tracking is disabled.
+  useGeoHeartbeat(featureFlags.geoTracking);
 
   const [chatOpen, setChatOpen] = useState(false);
   const [conversationId, setConversationId] = useState<string | null>(null);
@@ -37,7 +38,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             style={{ maxWidth: "var(--container-max)" }}
             className="mx-auto w-full flex-1 px-4 py-5 pb-24 sm:px-6 sm:py-8 md:px-10 md:pb-10"
           >
-            <LocationBanner />
+            {featureFlags.geoTracking ? <LocationBanner /> : null}
             {children}
           </main>
         </div>
@@ -48,22 +49,26 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
       {/* Headless toast listener — fires sonner toasts when the user's
           safety-zone neighborhood changes. */}
-      <ContextToast />
+      {featureFlags.contextSuggestions ? <ContextToast /> : null}
 
-      {/* Floating chat FAB + panel, fixed bottom-right of the viewport. */}
-      <ChatBubble
-        onClick={() => setChatOpen(true)}
-        className={isOpsSurface ? "max-md:hidden" : undefined}
-      />
-      <ChatPanel
-        open={chatOpen}
-        onClose={() => setChatOpen(false)}
-        conversationId={conversationId}
-        onConversationIdChange={setConversationId}
-      />
+      {featureFlags.aiChat ? (
+        <>
+          {/* Floating chat FAB + panel, fixed bottom-right of the viewport. */}
+          <ChatBubble
+            onClick={() => setChatOpen(true)}
+            className={isOpsSurface ? "max-md:hidden" : undefined}
+          />
+          <ChatPanel
+            open={chatOpen}
+            onClose={() => setChatOpen(false)}
+            conversationId={conversationId}
+            onConversationIdChange={setConversationId}
+          />
+        </>
+      ) : null}
 
       {/* Tour de bienvenida — auto-arranca para usuarios nuevos sobre el home. */}
-      <OnboardingTour />
+      {featureFlags.onboardingTour ? <OnboardingTour /> : null}
     </AuthGate>
   );
 }

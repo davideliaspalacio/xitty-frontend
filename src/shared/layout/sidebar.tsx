@@ -5,11 +5,11 @@ import { usePathname } from "next/navigation";
 import { Logo } from "@/shared/ui/logo";
 import { cn } from "@/shared/utils/cn";
 import type { Role } from "@/lib/api/types";
-import { navByRole } from "./nav-config";
+import { getNavItemsForRole } from "./nav-config";
 
 export function Sidebar({ role = "user" }: { role?: Role }) {
   const pathname = usePathname();
-  const items = navByRole[role] ?? navByRole.user;
+  const items = getNavItemsForRole(role);
 
   return (
     <aside

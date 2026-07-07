@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/shared/utils/cn";
 import type { Role } from "@/lib/api/types";
-import { navByRole } from "./nav-config";
+import { getNavItemsForRole } from "./nav-config";
 
 /**
  * Barra de navegación inferior, SOLO en mobile (`md:hidden`). Reemplaza a la
@@ -14,7 +14,7 @@ import { navByRole } from "./nav-config";
  */
 export function BottomNav({ role = "user" }: { role?: Role }) {
   const pathname = usePathname() ?? "";
-  const items = (navByRole[role] ?? navByRole.user).slice(0, 5);
+  const items = getNavItemsForRole(role).slice(0, 5);
 
   return (
     <nav

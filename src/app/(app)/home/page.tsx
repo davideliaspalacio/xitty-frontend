@@ -27,6 +27,7 @@ import { TodaySection } from "@/features/recommendations";
 import { CategoriesGrid } from "@/features/places/components/categories-grid";
 import { CuratedCarousel, useCurated } from "@/features/curated";
 import { useT } from "@/features/i18n";
+import { featureFlags } from "@/lib/feature-flags";
 
 function CarouselSkeletons() {
   return (
@@ -62,11 +63,23 @@ export default function HomePage() {
   const t = useT();
 
   const { travelerType, setTravelerType } = useTravelerFilter();
-  const ranking = useRanking(8, travelerType);
-  const featured = useFeaturedCurrent(travelerType);
-  const localPicks = useLocalPicksCurrent(travelerType);
-  const experiences = useExperiences({ limit: 8, sort_by: "rating" });
-  const curated = useCurated({ limit: 12 });
+  const ranking = useRanking(8, travelerType, featureFlags.ranking);
+  const featured = useFeaturedCurrent(
+    travelerType,
+    featureFlags.recommendations,
+  );
+  const localPicks = useLocalPicksCurrent(
+    travelerType,
+    featureFlags.localPicks,
+  );
+  const experiences = useExperiences(
+    { limit: 8, sort_by: "rating" },
+    { enabled: featureFlags.experiences },
+  );
+  const curated = useCurated(
+    { limit: 12 },
+    { enabled: featureFlags.curatedFeed },
+  );
 
   return (
     <div className="flex flex-col space-y-10 sm:space-y-12">
@@ -153,131 +166,147 @@ export default function HomePage() {
       </header>
 
       {/* 1. Ads — promotional slot, no section header */}
-      <AdsHero />
+      {featureFlags.promotions ? <AdsHero /> : null}
 
       {/* 2. Today — "Qué vale la pena hacer hoy" */}
-      <div id="tour-today">
-        <TodaySection />
-      </div>
+      {featureFlags.recommendations ? (
+        <div id="tour-today">
+          <TodaySection />
+        </div>
+      ) : null}
 
       {/* 3. Traveler-type filter */}
-      <div id="tour-chips">
-        <TravelerTypeChips
-          selected={travelerType}
-          onChange={setTravelerType}
-        />
-      </div>
+      {featureFlags.travelerModes ? (
+        <div id="tour-chips">
+          <TravelerTypeChips
+            selected={travelerType}
+            onChange={setTravelerType}
+          />
+        </div>
+      ) : null}
 
       {/* 4. Ranking */}
-      <section id="tour-ranking">
-        <SectionHeader
-          eyebrow="Top de la ciudad"
-          title="Ranking en Barranquilla"
-          subtitle="Lo más visitado y mejor calificado esta semana."
-          href="/places"
-        />
-        {ranking.isLoading ? (
-          <CarouselSkeletons />
-        ) : ranking.data?.data.length ? (
-          <HorizontalCarousel>
-            {ranking.data.data.map((item) => (
-              <RankingCard key={item.place.id} item={item} />
-            ))}
-          </HorizontalCarousel>
-        ) : (
-          <EmptyMini message="El ranking se actualiza diariamente. Aún no hay datos." />
-        )}
-      </section>
+      {featureFlags.ranking ? (
+        <section id="tour-ranking">
+          <SectionHeader
+            eyebrow="Top de la ciudad"
+            title="Ranking en Barranquilla"
+            subtitle="Lo más visitado y mejor calificado esta semana."
+            href="/places"
+          />
+          {ranking.isLoading ? (
+            <CarouselSkeletons />
+          ) : ranking.data?.data.length ? (
+            <HorizontalCarousel>
+              {ranking.data.data.map((item) => (
+                <RankingCard key={item.place.id} item={item} />
+              ))}
+            </HorizontalCarousel>
+          ) : (
+            <EmptyMini message="El ranking se actualiza diariamente. Aún no hay datos." />
+          )}
+        </section>
+      ) : null}
 
       {/* 5. Featured — Recomendados */}
-      <section>
-        <SectionHeader
-          eyebrow="Esta semana"
-          title="Recomendados"
-          subtitle="Curados por Xitty."
-        />
-        {featured.isLoading ? (
-          <CarouselSkeletons />
-        ) : featured.data?.length ? (
-          <HorizontalCarousel>
-            {featured.data.map((item) => (
-              <FeaturedCard key={item.id} item={item} />
-            ))}
-          </HorizontalCarousel>
-        ) : (
-          <EmptyMini message="Pronto publicaremos los destacados de la semana." />
-        )}
-      </section>
+      {featureFlags.recommendations ? (
+        <section>
+          <SectionHeader
+            eyebrow="Esta semana"
+            title="Recomendados"
+            subtitle="Curados por Xitty."
+          />
+          {featured.isLoading ? (
+            <CarouselSkeletons />
+          ) : featured.data?.length ? (
+            <HorizontalCarousel>
+              {featured.data.map((item) => (
+                <FeaturedCard key={item.id} item={item} />
+              ))}
+            </HorizontalCarousel>
+          ) : (
+            <EmptyMini message="Pronto publicaremos los destacados de la semana." />
+          )}
+        </section>
+      ) : null}
 
       {/* 6. Curated — AI-curated weekly feed */}
-      <section>
-        <SectionHeader
-          eyebrow="Curado con IA"
-          title="Descubre lo nuevo en Barranquilla"
-          subtitle="Curado con IA, actualizado cada semana."
-        />
-        {curated.isLoading ? (
-          <CarouselSkeletons />
-        ) : curated.data?.length ? (
-          <CuratedCarousel items={curated.data} />
-        ) : (
-          <EmptyMini message="Pronto verás aquí lo nuevo de la semana, curado por nuestra IA." />
-        )}
-      </section>
+      {featureFlags.curatedFeed ? (
+        <section>
+          <SectionHeader
+            eyebrow="Curado con IA"
+            title="Descubre lo nuevo en Barranquilla"
+            subtitle="Curado con IA, actualizado cada semana."
+          />
+          {curated.isLoading ? (
+            <CarouselSkeletons />
+          ) : curated.data?.length ? (
+            <CuratedCarousel items={curated.data} />
+          ) : (
+            <EmptyMini message="Pronto verás aquí lo nuevo de la semana, curado por nuestra IA." />
+          )}
+        </section>
+      ) : null}
 
       {/* 7. Categories grid */}
-      <section id="tour-categories">
-        <SectionHeader
-          title="Explora por categoría"
-          subtitle="Encuentra lo que buscas, organizado por tipo de lugar."
-        />
-        <CategoriesGrid />
-      </section>
+      {featureFlags.categories ? (
+        <section id="tour-categories">
+          <SectionHeader
+            title="Explora por categoría"
+            subtitle="Encuentra lo que buscas, organizado por tipo de lugar."
+          />
+          <CategoriesGrid />
+        </section>
+      ) : null}
 
       {/* 8. Experiences */}
-      <section id="tour-experiences">
-        <SectionHeader
-          eyebrow="Experiencias"
-          title="Vive algo único"
-          subtitle="Tours, talleres, gastronomía y bienestar."
-          href="/experiences"
-        />
-        {experiences.isLoading ? (
-          <CarouselSkeletons />
-        ) : experiences.data?.data.length ? (
-          <HorizontalCarousel>
-            {experiences.data.data.map((exp) => (
-              <ExperienceCardComponent
-                key={exp.id}
-                experience={exp}
-                className="shrink-0 w-[280px] sm:w-[320px]"
-              />
-            ))}
-          </HorizontalCarousel>
-        ) : (
-          <EmptyMini message="Estamos curando las primeras experiencias para ti." />
-        )}
-      </section>
+      {featureFlags.experiences ? (
+        <section id="tour-experiences">
+          <SectionHeader
+            eyebrow="Experiencias"
+            title="Vive algo único"
+            subtitle="Tours, talleres, gastronomía y bienestar."
+            href="/experiences"
+          />
+          {experiences.isLoading ? (
+            <CarouselSkeletons />
+          ) : experiences.data?.data.length ? (
+            <HorizontalCarousel>
+              {experiences.data.data.map((exp) => (
+                <ExperienceCardComponent
+                  key={exp.id}
+                  experience={exp}
+                  className="shrink-0 w-[280px] sm:w-[320px]"
+                />
+              ))}
+            </HorizontalCarousel>
+          ) : (
+            <EmptyMini message="Estamos curando las primeras experiencias para ti." />
+          )}
+        </section>
+      ) : null}
 
       {/* 9. Local picks — Disfruta como local */}
-      <section>
-        <SectionHeader
-          eyebrow="Como local"
-          title="Disfruta como un local"
-          subtitle="Lugares secretos, auténticos y favoritos de la comunidad."
-        />
-        {localPicks.isLoading ? (
-          <CarouselSkeletons />
-        ) : localPicks.data?.length ? (
-          <HorizontalCarousel>
-            {localPicks.data.map((item) => (
-              <LocalPickCard key={item.id} item={item} />
-            ))}
-          </HorizontalCarousel>
-        ) : (
-          <EmptyMini message="Los locales aún no han compartido sus secretos esta semana." />
-        )}
-      </section>
+      {featureFlags.localPicks ? (
+        <section>
+          <SectionHeader
+            eyebrow="Como local"
+            title="Disfruta como un local"
+            subtitle="Lugares secretos, auténticos y favoritos de la comunidad."
+          />
+          {localPicks.isLoading ? (
+            <CarouselSkeletons />
+          ) : localPicks.data?.length ? (
+            <HorizontalCarousel>
+              {localPicks.data.map((item) => (
+                <LocalPickCard key={item.id} item={item} />
+              ))}
+            </HorizontalCarousel>
+          ) : (
+            <EmptyMini message="Los locales aún no han compartido sus secretos esta semana." />
+          )}
+        </section>
+      ) : null}
     </div>
   );
 }

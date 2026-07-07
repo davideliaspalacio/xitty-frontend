@@ -10,8 +10,10 @@ import { RatingStars } from "@/features/places/components/rating-stars";
 import { PriceTag } from "@/features/places/components/price-tag";
 import { PlaceCtaActions } from "@/features/places/components/place-cta-actions";
 import { FavoriteButton } from "@/features/favorites";
+import { AudioTourPanel } from "@/features/audio-tours";
 import { ReviewList } from "@/features/reviews/components/review-list";
 import { ReviewForm } from "@/features/reviews/components/review-form";
+import { featureFlags } from "@/lib/feature-flags";
 import { SourceReviews } from "@/features/places/components/source-reviews";
 import { Skeleton } from "@/shared/ui/skeleton";
 import {
@@ -110,7 +112,9 @@ export default function PlaceDetailPage({
               ) : null}
             </div>
           </div>
-          <FavoriteButton placeId={place.id} size="lg" />
+          {featureFlags.favorites ? (
+            <FavoriteButton placeId={place.id} size="lg" />
+          ) : null}
         </div>
       </header>
 
@@ -121,6 +125,8 @@ export default function PlaceDetailPage({
       />
 
       <PlaceCtaActions place={place} />
+
+      <AudioTourPanel placeId={place.id} />
 
       {/* Body grid */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8">
@@ -208,7 +214,7 @@ export default function PlaceDetailPage({
             </CardContent>
           </Card>
 
-          {place.slug ? (
+          {featureFlags.microsites && place.slug ? (
             <Card>
               <CardContent className="py-5">
                 <p className="text-xs text-[var(--text-muted)] mb-1">

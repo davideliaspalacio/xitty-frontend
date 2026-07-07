@@ -1,44 +1,45 @@
 @import "tailwindcss";
 
 /* =========================================================
-   XITTY · Design Tokens v3.0
-   Warm, tactile, mobile-first product UI for local discovery.
+   XITTY · Design Tokens v3.1
+   Green brand system, tactile and mobile-first for local discovery.
    ========================================================= */
 
 :root {
   /* Surfaces */
-  --bg: #fbfdff;
-  --bg-subtle: #f1f7fb;
+  --bg: #f8fcf8;
+  --bg-subtle: #eef7ef;
   --surface: #ffffff;
-  --surface-hover: #f7fbfd;
-  --surface-warm: #fff7e6;
-  --surface-mint: #e9fbf6;
-  --surface-sky: #ecf8ff;
-  --border: #dbe7ef;
-  --border-strong: #b9c9d6;
+  --surface-hover: #f3faf4;
+  --surface-warm: #f6fbef;
+  --surface-mint: #ecfaec;
+  --surface-sky: #eef8f2;
+  --border: #d3e7d6;
+  --border-strong: #a8cdb0;
 
   /* Text */
-  --text: #14212b;
-  --text-muted: #516274;
-  --text-soft: #718093;
+  --text: #102217;
+  --text-muted: #486255;
+  --text-soft: #6d8275;
   --text-inverse: #ffffff;
 
   /* Brand */
-  --accent: #c63d2f;
-  --accent-hover: #a93227;
-  --accent-soft: #ffe5df;
+  --brand-green: #009829;
+  --accent: #007d22;
+  --accent-hover: #00651c;
+  --accent-soft: #e8f8e8;
   --accent-fg: #ffffff;
-  --secondary: #0fb7a0;
-  --secondary-soft: #daf8f1;
+  --secondary: #5bcb5f;
+  --secondary-soft: #ecfaec;
   --secondary-fg: #053f38;
-  --sunny: #ffd166;
-  --sunny-soft: #fff3cc;
-  --sky: #4fb7eb;
-  --sky-soft: #e4f6ff;
-  --ink: #14212b;
+  --sunny: #a3e3a5;
+  --sunny-soft: #f0fbef;
+  --sky: #36a872;
+  --sky-soft: #eaf7ef;
+  --ink: #102217;
 
   /* Status */
-  --success: #10835f;
+  --success: #0b7f4a;
   --success-soft: #dff7ec;
   --warning: #b7791f;
   --warning-soft: #fff2cc;
@@ -72,28 +73,34 @@
 }
 
 [data-theme="dark"] {
-  --bg: #101820;
-  --bg-subtle: #16222c;
-  --surface: #1c2a35;
-  --surface-hover: #243442;
-  --surface-warm: #302716;
-  --surface-mint: #112d29;
-  --surface-sky: #122b3b;
-  --border: #2f4453;
-  --border-strong: #49616f;
+  --bg: #09160d;
+  --bg-subtle: #102018;
+  --surface: #14261a;
+  --surface-hover: #193120;
+  --surface-warm: #1a2b18;
+  --surface-mint: #12351c;
+  --surface-sky: #132c20;
+  --border: #294a32;
+  --border-strong: #477053;
 
-  --text: #f8fbff;
-  --text-muted: #bac8d4;
-  --text-soft: #8fa1b1;
-  --text-inverse: #101820;
+  --text: #f5fff6;
+  --text-muted: #bdd3c2;
+  --text-soft: #92ad99;
+  --text-inverse: #07120a;
 
-  --accent: #ff8b78;
-  --accent-hover: #ffab9e;
-  --accent-soft: #45251f;
-  --accent-fg: #101820;
-  --secondary-soft: #173d37;
-  --sunny-soft: #473a18;
-  --sky-soft: #17384a;
+  --brand-green: #5bcb5f;
+  --accent: #77df7a;
+  --accent-hover: #a3e3a5;
+  --accent-soft: #123d1c;
+  --accent-fg: #07120a;
+  --secondary: #5bcb5f;
+  --secondary-soft: #193f22;
+  --secondary-fg: #dff8e1;
+  --sunny: #a3e3a5;
+  --sunny-soft: #21391f;
+  --sky: #68d08c;
+  --sky-soft: #173321;
+  --ink: #07120a;
 
   --shadow-1: 0 2px 0 rgba(0, 0, 0, 0.25);
   --shadow-2: 0 8px 14px rgba(0, 0, 0, 0.32);

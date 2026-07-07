@@ -9,6 +9,7 @@ import { Button } from "@/shared/ui/button";
 import { EmergencyButton } from "@/shared/ui/emergency-button";
 import { LanguageSelector } from "@/features/i18n/components/language-selector";
 import { Logo } from "@/shared/ui/logo";
+import { featureFlags } from "@/lib/feature-flags";
 import { useRouter } from "next/navigation";
 
 export function Topbar() {
@@ -88,9 +89,11 @@ export function Topbar() {
           <Bell className="h-[18px] w-[18px]" aria-hidden="true" />
         </Button>
 
-        <span id="tour-sos" className="inline-flex">
-          <EmergencyButton />
-        </span>
+        {featureFlags.emergencyButton ? (
+          <span id="tour-sos" className="inline-flex">
+            <EmergencyButton />
+          </span>
+        ) : null}
 
         <LanguageSelector className="hidden sm:flex" />
 
