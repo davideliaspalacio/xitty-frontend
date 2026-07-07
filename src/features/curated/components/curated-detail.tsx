@@ -4,6 +4,7 @@ import { ExternalLink, MapPin, Calendar, AlertTriangle } from "lucide-react";
 import { AiCuratedBadge } from "@/shared/ui/ai-curated-badge";
 import { SourceAttribution } from "@/shared/ui/source-attribution";
 import { CuratedImageFallback } from "@/shared/ui/curated-image-fallback";
+import { SourceReviews } from "@/features/places/components/source-reviews";
 import { fmtCop } from "@/shared/utils/format";
 import { cn } from "@/shared/utils/cn";
 import type { CuratedItem } from "@/features/curated/types";
@@ -111,6 +112,8 @@ export function CuratedDetail({ item, className }: CuratedDetailProps) {
           />
         </div>
       ) : null}
+
+      <SourceReviews reviews={item.source_reviews} />
 
       {/* Disclaimer */}
       <aside
