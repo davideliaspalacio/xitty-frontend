@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { featureFlags } from "@/lib/feature-flags";
 import { SectionHeader } from "@/shared/layout/section-header";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { RatingStars } from "@/features/places/components/rating-stars";
@@ -71,6 +72,12 @@ function TodaySkeleton() {
 }
 
 export function TodaySection() {
+  if (!featureFlags.recommendations) return null;
+
+  return <TodaySectionContent />;
+}
+
+function TodaySectionContent() {
   const { items, isLoading } = useTodayRecommendations();
 
   if (isLoading) {

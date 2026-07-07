@@ -6,13 +6,17 @@ import type { GetCuratedParams } from "@/features/curated/types";
 
 const DEFAULT_STALE_MS = 15 * 60_000; // 15 min — curated feed refreshes server-side
 
-export function useCurated(params: GetCuratedParams = {}) {
+export function useCurated(
+  params: GetCuratedParams = {},
+  options: { enabled?: boolean } = {},
+) {
   const limit = params.limit ?? null;
   const category = params.category ?? null;
 
   return useQuery({
     queryKey: ["curated", "list", { limit, category }] as const,
     queryFn: () => curatedApi.getCurated(params),
+    enabled: options.enabled ?? true,
     staleTime: DEFAULT_STALE_MS,
   });
 }

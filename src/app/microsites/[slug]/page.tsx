@@ -8,6 +8,8 @@ import { RatingStars } from "@/features/places/components/rating-stars";
 import { PriceTag } from "@/features/places/components/price-tag";
 import { MicrositeCta } from "@/features/microsites/components/microsite-cta";
 import { MicrositeTracker } from "@/features/microsites/components/microsite-tracker";
+import { AudioTourPanel } from "@/features/audio-tours";
+import { featureFlags } from "@/lib/feature-flags";
 import { fmtNumber } from "@/shared/utils/format";
 import type { Microsite } from "@/lib/api/types";
 
@@ -29,6 +31,8 @@ async function fetchMicrosite(slug: string): Promise<Microsite | null> {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  if (!featureFlags.microsites) return { title: "No encontrado · Xitty" };
+
   const { slug } = await params;
   const microsite = await fetchMicrosite(slug);
   if (!microsite) return { title: "No encontrado · Xitty" };
@@ -61,6 +65,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function MicrositePage({ params }: PageProps) {
+  if (!featureFlags.microsites) notFound();
+
   const { slug } = await params;
   const microsite = await fetchMicrosite(slug);
   if (!microsite) notFound();
@@ -120,8 +126,10 @@ export default async function MicrositePage({ params }: PageProps) {
         {/* CTAs */}
         <MicrositeCta microsite={microsite} />
 
+        <AudioTourPanel placeId={microsite.id} />
+
         {/* Active promotions */}
-        {microsite.active_promotions.length > 0 ? (
+        {featureFlags.promotions && microsite.active_promotions.length > 0 ? (
           <section>
             <h2 className="text-2xl font-semibold tracking-normal mb-4">
               Promociones activas

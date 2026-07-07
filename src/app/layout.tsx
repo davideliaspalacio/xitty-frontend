@@ -13,6 +13,10 @@ export const metadata: Metadata = {
   title: "Xitty — Descubre Barranquilla",
   description:
     "Plataforma de turismo de Barranquilla: lugares, experiencias y recomendaciones locales.",
+  icons: {
+    icon: "/brand/xitty-icon.png",
+    apple: "/brand/xitty-icon.png",
+  },
 };
 
 export default function RootLayout({

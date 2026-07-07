@@ -7,10 +7,14 @@ import type {
   ExperienceListQuery,
 } from "@/lib/api/types";
 
-export function useExperiences(query: ExperienceListQuery = {}) {
+export function useExperiences(
+  query: ExperienceListQuery = {},
+  options: { enabled?: boolean } = {},
+) {
   return useQuery({
     queryKey: ["experiences", "list", query],
     queryFn: () => experiencesApi.list(query),
+    enabled: options.enabled ?? true,
     staleTime: 60_000,
     placeholderData: keepPreviousData,
   });

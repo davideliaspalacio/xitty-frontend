@@ -539,6 +539,59 @@ export type Microsite = PlaceDetail & {
   active_promotions: ActivePromotion[];
 };
 
+/* ───────── Audio tours ───────── */
+
+export interface AudioTourStop {
+  id: string;
+  audio_tour_id: string;
+  title: string;
+  description: string | null;
+  audio_url: string | null;
+  transcript: string | null;
+  language_code: string;
+  duration_seconds: number;
+  display_order: number;
+  latitude: number | null;
+  longitude: number | null;
+  radius_m: number | null;
+}
+
+export interface AudioTour {
+  id: string;
+  place_id: string;
+  title: string;
+  description: string | null;
+  language_code: string;
+  narrator_name: string | null;
+  estimated_duration_min: number;
+  cover_image_url: string | null;
+  is_active: boolean;
+  stops: AudioTourStop[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AudioTourListResponse {
+  data: AudioTour[];
+}
+
+export interface AudioTourProgress {
+  user_id: string;
+  audio_tour_id: string;
+  current_stop_id: string | null;
+  completed_stop_ids: string[];
+  last_position_seconds: number;
+  completed_at: string | null;
+  updated_at: string;
+}
+
+export interface UpdateAudioTourProgressPayload {
+  current_stop_id?: string | null;
+  completed_stop_ids?: string[];
+  last_position_seconds?: number;
+  completed?: boolean;
+}
+
 export interface Promotion {
   id: string;
   place_id: string;

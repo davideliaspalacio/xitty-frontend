@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { featureFlags } from "@/lib/feature-flags";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { cn } from "@/shared/utils/cn";
 import { useHeroPromotions } from "@/features/promotions/hooks/use-hero-promotions";
@@ -10,6 +11,12 @@ import { useTrackImpression } from "@/features/promotions/hooks/use-track-impres
 const ROTATE_MS = 5_000;
 
 export function AdsHero() {
+  if (!featureFlags.promotions) return null;
+
+  return <AdsHeroContent />;
+}
+
+function AdsHeroContent() {
   const { data, isLoading } = useHeroPromotions();
   const trackImpression = useTrackImpression();
 

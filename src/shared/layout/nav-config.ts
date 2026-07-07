@@ -12,6 +12,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import type { Role } from "@/lib/api/types";
+import { featureFlags } from "@/lib/feature-flags";
 
 export interface NavItem {
   href: string;
@@ -48,3 +49,15 @@ export const navByRole: Record<Role, NavItem[]> = {
     { href: "/profile", label: "Mi cuenta", icon: User },
   ],
 };
+
+export function getNavItemsForRole(role: Role): NavItem[] {
+  const items = navByRole[role] ?? navByRole.user;
+
+  return items.filter((item) => {
+    if (item.href === "/favorites") return featureFlags.favorites;
+    if (item.href === "/reservations") return featureFlags.reservations;
+    if (item.href === "/dashboard/promotions") return featureFlags.promotions;
+
+    return true;
+  });
+}

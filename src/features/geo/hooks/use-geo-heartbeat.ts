@@ -18,7 +18,7 @@ const BATCH_SIZE = 5;
  * `visibilitychange -> hidden` and resumes on `visible`. Degrades to a no-op
  * when `navigator.geolocation` is unavailable.
  */
-export function useGeoHeartbeat() {
+export function useGeoHeartbeat(enabled = true) {
   const trackingEnabled = useGeoStore((s) => s.trackingEnabled);
   const setSnapshot = useGeoStore((s) => s.setSnapshot);
   const setPermission = useGeoStore((s) => s.setPermission);
@@ -30,6 +30,7 @@ export function useGeoHeartbeat() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    if (!enabled) return;
 
     if (!("geolocation" in navigator) || !navigator.geolocation) {
       setSource("unsupported");
@@ -112,5 +113,5 @@ export function useGeoHeartbeat() {
       stop();
       void flush();
     };
-  }, [trackingEnabled, setSnapshot, setPermission, setSource]);
+  }, [enabled, trackingEnabled, setSnapshot, setPermission, setSource]);
 }
