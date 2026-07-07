@@ -14,6 +14,7 @@ import { AudioTourPanel } from "@/features/audio-tours";
 import { ReviewList } from "@/features/reviews/components/review-list";
 import { ReviewForm } from "@/features/reviews/components/review-form";
 import { featureFlags } from "@/lib/feature-flags";
+import { SourceReviews } from "@/features/places/components/source-reviews";
 import { Skeleton } from "@/shared/ui/skeleton";
 import {
   Card,
@@ -153,6 +154,8 @@ export default function PlaceDetailPage({
               ))}
             </div>
           ) : null}
+
+          <SourceReviews reviews={place.source_reviews} />
 
           <section>
             <h2 className="text-xl font-semibold tracking-normal mb-4">

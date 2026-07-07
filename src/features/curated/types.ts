@@ -48,6 +48,8 @@ export interface CuratedItem {
    * ausente en las cards del listado.
    */
   scraped_at?: string | null;
+  /** Opiniones importadas de Google (solo en el detalle). */
+  source_reviews?: import("@/lib/api/types").SourceReview[] | null;
 }
 
 export interface GetCuratedParams {
