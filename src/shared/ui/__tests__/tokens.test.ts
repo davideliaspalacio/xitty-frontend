@@ -3,14 +3,15 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 /**
- * Tokens test: verifies that the warm product design tokens are declared in
+ * Tokens test: verifies that the green product design tokens are declared in
  * globals.css. We read the CSS source rather than relying on jsdom's
  * getComputedStyle, since jsdom's CSS variable resolution from stylesheet
  * imports is unreliable.
  */
-describe("design tokens (warm product system)", () => {
+describe("design tokens (green product system)", () => {
   const globalsPath = resolve(__dirname, "../../../app/globals.css");
   const css = readFileSync(globalsPath, "utf8");
+  const rootCss = css.match(/:root\s*{([\s\S]*?)\n}/)?.[1] ?? "";
 
   it("declares warm, mint, and sky surface tokens", () => {
     expect(css).toContain("--surface-warm:");
@@ -19,8 +20,8 @@ describe("design tokens (warm product system)", () => {
   });
 
   it("declares --ink under :root", () => {
-    expect(css).toContain("--ink:");
-    expect(css).toMatch(/--ink:\s*#14212b/i);
+    expect(rootCss).toContain("--ink:");
+    expect(rootCss).toMatch(/--ink:\s*#102217/i);
   });
 
   it("declares --shadow-flat using the ink var for sticker cards", () => {
