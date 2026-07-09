@@ -25,7 +25,7 @@ export function MicrositeCta({ microsite }: { microsite: Microsite }) {
         : null;
 
   async function handleShare() {
-    const url = `${window.location.origin}/microsites/${microsite.slug}`;
+    const url = `${window.location.origin}/${microsite.slug}`;
     const data = { title: microsite.name, text: microsite.description ?? "", url };
     if (typeof navigator.share === "function") {
       try {
