@@ -10,6 +10,10 @@ export {
 } from "./hooks/use-sources";
 export { useRuns, RUNS_KEY } from "./hooks/use-runs";
 export {
+  usePlaceCompleteness,
+  PLACE_COMPLETENESS_KEY,
+} from "./hooks/use-place-completeness";
+export {
   useItems,
   useItem,
   useUpdateItem,
