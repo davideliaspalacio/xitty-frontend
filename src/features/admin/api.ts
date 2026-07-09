@@ -61,6 +61,28 @@ export interface SponsorshipResponse {
   sponsorship_priority: number;
 }
 
+export interface RankingConfig {
+  id: string;
+  rating_weight: number;
+  views_weight: number;
+  conversions_weight: number;
+  rating_prior: number;
+  rating_prior_reviews: number;
+  views_cap: number;
+  conversions_cap: number;
+  window_days: number;
+  updated_at: string;
+  weight_total: number;
+}
+
+export type UpdateRankingConfigPayload = Partial<
+  Omit<RankingConfig, "id" | "updated_at" | "weight_total">
+>;
+
+export interface RankingRefreshResponse {
+  refreshed_at: string;
+}
+
 export const adminApi = {
   listFeatured: (page = 1, limit = 20) =>
     api.get<FeaturedListResponse>(`/featured?page=${page}&limit=${limit}`),
@@ -80,4 +102,12 @@ export const adminApi = {
     }),
   deactivateSponsorship: (placeId: string) =>
     api.delete<void>(`/admin/places/${placeId}/sponsorship`),
+
+  getRankingConfig: () => api.get<RankingConfig>("/admin/ranking/config"),
+
+  updateRankingConfig: (payload: UpdateRankingConfigPayload) =>
+    api.patch<RankingConfig>("/admin/ranking/config", payload),
+
+  refreshRanking: () =>
+    api.post<RankingRefreshResponse>("/admin/ranking/refresh"),
 };

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Radar, Sparkles, Star } from "lucide-react";
+import { ArrowRight, BarChart3, Radar, Sparkles, Star } from "lucide-react";
 import { RoleGate } from "@/features/auth/components/role-gate";
 import { Card } from "@/shared/ui/card";
 
@@ -26,6 +26,13 @@ const SECTIONS: Section[] = [
     title: "Sponsorships",
     description:
       "Activa o desactiva el patrocinio de places para destacarlos en el feed.",
+  },
+  {
+    href: "/admin/ranking",
+    icon: BarChart3,
+    title: "Ranking",
+    description:
+      "Ajusta los pesos de la fórmula y dispara el refresco manual del ranking.",
   },
   {
     href: "/admin/featured",
