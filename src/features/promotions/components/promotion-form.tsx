@@ -8,10 +8,7 @@ import { toast } from "sonner";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Field } from "@/shared/ui/field";
-import {
-  useCreatePromotion,
-  useUpdatePromotion,
-} from "@/features/promotions";
+import { useCreatePromotion, useUpdatePromotion } from "@/features/promotions";
 import type { Promotion } from "@/lib/api/types";
 import { ApiError } from "@/lib/api/types";
 
@@ -26,8 +23,8 @@ const schema = z
     ends_at: z.string().min(1, "Requerido"),
     is_active: z.boolean(),
   })
-  .refine((v) => new Date(v.ends_at) > new Date(v.starts_at), {
-    message: "La fecha de fin debe ser posterior al inicio",
+  .refine((v) => v.ends_at >= v.starts_at, {
+    message: "La fecha de fin debe ser igual o posterior al inicio",
     path: ["ends_at"],
   });
 
@@ -46,7 +43,12 @@ function toLocalDate(iso?: string) {
   return iso.slice(0, 10);
 }
 
-export function PromotionForm({ placeId, existing, onSuccess, onCancel }: Props) {
+export function PromotionForm({
+  placeId,
+  existing,
+  onSuccess,
+  onCancel,
+}: Props) {
   const create = useCreatePromotion(placeId);
   const update = useUpdatePromotion(placeId);
   const isEdit = !!existing;
@@ -62,7 +64,9 @@ export function PromotionForm({ placeId, existing, onSuccess, onCancel }: Props)
       title: existing?.title ?? "",
       description: existing?.description ?? "",
       discount_percentage: existing?.discount_percentage ?? undefined,
-      starts_at: toLocalDate(existing?.starts_at) || toLocalDate(new Date().toISOString()),
+      starts_at:
+        toLocalDate(existing?.starts_at) ||
+        toLocalDate(new Date().toISOString()),
       ends_at: toLocalDate(existing?.ends_at) || "",
       is_active: existing?.is_active ?? true,
     },
@@ -86,11 +90,12 @@ export function PromotionForm({ placeId, existing, onSuccess, onCancel }: Props)
       title: values.title,
       description: values.description?.trim() || undefined,
       discount_percentage:
-        values.discount_percentage != null && !Number.isNaN(values.discount_percentage)
+        values.discount_percentage != null &&
+        !Number.isNaN(values.discount_percentage)
           ? values.discount_percentage
           : undefined,
-      starts_at: new Date(values.starts_at + "T00:00:00").toISOString(),
-      ends_at: new Date(values.ends_at + "T23:59:59").toISOString(),
+      starts_at: values.starts_at,
+      ends_at: values.ends_at,
       is_active: values.is_active,
     };
     try {
@@ -118,7 +123,11 @@ export function PromotionForm({ placeId, existing, onSuccess, onCancel }: Props)
         />
       </Field>
 
-      <Field label="Descripción" htmlFor="description" error={errors.description?.message}>
+      <Field
+        label="Descripción"
+        htmlFor="description"
+        error={errors.description?.message}
+      >
         <textarea
           id="description"
           rows={3}
@@ -144,7 +153,11 @@ export function PromotionForm({ placeId, existing, onSuccess, onCancel }: Props)
             {...register("discount_percentage", { valueAsNumber: true })}
           />
         </Field>
-        <Field label="Inicio" htmlFor="starts_at" error={errors.starts_at?.message}>
+        <Field
+          label="Inicio"
+          htmlFor="starts_at"
+          error={errors.starts_at?.message}
+        >
           <Input id="starts_at" type="date" {...register("starts_at")} />
         </Field>
         <Field label="Fin" htmlFor="ends_at" error={errors.ends_at?.message}>
@@ -167,7 +180,10 @@ export function PromotionForm({ placeId, existing, onSuccess, onCancel }: Props)
             Cancelar
           </Button>
         ) : null}
-        <Button type="submit" loading={isSubmitting || create.isPending || update.isPending}>
+        <Button
+          type="submit"
+          loading={isSubmitting || create.isPending || update.isPending}
+        >
           {isEdit ? "Guardar cambios" : "Crear promoción"}
         </Button>
       </div>
