@@ -6,14 +6,16 @@ import { cn } from "@/shared/utils/cn";
 import { SourcesPanel } from "@/features/admin-scraping/components/sources-panel";
 import { RunsHistory } from "@/features/admin-scraping/components/runs-history";
 import { ModerationQueue } from "@/features/admin-scraping/components/moderation-queue";
+import { DataQualityPanel } from "@/features/admin-scraping/components/data-quality-panel";
 import { useItems } from "@/features/admin-scraping/hooks/use-items";
 
-type Tab = "sources" | "runs" | "moderation";
+type Tab = "sources" | "runs" | "moderation" | "quality";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "sources", label: "Sources" },
   { id: "runs", label: "Runs" },
   { id: "moderation", label: "Moderación" },
+  { id: "quality", label: "Calidad de datos" },
 ];
 
 export default function AdminScrapingPage() {
@@ -38,8 +40,9 @@ function AdminScrapingInner() {
           Scraping & Moderación
         </h1>
         <p className="text-[var(--text-muted)] text-[15px] max-w-2xl">
-          Configura las fuentes externas, mira el historial de runs y modera
-          los items entrantes antes de publicarlos como places o experiences.
+          Configura las fuentes externas, mira el historial de runs y modera los
+          items entrantes antes de publicarlos. Luego revisa qué datos le faltan
+          a cada lugar publicado.
         </p>
       </header>
 
@@ -79,6 +82,7 @@ function AdminScrapingInner() {
         {tab === "sources" && <SourcesPanel />}
         {tab === "runs" && <RunsHistory />}
         {tab === "moderation" && <ModerationQueue />}
+        {tab === "quality" && <DataQualityPanel />}
       </section>
     </div>
   );

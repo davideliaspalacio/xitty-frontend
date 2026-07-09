@@ -64,6 +64,6 @@ npm run lint         # ESLint
 - Dashboard en `/dashboard`.
 - Promociones en `/dashboard/promotions` y `/promotions`.
 - Metricas en `/dashboard/metrics`.
-- Admin scraping en `/admin/scraping`.
+- Admin scraping en `/admin/scraping`, incluyendo la pestaña "Calidad de datos".
 - Admin destacados semanales en `/admin/featured`.
 - Admin patrocinios en `/admin/sponsorships`.

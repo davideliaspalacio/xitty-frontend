@@ -2,7 +2,9 @@ import { api } from "@/lib/api/http";
 import type {
   CreateScrapingSourcePayload,
   ListItemsQuery,
+  ListPlaceCompletenessQuery,
   ListRunsQuery,
+  PlaceCompletenessReport,
   ScrapedItemEnriched,
   ScrapingRun,
   ScrapingSourceWithMeta,
@@ -52,10 +54,7 @@ export const adminScrapingApi = {
     api.post<ScrapingSourceWithMeta>("/admin/scraping/sources", payload),
 
   toggleSource: (id: string, payload: UpdateScrapingSourcePayload) =>
-    api.patch<ScrapingSourceWithMeta>(
-      `/admin/scraping/sources/${id}`,
-      payload,
-    ),
+    api.patch<ScrapingSourceWithMeta>(`/admin/scraping/sources/${id}`, payload),
 
   runSource: (id: string) =>
     api.post<RunSummary>(`/admin/scraping/sources/${id}/run`),
@@ -85,4 +84,10 @@ export const adminScrapingApi = {
 
   publishItem: (id: string) =>
     api.post<ScrapedItemEnriched>(`/admin/scraping/items/${id}/publish`),
+
+  // Place data quality report
+  listPlaceCompleteness: (query: ListPlaceCompletenessQuery = {}) =>
+    api.get<PlaceCompletenessReport>(
+      `/admin/scraping/place-completeness${qs(query)}`,
+    ),
 };

@@ -6,11 +6,7 @@
  */
 
 export type ScrapingSourceKind =
-  | "google_places"
-  | "eventbrite"
-  | "tavily"
-  | "firecrawl"
-  | "manual";
+  "google_places" | "eventbrite" | "tavily" | "firecrawl" | "manual";
 
 /**
  * Interface pluggable para registrar nuevas fuentes en el panel sin tocar
@@ -41,11 +37,7 @@ export interface ScrapingSourceWithMeta {
   items_count: number;
 }
 
-export type ScrapingRunStatus =
-  | "running"
-  | "succeeded"
-  | "failed"
-  | "partial";
+export type ScrapingRunStatus = "running" | "succeeded" | "failed" | "partial";
 
 export interface ScrapingRun {
   id: string;
@@ -61,10 +53,7 @@ export interface ScrapingRun {
 }
 
 export type EnrichedItemStatus =
-  | "pending"
-  | "approved"
-  | "rejected"
-  | "published";
+  "pending" | "approved" | "rejected" | "published";
 
 export interface ScrapedItemEnriched {
   id: string;
@@ -128,6 +117,65 @@ export interface ListRunsQuery {
   limit?: number;
 }
 
+export interface PlaceCompletenessRow {
+  id: string;
+  name: string;
+  city: string | null;
+  zone: string | null;
+  category_id: string | null;
+  category_name: string | null;
+  category_slug: string | null;
+  source_kind: string | null;
+  source_external_id: string | null;
+  source_url: string | null;
+  photos_count: number;
+  cover_photos_count: number;
+  missing_fields: string[];
+  missing_count: number;
+  completeness_score: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PlaceCompletenessSummary {
+  total_places: number;
+  complete_places: number;
+  incomplete_places: number;
+  average_completeness_score: number;
+  by_category: Array<{
+    category_id: string | null;
+    category_name: string;
+    total_places: number;
+    complete_places: number;
+    incomplete_places: number;
+    average_completeness_score: number;
+  }>;
+  fields: Array<{
+    field: string;
+    present_places: number;
+    missing_places: number;
+    completeness_percent: number;
+  }>;
+}
+
+export interface PlaceCompletenessReport {
+  data: PlaceCompletenessRow[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  summary: PlaceCompletenessSummary;
+}
+
+export interface ListPlaceCompletenessQuery {
+  city?: string;
+  zone?: string;
+  category_id?: string;
+  missing_only?: boolean;
+  page?: number;
+  limit?: number;
+}
+
 /**
  * Registry estatico de sources pluggables. Add a new entry here when the
  * backend gains a new ScraperSource kind — el resto de la UI lo recoge solo.
@@ -165,6 +213,8 @@ export const SCRAPER_SOURCES: ScraperSource[] = [
   },
 ];
 
-export function getScraperSource(kind: ScrapingSourceKind): ScraperSource | undefined {
+export function getScraperSource(
+  kind: ScrapingSourceKind,
+): ScraperSource | undefined {
   return SCRAPER_SOURCES.find((s) => s.kind === kind);
 }
