@@ -16,9 +16,17 @@ function qs(params: Record<string, string | number | undefined | null>) {
 }
 
 export const discoverApi = {
-  ranking: (limit = 10, travelerType?: TravelerType | null) =>
+  ranking: (
+    limit = 10,
+    travelerType?: TravelerType | null,
+    city?: string | null,
+  ) =>
     api.get<RankingListResponse>(
-      `/ranking${qs({ limit, traveler_type: travelerType ?? undefined })}`,
+      `/ranking${qs({
+        limit,
+        traveler_type: travelerType ?? undefined,
+        city: city ?? undefined,
+      })}`,
       { auth: false },
     ),
 

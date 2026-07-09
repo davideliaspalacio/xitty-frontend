@@ -150,6 +150,8 @@ export interface PlaceCard {
   name: string;
   description: string | null;
   address: string | null;
+  city?: string | null;
+  zone?: string | null;
   latitude: number | null;
   longitude: number | null;
   price_range: number | null;
@@ -207,6 +209,8 @@ export interface PlaceListQuery {
   sort_by?: PlaceSortBy;
   latitude?: number;
   longitude?: number;
+  city?: string;
+  zone?: string;
 }
 
 export interface PlaceSearchQuery {
@@ -214,6 +218,8 @@ export interface PlaceSearchQuery {
   page?: number;
   limit?: number;
   category_id?: string;
+  city?: string;
+  zone?: string;
 }
 
 /* ───────── Place management (owner/admin CRUD) ───────── */

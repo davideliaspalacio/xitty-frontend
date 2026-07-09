@@ -27,6 +27,7 @@ import { TodaySection } from "@/features/recommendations";
 import { CategoriesGrid } from "@/features/places/components/categories-grid";
 import { CuratedCarousel, useCurated } from "@/features/curated";
 import { useT } from "@/features/i18n";
+import { env } from "@/lib/env";
 import { featureFlags } from "@/lib/feature-flags";
 
 function CarouselSkeletons() {
@@ -61,9 +62,10 @@ export default function HomePage() {
   const name = user?.full_name?.split(" ")[0] ?? "Hola";
   const [heroQuery, setHeroQuery] = useState("");
   const t = useT();
+  const city = env.NEXT_PUBLIC_DEFAULT_CITY;
 
   const { travelerType, setTravelerType } = useTravelerFilter();
-  const ranking = useRanking(8, travelerType, featureFlags.ranking);
+  const ranking = useRanking(8, travelerType, featureFlags.ranking, city);
   const featured = useFeaturedCurrent(
     travelerType,
     featureFlags.recommendations,
@@ -90,7 +92,7 @@ export default function HomePage() {
       >
         <div className="flex min-w-0 flex-col gap-4">
           <div className="flex flex-wrap items-center gap-2">
-            <p className="eyebrow">Hoy en Barranquilla</p>
+            <p className="eyebrow">Hoy en {city}</p>
             <Badge variant="secondary">
               <MapPin className="h-3.5 w-3.5" aria-hidden="true" />
               Caribe colombiano
@@ -113,8 +115,9 @@ export default function HomePage() {
           >
             <div className="relative min-w-0 flex-1">
               <label htmlFor="home-search" className="sr-only">
-                Buscar en Barranquilla
+                Buscar en {city}
               </label>
+              <input type="hidden" name="city" value={city} />
               <Search
                 className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[var(--text-muted)]"
                 aria-hidden="true"
@@ -190,7 +193,7 @@ export default function HomePage() {
         <section id="tour-ranking">
           <SectionHeader
             eyebrow="Top de la ciudad"
-            title="Ranking en Barranquilla"
+            title={`Ranking en ${city}`}
             subtitle="Lo más visitado y mejor calificado esta semana."
             href="/places"
           />
@@ -235,7 +238,7 @@ export default function HomePage() {
         <section>
           <SectionHeader
             eyebrow="Curado con IA"
-            title="Descubre lo nuevo en Barranquilla"
+            title={`Descubre lo nuevo en ${city}`}
             subtitle="Curado con IA, actualizado cada semana."
           />
           {curated.isLoading ? (

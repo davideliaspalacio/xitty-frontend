@@ -14,10 +14,12 @@ import { PlaceFilters } from "@/features/places/components/place-filters";
 import { PlaceGrid } from "@/features/places/components/place-grid";
 import { useDebouncedValue } from "@/shared/hooks/use-debounced-value";
 import type { PlaceSortBy } from "@/lib/api/types";
+import { env } from "@/lib/env";
 
 export default function PlacesPage() {
   const params = useSearchParams();
   const initialQ = params.get("q") ?? "";
+  const city = params.get("city") ?? env.NEXT_PUBLIC_DEFAULT_CITY;
   const [draftSearch, setDraftSearch] = useState(() => ({
     source: initialQ,
     value: initialQ,
@@ -40,20 +42,22 @@ export default function PlacesPage() {
       price_range:
         priceRange !== null ? (priceRange as 1 | 2 | 3 | 4) : undefined,
       sort_by: sortBy,
+      city,
       page: 1,
       limit: 24,
     }),
-    [categoryId, priceRange, sortBy],
+    [categoryId, priceRange, sortBy, city],
   );
 
   const searchQuery = useMemo(
     () => ({
       q: debouncedQ.trim(),
       category_id: categoryId ?? undefined,
+      city,
       page: 1,
       limit: 24,
     }),
-    [debouncedQ, categoryId],
+    [debouncedQ, categoryId, city],
   );
 
   const listing = usePlaces(listQuery);
@@ -69,7 +73,7 @@ export default function PlacesPage() {
       <header className="flex flex-col gap-2">
         <p className="eyebrow">Directorio</p>
         <h1 className="text-[32px] font-semibold leading-[1.1] tracking-normal text-[var(--text)]">
-          Explora lugares en Barranquilla
+          Explora lugares en {city}
         </h1>
         <p className="text-[var(--text-muted)] text-[15px] max-w-2xl">
           Restaurantes, sitios turísticos y experiencias verificadas. Filtra

@@ -8,10 +8,15 @@ export function useRanking(
   limit = 10,
   travelerType?: TravelerType | null,
   enabled = true,
+  city?: string | null,
 ) {
   return useQuery({
-    queryKey: ["discover", "ranking", { limit, travelerType: travelerType ?? null }],
-    queryFn: () => discoverApi.ranking(limit, travelerType ?? null),
+    queryKey: [
+      "discover",
+      "ranking",
+      { limit, travelerType: travelerType ?? null, city: city ?? null },
+    ],
+    queryFn: () => discoverApi.ranking(limit, travelerType ?? null, city ?? null),
     enabled,
     staleTime: 60 * 60_000, // 1h — refreshes daily server-side
   });

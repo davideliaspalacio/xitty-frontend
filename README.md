@@ -17,12 +17,14 @@ La app queda en `http://localhost:3000`.
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:3001
 NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_DEFAULT_CITY=Barranquilla
 ```
 
 | Variable | Para que |
 | --- | --- |
 | `NEXT_PUBLIC_API_URL` | URL del backend NestJS. |
 | `NEXT_PUBLIC_APP_URL` | URL publica/base del frontend para links y metadata. |
+| `NEXT_PUBLIC_DEFAULT_CITY` | Ciudad operativa por defecto para home, ranking y listados. |
 | `NEXT_PUBLIC_DISABLED_FEATURES` | Lista separada por comas de features apagadas. Vacio = todo encendido por defecto. |
 | `NEXT_PUBLIC_DISABLED_LANDING_SECTIONS` | Lista separada por comas de secciones de landing apagadas. Vacio = todo encendido por defecto. |
 
