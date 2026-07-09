@@ -10,6 +10,7 @@ import {
   Shield,
   Database,
   Sparkles,
+  Star,
 } from "lucide-react";
 import type { Role } from "@/lib/api/types";
 import { featureFlags } from "@/lib/feature-flags";
@@ -39,12 +40,12 @@ export const navByRole: Record<Role, NavItem[]> = {
     { href: "/dashboard/metrics", label: "Métricas", icon: BarChart3 },
     { href: "/profile", label: "Mi cuenta", icon: User },
   ],
-  // Solo rutas que existen hoy. `/admin/featured`, `/admin/local-picks` y
-  // `/admin/users` se agregarán al nav cuando sus páginas estén implementadas
-  // (hoy darían 404).
+  // Solo rutas que existen hoy. `/admin/local-picks` y `/admin/users` se
+  // agregarán al nav cuando sus páginas estén implementadas.
   admin: [
     { href: "/admin", label: "Panel admin", icon: Shield },
     { href: "/admin/scraping", label: "Scraping", icon: Database },
+    { href: "/admin/featured", label: "Destacados", icon: Star },
     { href: "/admin/sponsorships", label: "Sponsorships", icon: Sparkles },
     { href: "/profile", label: "Mi cuenta", icon: User },
   ],
