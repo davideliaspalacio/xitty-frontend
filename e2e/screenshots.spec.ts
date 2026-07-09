@@ -10,10 +10,8 @@ async function safeShot(page: Page, name: string, waitMs = 1500) {
     await page.waitForLoadState("networkidle", { timeout: 8000 }).catch(() => {});
     await page.waitForTimeout(waitMs);
     await page.screenshot({ path: `${SCREENSHOTS_DIR}/${name}`, fullPage: true });
-    // eslint-disable-next-line no-console
     console.log(`[shot] captured ${name}`);
   } catch (err) {
-    // eslint-disable-next-line no-console
     console.error(`[shot] FAILED ${name}:`, (err as Error).message);
   }
 }
@@ -22,7 +20,6 @@ async function safeGoto(page: Page, url: string) {
   try {
     await page.goto(url, { waitUntil: "domcontentloaded", timeout: 15000 });
   } catch (err) {
-    // eslint-disable-next-line no-console
     console.error(`[goto] FAILED ${url}:`, (err as Error).message);
   }
 }
@@ -42,7 +39,6 @@ async function login(page: Page, email: string, password: string) {
     await page.waitForURL((url) => !url.pathname.startsWith("/login"), { timeout: 10000 }).catch(() => {});
     await page.waitForTimeout(1500);
   } catch (err) {
-    // eslint-disable-next-line no-console
     console.error(`[login] FAILED for ${email}:`, (err as Error).message);
   }
 }

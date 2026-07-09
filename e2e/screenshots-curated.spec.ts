@@ -11,10 +11,8 @@ async function safeShot(page: Page, name: string, waitMs = 1500) {
     await page.waitForLoadState("networkidle", { timeout: 8000 }).catch(() => {});
     await page.waitForTimeout(waitMs);
     await page.screenshot({ path: `${SCREENSHOTS_DIR}/${name}`, fullPage: true });
-    // eslint-disable-next-line no-console
     console.log(`[shot] captured ${name}`);
   } catch (err) {
-    // eslint-disable-next-line no-console
     console.error(`[shot] FAILED ${name}:`, (err as Error).message);
   }
 }
@@ -23,7 +21,6 @@ async function safeGoto(page: Page, url: string) {
   try {
     await page.goto(url, { waitUntil: "domcontentloaded", timeout: 15000 });
   } catch (err) {
-    // eslint-disable-next-line no-console
     console.error(`[goto] FAILED ${url}:`, (err as Error).message);
   }
 }
@@ -51,7 +48,6 @@ async function login(page: Page, email: string, password: string) {
       .catch(() => {});
     await page.waitForTimeout(1500);
   } catch (err) {
-    // eslint-disable-next-line no-console
     console.error(`[login] FAILED for ${email}:`, (err as Error).message);
   }
 }
@@ -72,7 +68,6 @@ test("xitty curated + admin scraping screenshots — best effort", async ({ page
     await curatedHeading.scrollIntoViewIfNeeded({ timeout: 5000 });
     await page.waitForTimeout(800);
   } catch (err) {
-    // eslint-disable-next-line no-console
     console.error("[scroll] curated heading not found:", (err as Error).message);
   }
   await safeShot(page, "curated-section.png", 1500);
@@ -91,7 +86,6 @@ test("xitty curated + admin scraping screenshots — best effort", async ({ page
     await moderationTab.click({ timeout: 5000 });
     await page.waitForTimeout(1500);
   } catch (err) {
-    // eslint-disable-next-line no-console
     console.error("[tab] moderacion click failed:", (err as Error).message);
   }
   await safeShot(page, "admin-scraping-moderation.png", 1500);
@@ -104,7 +98,6 @@ test("xitty curated + admin scraping screenshots — best effort", async ({ page
     await editBtn.click({ timeout: 5000 });
     await page.waitForTimeout(1500);
   } catch (err) {
-    // eslint-disable-next-line no-console
     console.error("[item-detail] click failed:", (err as Error).message);
   }
   await safeShot(page, "admin-scraping-item-detail.png", 1500);
