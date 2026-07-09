@@ -8,9 +8,25 @@ import { cn } from "@/shared/utils/cn";
 import type { RankingItem } from "@/lib/api/types";
 
 export function RankingCard({ item }: { item: RankingItem }) {
-  const { place, position, position_change, is_sponsored, sponsored_label } = item;
+  const { place, position, position_change, is_sponsored, sponsored_label } =
+    item;
   const change = position_change ?? 0;
-  const ChangeIcon = change > 0 ? TrendingUp : change < 0 ? TrendingDown : Minus;
+  const ChangeIcon =
+    change > 0 ? TrendingUp : change < 0 ? TrendingDown : Minus;
+  const changeLabel =
+    position_change === null
+      ? "Sin historial semanal"
+      : change > 0
+        ? `Subió ${change} posiciones`
+        : change < 0
+          ? `Bajó ${Math.abs(change)} posiciones`
+          : "Sin cambio semanal";
+  const changeText =
+    position_change === null || change === 0
+      ? "0"
+      : change > 0
+        ? `+${change}`
+        : `${change}`;
   const changeColor =
     change > 0
       ? "text-[var(--success)]"
@@ -37,13 +53,17 @@ export function RankingCard({ item }: { item: RankingItem }) {
 
           <div className="absolute left-2.5 top-2.5 flex h-7 items-center gap-1.5 rounded-pill bg-[var(--text)] px-2 text-xs font-semibold text-[var(--text-inverse)]">
             <span>#{position}</span>
-            <ChangeIcon
+            <span
               className={cn(
-                "h-3 w-3",
+                "inline-flex min-w-7 items-center justify-center gap-0.5",
                 change !== 0 ? changeColor : "text-white/60",
               )}
-              aria-hidden="true"
-            />
+              aria-label={changeLabel}
+              title={changeLabel}
+            >
+              <ChangeIcon className="h-3 w-3" aria-hidden="true" />
+              <span>{changeText}</span>
+            </span>
           </div>
 
           {is_sponsored ? (
