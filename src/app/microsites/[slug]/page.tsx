@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     microsite.description ??
     `Descubre ${microsite.name} en Barranquilla con Xitty.`;
   const image = microsite.cover_photo_url ?? undefined;
-  const url = `${env.NEXT_PUBLIC_APP_URL}/microsites/${slug}`;
+  const url = `${env.NEXT_PUBLIC_APP_URL}/${slug}`;
 
   return {
     title,
@@ -225,7 +225,7 @@ export default async function MicrositePage({ params }: PageProps) {
           <span>
             {fmtNumber.format(microsite.total_reviews)} reseñas en Xitty
           </span>
-          <span>Micrositio público — xitty.co/microsites/{slug}</span>
+          <span>Micrositio público — xitty.co/{slug}</span>
         </footer>
       </main>
     </div>
