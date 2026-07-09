@@ -16,6 +16,10 @@ import { Skeleton } from "@/shared/ui/skeleton";
 import { Input } from "@/shared/ui/input";
 import { Field } from "@/shared/ui/field";
 import { ApiError } from "@/lib/api/types";
+import {
+  isSponsorshipCurrent,
+  isSponsorshipExpired,
+} from "@/features/places/utils/sponsorship-status";
 
 function DurationDialog({
   open,
@@ -29,6 +33,7 @@ function DurationDialog({
   onClose: () => void;
 }) {
   const [days, setDays] = useState<number | "">(30);
+  const [priority, setPriority] = useState<number | "">(50);
   const activate = useActivateSponsorship();
 
   if (!open) return null;
@@ -38,14 +43,16 @@ function DurationDialog({
       toast.error("Mínimo 1 día");
       return;
     }
+    if (typeof priority !== "number" || priority < 0 || priority > 100) {
+      toast.error("Prioridad entre 0 y 100");
+      return;
+    }
     try {
-      await activate.mutateAsync({ placeId, days });
+      await activate.mutateAsync({ placeId, days, priority });
       toast.success("Patrocinio activado");
       onClose();
     } catch (e) {
-      toast.error(
-        e instanceof ApiError ? e.message : "No se pudo activar",
-      );
+      toast.error(e instanceof ApiError ? e.message : "No se pudo activar");
     }
   }
 
@@ -61,7 +68,9 @@ function DurationDialog({
         <header className="flex items-start justify-between p-5 border-b border-[var(--border)]">
           <div>
             <p className="eyebrow">Patrocinar</p>
-            <h2 className="text-lg font-semibold tracking-normal">{placeName}</h2>
+            <h2 className="text-lg font-semibold tracking-normal">
+              {placeName}
+            </h2>
           </div>
           <button
             type="button"
@@ -89,6 +98,22 @@ function DurationDialog({
               }
             />
           </Field>
+          <Field
+            label="Prioridad"
+            htmlFor="priority"
+            hint="Si hay más de 3 patrocinios, gana la prioridad más alta."
+          >
+            <Input
+              id="priority"
+              type="number"
+              min={0}
+              max={100}
+              value={priority}
+              onChange={(e) =>
+                setPriority(e.target.value === "" ? "" : Number(e.target.value))
+              }
+            />
+          </Field>
           <div className="flex justify-end gap-2">
             <Button variant="secondary" onClick={onClose}>
               Cancelar
@@ -111,16 +136,23 @@ function PlaceRow({ placeId }: { placeId: string }) {
   if (isLoading || !place) {
     return <Skeleton className="h-20 rounded-lg" />;
   }
+  const isCurrentlySponsored = isSponsorshipCurrent(
+    place.is_sponsored,
+    place.sponsored_until,
+  );
+  const hasExpiredSponsorship = isSponsorshipExpired(
+    place.is_sponsored,
+    place.sponsored_until,
+  );
 
   async function handleDeactivate() {
-    if (!place || !confirm(`¿Desactivar patrocinio de "${place.name}"?`)) return;
+    if (!place || !confirm(`¿Desactivar patrocinio de "${place.name}"?`))
+      return;
     try {
       await deactivate.mutateAsync(place.id);
       toast.success("Patrocinio desactivado");
     } catch (e) {
-      toast.error(
-        e instanceof ApiError ? e.message : "No se pudo desactivar",
-      );
+      toast.error(e instanceof ApiError ? e.message : "No se pudo desactivar");
     }
   }
 
@@ -142,21 +174,27 @@ function PlaceRow({ placeId }: { placeId: string }) {
             <p className="text-sm font-semibold truncate">{place.name}</p>
             <p className="text-xs text-[var(--text-muted)] truncate">
               {place.categories?.name ?? "—"}
-              {place.is_sponsored ? (
+              {isCurrentlySponsored ? (
                 <span className="ml-2 inline-flex items-center h-5 px-2 rounded-pill text-[10px] font-semibold uppercase bg-[var(--accent-soft)] text-[var(--accent)]">
                   Patrocinado
                 </span>
               ) : null}
+              {hasExpiredSponsorship ? (
+                <span className="ml-2 inline-flex items-center h-5 px-2 rounded-pill text-[10px] font-semibold uppercase bg-[var(--bg-subtle)] text-[var(--text-soft)]">
+                  Vencido
+                </span>
+              ) : null}
               {place.sponsored_until ? (
                 <span className="ml-2 text-[var(--text-soft)]">
-                  hasta {new Date(place.sponsored_until).toLocaleDateString("es-CO")}
+                  hasta{" "}
+                  {new Date(place.sponsored_until).toLocaleDateString("es-CO")}
                 </span>
               ) : null}
             </p>
           </div>
         </div>
         <div className="flex gap-2 shrink-0">
-          {place.is_sponsored ? (
+          {isCurrentlySponsored ? (
             <Button
               variant="secondary"
               size="sm"

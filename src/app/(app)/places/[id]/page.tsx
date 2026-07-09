@@ -15,13 +15,9 @@ import { ReviewList } from "@/features/reviews/components/review-list";
 import { ReviewForm } from "@/features/reviews/components/review-form";
 import { featureFlags } from "@/lib/feature-flags";
 import { SourceReviews } from "@/features/places/components/source-reviews";
+import { isSponsorshipCurrent } from "@/features/places/utils/sponsorship-status";
 import { Skeleton } from "@/shared/ui/skeleton";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-} from "@/shared/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/shared/ui/card";
 
 export default function PlaceDetailPage({
   params,
@@ -65,6 +61,10 @@ export default function PlaceDetailPage({
   }
 
   const ctaPhone = place.cta_phone ?? place.phone;
+  const isCurrentlySponsored = isSponsorshipCurrent(
+    place.is_sponsored,
+    place.sponsored_until,
+  );
 
   return (
     <div className="flex flex-col gap-10 max-w-5xl">
@@ -87,7 +87,7 @@ export default function PlaceDetailPage({
 
       {/* Header */}
       <header className="flex flex-col gap-4">
-        {place.is_sponsored ? (
+        {isCurrentlySponsored ? (
           <span className="inline-flex items-center self-start h-6 px-2 rounded-pill text-[10px] font-semibold uppercase tracking-wider bg-[var(--accent-soft)] text-[var(--accent)]">
             Patrocinado
           </span>
@@ -176,7 +176,10 @@ export default function PlaceDetailPage({
             </CardHeader>
             <CardContent className="flex flex-col gap-3 text-sm">
               {place.address ? (
-                <InfoRow icon={<MapPin className="h-4 w-4" />} label="Dirección">
+                <InfoRow
+                  icon={<MapPin className="h-4 w-4" />}
+                  label="Dirección"
+                >
                   {place.address}
                 </InfoRow>
               ) : null}
