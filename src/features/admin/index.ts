@@ -9,3 +9,8 @@ export {
   useDeleteFeatured,
   useUpdateFeatured,
 } from "./hooks/use-featured";
+export {
+  useRankingConfig,
+  useRefreshRanking,
+  useUpdateRankingConfig,
+} from "./hooks/use-ranking-config";

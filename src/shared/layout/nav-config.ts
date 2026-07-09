@@ -45,6 +45,7 @@ export const navByRole: Record<Role, NavItem[]> = {
   admin: [
     { href: "/admin", label: "Panel admin", icon: Shield },
     { href: "/admin/scraping", label: "Scraping", icon: Database },
+    { href: "/admin/ranking", label: "Ranking", icon: BarChart3 },
     { href: "/admin/featured", label: "Destacados", icon: Star },
     { href: "/admin/sponsorships", label: "Sponsorships", icon: Sparkles },
     { href: "/profile", label: "Mi cuenta", icon: User },

@@ -84,4 +84,60 @@ describe("adminApi", () => {
       priority: 75,
     });
   });
+
+  it("lee configuracion del ranking", async () => {
+    vi.mocked(api.get).mockResolvedValueOnce({
+      id: "default",
+      rating_weight: 0.45,
+      views_weight: 0.25,
+      conversions_weight: 0.3,
+      rating_prior: 4.2,
+      rating_prior_reviews: 10,
+      views_cap: 500,
+      conversions_cap: 100,
+      window_days: 30,
+      updated_at: "2026-07-09T00:00:00.000Z",
+      weight_total: 1,
+    });
+
+    await adminApi.getRankingConfig();
+
+    expect(api.get).toHaveBeenCalledWith("/admin/ranking/config");
+  });
+
+  it("actualiza configuracion del ranking", async () => {
+    vi.mocked(api.patch).mockResolvedValueOnce({
+      id: "default",
+      rating_weight: 0.5,
+      views_weight: 0.2,
+      conversions_weight: 0.3,
+      rating_prior: 4.2,
+      rating_prior_reviews: 10,
+      views_cap: 500,
+      conversions_cap: 100,
+      window_days: 30,
+      updated_at: "2026-07-09T00:00:00.000Z",
+      weight_total: 1,
+    });
+
+    await adminApi.updateRankingConfig({
+      rating_weight: 0.5,
+      views_weight: 0.2,
+    });
+
+    expect(api.patch).toHaveBeenCalledWith("/admin/ranking/config", {
+      rating_weight: 0.5,
+      views_weight: 0.2,
+    });
+  });
+
+  it("dispara refresh manual del ranking", async () => {
+    vi.mocked(api.post).mockResolvedValueOnce({
+      refreshed_at: "2026-07-09T12:00:00.000Z",
+    });
+
+    await adminApi.refreshRanking();
+
+    expect(api.post).toHaveBeenCalledWith("/admin/ranking/refresh");
+  });
 });
