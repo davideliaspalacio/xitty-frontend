@@ -669,6 +669,7 @@ export type InteractionType =
 export interface TrackInteractionPayload {
   interaction_type: InteractionType;
   promo_id?: string;
+  anonymous_session_id?: string;
 }
 
 export interface MetricsSummary {
