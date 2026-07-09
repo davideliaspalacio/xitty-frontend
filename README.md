@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Xitty Frontend
 
-## Getting Started
+Frontend web de Xitty construido con Next.js. Incluye landing publica, flujo de autenticacion, dashboard, perfiles/micrositios, promociones, rankings, experiencias, audiotours y paneles admin.
 
-First, run the development server:
+## Desarrollo local
 
 ```bash
+npm install
+cp .env.example .env.local
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+La app queda en `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Variables de entorno
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```env
+NEXT_PUBLIC_API_URL=http://localhost:3001
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
 
-## Learn More
+| Variable | Para que |
+| --- | --- |
+| `NEXT_PUBLIC_API_URL` | URL del backend NestJS. |
+| `NEXT_PUBLIC_APP_URL` | URL publica/base del frontend para links y metadata. |
+| `NEXT_PUBLIC_DISABLED_FEATURES` | Lista separada por comas de features apagadas. Vacio = todo encendido por defecto. |
+| `NEXT_PUBLIC_DISABLED_LANDING_SECTIONS` | Lista separada por comas de secciones de landing apagadas. Vacio = todo encendido por defecto. |
 
-To learn more about Next.js, take a look at the following resources:
+## Feature flags
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Por defecto, todas las funcionalidades y secciones estan encendidas. Para apagar algo puntual sin tocar codigo:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```env
+NEXT_PUBLIC_DISABLED_FEATURES=aiChat,rewardsRally
+NEXT_PUBLIC_DISABLED_LANDING_SECTIONS=landingFaq
+```
 
-## Deploy on Vercel
+Tambien se puede forzar una flag individual con valores `true/false`, `1/0`, `on/off`, `yes/no` o `enabled/disabled`:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```env
+NEXT_PUBLIC_FEATURE_AI_CHAT=true
+NEXT_PUBLIC_FEATURE_AUDIO_TOURS=true
+NEXT_PUBLIC_LANDING_PLANNER=true
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Las flags viven en `src/lib/feature-flags.ts`.
+
+## Scripts utiles
+
+```bash
+npm run dev          # Desarrollo
+npm run build        # Build de produccion
+npm run typecheck    # TypeScript sin emitir
+npm run test:run     # Suite Vitest
+npm run lint         # ESLint
+```
+
+## QA rapido
+
+- Landing en `/` con marca verde, secciones largas y assets visuales.
+- Login en `/login`.
+- Dashboard en `/dashboard`.
+- Promociones en `/dashboard/promotions` y `/promotions`.
+- Metricas en `/dashboard/metrics`.
+- Admin scraping en `/admin/scraping`.
+- Admin patrocinios en `/admin/sponsorships`.
