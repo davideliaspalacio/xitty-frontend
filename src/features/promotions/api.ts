@@ -7,6 +7,7 @@ import type {
   Promotion,
   UpdatePromotionPayload,
 } from "@/lib/api/types";
+import { getAnonymousSessionId } from "@/features/metrics/anonymous-session";
 
 export const promotionsApi = {
   active: (page = 1, limit = 20) =>
@@ -18,9 +19,13 @@ export const promotionsApi = {
   hero: () => api.get<HeroPromotion[]>("/promotions/hero", { auth: false }),
 
   trackImpression: (promoId: string) =>
-    api.post<void>(`/promotions/${promoId}/impression`, undefined, {
-      auth: false,
-    }),
+    api.post<void>(
+      `/promotions/${promoId}/impression`,
+      { anonymous_session_id: getAnonymousSessionId() },
+      {
+        auth: false,
+      },
+    ),
 
   byPlace: (placeId: string) =>
     api.get<Promotion[]>(`/places/${placeId}/promotions`, { auth: false }),
