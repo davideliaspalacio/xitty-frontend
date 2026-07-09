@@ -1,4 +1,4 @@
-import { test, expect, Page } from "@playwright/test";
+import { test, Page } from "@playwright/test";
 
 /**
  * Capturas de las features del pivot (Fases 1-3) que faltaban en el PDF:
