@@ -22,7 +22,7 @@ export function useActivePromotions(page = 1, limit = 20) {
 export function usePromotionsForPlace(placeId: string | undefined) {
   return useQuery({
     queryKey: placeKey(placeId ?? ""),
-    queryFn: () => promotionsApi.byPlace(placeId!),
+    queryFn: () => promotionsApi.manageByPlace(placeId!),
     enabled: !!placeId,
     staleTime: 30_000,
   });
@@ -43,8 +43,13 @@ export function useCreatePromotion(placeId: string) {
 export function useUpdatePromotion(placeId: string) {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, payload }: { id: string; payload: UpdatePromotionPayload }) =>
-      promotionsApi.update(placeId, id, payload),
+    mutationFn: ({
+      id,
+      payload,
+    }: {
+      id: string;
+      payload: UpdatePromotionPayload;
+    }) => promotionsApi.update(placeId, id, payload),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: placeKey(placeId) });
       qc.invalidateQueries({ queryKey: activeKey });

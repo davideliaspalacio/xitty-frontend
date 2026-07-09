@@ -30,6 +30,9 @@ export const promotionsApi = {
   byPlace: (placeId: string) =>
     api.get<Promotion[]>(`/places/${placeId}/promotions`, { auth: false }),
 
+  manageByPlace: (placeId: string) =>
+    api.get<Promotion[]>(`/places/${placeId}/promotions/manage`),
+
   create: (placeId: string, payload: CreatePromotionPayload) =>
     api.post<Promotion>(`/places/${placeId}/promotions`, payload),
 
