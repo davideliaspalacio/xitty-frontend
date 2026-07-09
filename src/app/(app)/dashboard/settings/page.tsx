@@ -13,22 +13,22 @@ const TOGGLES: { key: "notify_call_click" | "notify_whatsapp_click" | "notify_re
   {
     key: "notify_call_click",
     label: "Cuando alguien llama",
-    hint: "Push/email instantáneo al hacer click en 'Llamar' desde tu micrositio.",
+    hint: "Aviso interno cuando alguien toca 'Llamar' desde tu micrositio.",
   },
   {
     key: "notify_whatsapp_click",
     label: "Cuando abren WhatsApp",
-    hint: "Notificación al click en 'WhatsApp'.",
+    hint: "Aviso interno cuando alguien toca 'WhatsApp'.",
   },
   {
     key: "notify_reservation_click",
     label: "Cuando intentan reservar",
-    hint: "Notificación al click en 'Reservar' (no garantiza reserva confirmada).",
+    hint: "Aviso interno cuando alguien toca 'Reservar' (no garantiza reserva confirmada).",
   },
   {
     key: "daily_summary",
     label: "Resumen diario",
-    hint: "Email cada mañana con las interacciones del día anterior.",
+    hint: "Resumen listo con las interacciones del día anterior cuando el canal esté configurado.",
   },
 ];
 
