@@ -680,7 +680,19 @@ export interface MetricsSummary {
   total_directions: number;
   total_promo_views: number;
   total_interactions: number;
+  prev_total_views: number;
+  prev_total_calls: number;
+  prev_total_whatsapp: number;
+  prev_total_reservations: number;
+  prev_total_directions: number;
+  prev_total_promo_views: number;
   prev_total_interactions: number;
+  views_change_percent: number;
+  calls_change_percent: number;
+  whatsapp_change_percent: number;
+  reservations_change_percent: number;
+  directions_change_percent: number;
+  promo_views_change_percent: number;
   change_percent: number;
   period: { from: string; to: string };
 }

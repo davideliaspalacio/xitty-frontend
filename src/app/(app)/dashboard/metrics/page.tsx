@@ -100,7 +100,10 @@ export default function MetricsPage() {
         </div>
       </div>
       {summary.isFetching || series.isFetching ? (
-        <p className="text-xs font-medium text-[var(--text-muted)]" role="status">
+        <p
+          className="text-xs font-medium text-[var(--text-muted)]"
+          role="status"
+        >
           Actualizando métricas…
         </p>
       ) : null}
@@ -113,19 +116,47 @@ export default function MetricsPage() {
           ))
         ) : summary.data ? (
           <>
-            <KPI label="Vistas" value={summary.data.total_views} />
-            <KPI label="Llamadas" value={summary.data.total_calls} />
-            <KPI label="WhatsApp" value={summary.data.total_whatsapp} />
-            <KPI label="Reservas" value={summary.data.total_reservations} />
-            <KPI label="Cómo llegar" value={summary.data.total_directions} />
-            <KPI label="Vistas promos" value={summary.data.total_promo_views} />
+            <KPI
+              label="Vistas"
+              value={summary.data.total_views}
+              change={summary.data.views_change_percent}
+            />
+            <KPI
+              label="Llamadas"
+              value={summary.data.total_calls}
+              change={summary.data.calls_change_percent}
+            />
+            <KPI
+              label="WhatsApp"
+              value={summary.data.total_whatsapp}
+              change={summary.data.whatsapp_change_percent}
+            />
+            <KPI
+              label="Reservas"
+              value={summary.data.total_reservations}
+              change={summary.data.reservations_change_percent}
+            />
+            <KPI
+              label="Cómo llegar"
+              value={summary.data.total_directions}
+              change={summary.data.directions_change_percent}
+            />
+            <KPI
+              label="Vistas promos"
+              value={summary.data.total_promo_views}
+              change={summary.data.promo_views_change_percent}
+            />
           </>
         ) : null}
       </div>
 
       {summary.data ? (
         <p className="text-sm text-[var(--text-muted)]">
-          Total: <strong className="text-[var(--text)]">{fmtNumber.format(summary.data.total_interactions)}</strong> interacciones
+          Total:{" "}
+          <strong className="text-[var(--text)]">
+            {fmtNumber.format(summary.data.total_interactions)}
+          </strong>{" "}
+          interacciones
           {summary.data.change_percent !== 0 ? (
             <span
               className={
@@ -135,7 +166,8 @@ export default function MetricsPage() {
               }
             >
               {summary.data.change_percent > 0 ? "↑" : "↓"}{" "}
-              {Math.abs(summary.data.change_percent).toFixed(1)}% vs período anterior
+              {Math.abs(summary.data.change_percent).toFixed(1)}% vs período
+              anterior
             </span>
           ) : null}
         </p>
@@ -157,7 +189,10 @@ export default function MetricsPage() {
             </div>
           ) : (
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData} margin={{ top: 4, right: 8, left: -12, bottom: 0 }}>
+              <BarChart
+                data={chartData}
+                margin={{ top: 4, right: 8, left: -12, bottom: 0 }}
+              >
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
                 <XAxis
                   dataKey="bucket"
@@ -192,11 +227,31 @@ export default function MetricsPage() {
   );
 }
 
-function KPI({ label, value }: { label: string; value: number }) {
+function KPI({
+  label,
+  value,
+  change,
+}: {
+  label: string;
+  value: number;
+  change: number;
+}) {
+  const direction = change > 0 ? "up" : change < 0 ? "down" : "flat";
+  const tone =
+    direction === "up"
+      ? "text-[var(--success)]"
+      : direction === "down"
+        ? "text-[var(--danger)]"
+        : "text-[var(--text-muted)]";
+
   return (
     <Card className="px-4 py-3">
       <p className="text-xs text-[var(--text-muted)]">{label}</p>
       <p className="text-2xl font-semibold mt-1">{fmtNumber.format(value)}</p>
+      <p className={`mt-1 text-xs font-semibold ${tone}`}>
+        {direction === "flat" ? "Sin cambio" : change > 0 ? "↑" : "↓"}{" "}
+        {direction === "flat" ? "" : `${Math.abs(change).toFixed(1)}%`}
+      </p>
     </Card>
   );
 }
