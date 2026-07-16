@@ -30,8 +30,11 @@ vi.mock("@/features/admin", () => ({
           custom_title: "Ruta de historia",
           custom_description: "Una parada recomendada para esta semana.",
           hero_image_url: null,
-          week_starts_at: "2026-07-06T05:00:00.000Z",
-          week_ends_at: "2026-07-13T04:59:00.000Z",
+          // Ventana RELATIVA a "ahora". Con fechas fijas el test caducaba: la
+          // ventana 2026-07-06→07-13 venció y el badge "Vigente" dejó de
+          // renderizarse, poniendo el frontend en rojo sin que nadie tocara la UI.
+          week_starts_at: new Date(Date.now() - 2 * 86_400_000).toISOString(),
+          week_ends_at: new Date(Date.now() + 5 * 86_400_000).toISOString(),
           position: 1,
           is_active: true,
           created_by: "admin-1",
