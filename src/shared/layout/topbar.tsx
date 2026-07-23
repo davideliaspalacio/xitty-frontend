@@ -84,12 +84,22 @@ export function Topbar() {
           <Search className="h-[18px] w-[18px]" aria-hidden="true" />
         </Button>
 
-        {/* Campana: solo desde sm para no saturar mobile */}
-        <Button variant="ghost" size="icon" aria-label="Notificaciones" className="hidden sm:inline-flex">
+        {/* Campana: deshabilitada hasta tener panel de notificaciones real
+            (auditoría #9) — no hacía nada al clic. */}
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label="Notificaciones (próximamente)"
+          title="Notificaciones (próximamente)"
+          disabled
+          className="hidden cursor-not-allowed opacity-50 sm:inline-flex"
+        >
           <Bell className="h-[18px] w-[18px]" aria-hidden="true" />
         </Button>
 
-        {featureFlags.emergencyButton ? (
+        {/* SOS: función de seguridad para el TURISTA. Se oculta para dueños de
+            negocio y admin (auditoría #32). */}
+        {featureFlags.emergencyButton && user?.role === "user" ? (
           <span id="tour-sos" className="inline-flex">
             <EmergencyButton />
           </span>
