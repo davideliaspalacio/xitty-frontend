@@ -26,6 +26,7 @@ import { Field } from "@/shared/ui/field";
 import { Input } from "@/shared/ui/input";
 import { Badge } from "@/shared/ui/badge";
 import { Skeleton } from "@/shared/ui/skeleton";
+import { ErrorState } from "@/shared/ui/error-state";
 
 type RankingForm = Record<keyof UpdateRankingConfigPayload, string>;
 
@@ -223,17 +224,11 @@ export default function AdminRankingPage() {
             <Skeleton className="h-28 rounded-lg" />
           </div>
         ) : config.isError || !config.data ? (
-          <Card className="p-6">
-            <div className="flex flex-col gap-2">
-              <h2 className="text-lg font-semibold tracking-normal">
-                No se pudo cargar la configuración
-              </h2>
-              <p className="text-sm text-[var(--text-muted)]">
-                Revisa que las migraciones de ranking estén aplicadas y vuelve a
-                intentar.
-              </p>
-            </div>
-          </Card>
+          <ErrorState
+            title="No se pudo cargar la configuración"
+            description="Revisa que las migraciones de ranking estén aplicadas y vuelve a intentar."
+            onRetry={() => void config.refetch()}
+          />
         ) : (
           <RankingConfigEditor config={config.data} />
         )}
