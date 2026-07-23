@@ -31,6 +31,13 @@ const STATUS_FILTERS: { id: EnrichedItemStatus; label: string }[] = [
   { id: "rejected", label: "Rechazados" },
 ];
 
+const STATUS_LABEL: Record<EnrichedItemStatus, string> = {
+  pending: "pendiente",
+  approved: "aprobado",
+  published: "publicado",
+  rejected: "rechazado",
+};
+
 const isPublishable = (item: ScrapedItemEnriched) =>
   item.status === "pending" || item.status === "approved";
 
@@ -154,7 +161,7 @@ export function ModerationQueue({
         </div>
       ) : !items || items.length === 0 ? (
         <Card className="p-8 text-center text-sm text-[var(--text-muted)]">
-          No hay items en estado <strong>{status}</strong>.
+          No hay items en estado <strong>{STATUS_LABEL[status]}</strong>.
         </Card>
       ) : (
         <div className="flex flex-col gap-3">

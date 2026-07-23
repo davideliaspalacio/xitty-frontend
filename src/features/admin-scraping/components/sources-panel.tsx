@@ -205,7 +205,12 @@ export function SourcesPanel() {
                     {s.last_run_at ? (
                       <>
                         {" · "}último run{" "}
-                        {new Date(s.last_run_at).toLocaleString("es-CO")}
+                        {new Date(s.last_run_at).toLocaleString("es-CO", {
+                          day: "2-digit",
+                          month: "2-digit",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
                       </>
                     ) : (
                       " · sin runs aún"
