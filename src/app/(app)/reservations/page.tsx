@@ -8,6 +8,7 @@ import { ReservationCard } from "@/features/reservations/components/reservation-
 import { Skeleton } from "@/shared/ui/skeleton";
 import { buttonVariants } from "@/shared/ui/button";
 import { EmptyState } from "@/shared/ui/empty-state";
+import { ErrorState } from "@/shared/ui/error-state";
 import { RoleGate } from "@/features/auth/components/role-gate";
 import { cn } from "@/shared/utils/cn";
 import type { Reservation } from "@/lib/api/types";
@@ -48,7 +49,7 @@ function bucketize(reservations: Reservation[]) {
 }
 
 export default function ReservationsPage() {
-  const { data, isLoading } = useMyReservations(1, 100);
+  const { data, isLoading, isError, refetch } = useMyReservations(1, 100);
   const [tab, setTab] = useState<Tab>("upcoming");
 
   const buckets = useMemo(() => bucketize(data?.data ?? []), [data?.data]);
@@ -101,6 +102,11 @@ export default function ReservationsPage() {
               <Skeleton key={i} className="h-32 rounded-lg" />
             ))}
           </div>
+        ) : isError ? (
+          <ErrorState
+            title="No pudimos cargar tus reservas"
+            onRetry={() => void refetch()}
+          />
         ) : visible.length === 0 ? (
           <div>
             {tab === "upcoming" ? (

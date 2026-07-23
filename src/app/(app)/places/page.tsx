@@ -12,6 +12,7 @@ import {
 import { CategoryChips } from "@/features/places/components/category-chips";
 import { PlaceFilters } from "@/features/places/components/place-filters";
 import { PlaceGrid } from "@/features/places/components/place-grid";
+import { ErrorState } from "@/shared/ui/error-state";
 import { useDebouncedValue } from "@/shared/hooks/use-debounced-value";
 import type { PlaceSortBy } from "@/lib/api/types";
 import { env } from "@/lib/env";
@@ -24,8 +25,7 @@ export default function PlacesPage() {
     source: initialQ,
     value: initialQ,
   }));
-  const q =
-    draftSearch.source === initialQ ? draftSearch.value : initialQ;
+  const q = draftSearch.source === initialQ ? draftSearch.value : initialQ;
   const debouncedQ = useDebouncedValue(q, 300);
 
   const [categoryId, setCategoryId] = useState<string | null>(null);
@@ -65,6 +65,7 @@ export default function PlacesPage() {
 
   const active = isSearching ? search : listing;
   const isLoading = active.isLoading || active.isFetching;
+  const isError = active.isError;
   const places = active.data?.data;
   const total = active.data?.total ?? 0;
 
@@ -76,8 +77,8 @@ export default function PlacesPage() {
           Explora lugares en {city}
         </h1>
         <p className="text-[var(--text-muted)] text-[15px] max-w-2xl">
-          Restaurantes, sitios turísticos y experiencias verificadas. Filtra
-          por categoría, precio o popularidad.
+          Restaurantes, sitios turísticos y experiencias verificadas. Filtra por
+          categoría, precio o popularidad.
         </p>
       </header>
 
@@ -139,15 +140,23 @@ export default function PlacesPage() {
         </div>
       )}
 
-      <PlaceGrid
-        places={places}
-        loading={isLoading}
-        emptyMessage={
-          isSearching
-            ? "Sin resultados. Prueba otras palabras."
-            : "No hay lugares con esos filtros."
-        }
-      />
+      {isError ? (
+        <ErrorState
+          title="No pudimos cargar los lugares"
+          description="Hubo un problema al traer el directorio. Revisa tu conexión e inténtalo de nuevo."
+          onRetry={() => void active.refetch()}
+        />
+      ) : (
+        <PlaceGrid
+          places={places}
+          loading={isLoading}
+          emptyMessage={
+            isSearching
+              ? "Sin resultados. Prueba otras palabras."
+              : "No hay lugares con esos filtros."
+          }
+        />
+      )}
     </div>
   );
 }

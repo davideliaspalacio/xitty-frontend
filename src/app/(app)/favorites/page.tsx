@@ -6,6 +6,7 @@ import { useFavorites } from "@/features/favorites/hooks/use-favorites";
 import { PlaceGrid } from "@/features/places/components/place-grid";
 import { buttonVariants } from "@/shared/ui/button";
 import { EmptyState } from "@/shared/ui/empty-state";
+import { ErrorState } from "@/shared/ui/error-state";
 import { RoleGate } from "@/features/auth/components/role-gate";
 import type { FavoriteItem, PlaceCard } from "@/lib/api/types";
 
@@ -27,7 +28,7 @@ function toPlaceCard(item: FavoriteItem): PlaceCard {
 }
 
 export default function FavoritesPage() {
-  const { data, isLoading } = useFavorites(1, 50);
+  const { data, isLoading, isError, refetch } = useFavorites(1, 50);
 
   const places = data?.data.map(toPlaceCard);
 
@@ -45,7 +46,12 @@ export default function FavoritesPage() {
           </p>
         </header>
 
-        {!isLoading && (!places || places.length === 0) ? (
+        {isError ? (
+          <ErrorState
+            title="No pudimos cargar tus favoritos"
+            onRetry={() => void refetch()}
+          />
+        ) : !isLoading && (!places || places.length === 0) ? (
           <EmptyState
             icon={Heart}
             title="Aún no has guardado nada"

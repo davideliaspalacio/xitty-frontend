@@ -13,6 +13,8 @@ import { ExperienceEditor } from "@/features/experiences/components/experience-e
 import { Card, CardContent } from "@/shared/ui/card";
 import { Button } from "@/shared/ui/button";
 import { Skeleton } from "@/shared/ui/skeleton";
+import { EmptyState } from "@/shared/ui/empty-state";
+import { ErrorState } from "@/shared/ui/error-state";
 import { fmtCop } from "@/shared/utils/format";
 
 export default function DashboardExperiencesPage() {
@@ -75,13 +77,27 @@ export default function DashboardExperiencesPage() {
 
       {experiences.isLoading ? (
         <Skeleton className="h-40 rounded-lg" />
+      ) : experiences.isError ? (
+        <ErrorState
+          title="No pudimos cargar tus experiencias"
+          onRetry={() => void experiences.refetch()}
+        />
       ) : list.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-[var(--border)] bg-[var(--bg-subtle)] px-6 py-12 text-center">
-          <p className="text-sm text-[var(--text-muted)]">
-            Aún no has publicado experiencias. Crea la primera para que los
-            turistas la reserven.
-          </p>
-        </div>
+        <EmptyState
+          icon={Star}
+          title="Aún no has publicado experiencias"
+          description="Crea la primera para que los turistas la reserven."
+          action={
+            <Button
+              onClick={() => {
+                setCreating(true);
+                setSelectedId(null);
+              }}
+            >
+              <Plus className="h-4 w-4" /> Nueva experiencia
+            </Button>
+          }
+        />
       ) : (
         <div className="flex flex-col gap-3">
           {list.map((exp) => (

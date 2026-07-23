@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Pencil, Trash2, Tag } from "lucide-react";
 import { toast } from "sonner";
 import { useOwnedPlace } from "@/features/places/hooks/use-owned-place";
 import { BusinessPlaceRequired } from "@/features/places/components/business-place-required";
@@ -13,6 +13,8 @@ import { PromotionForm } from "@/features/promotions/components/promotion-form";
 import { Card, CardContent } from "@/shared/ui/card";
 import { Button } from "@/shared/ui/button";
 import { Skeleton } from "@/shared/ui/skeleton";
+import { EmptyState } from "@/shared/ui/empty-state";
+import { ErrorState } from "@/shared/ui/error-state";
 import { ApiError } from "@/lib/api/types";
 import type { Promotion } from "@/lib/api/types";
 
@@ -27,7 +29,8 @@ export default function PromotionsAdminPage() {
   if (!place) return <BusinessPlaceRequired />;
 
   async function handleDelete(p: Promotion) {
-    if (!confirm(`¿Borrar "${p.title}"? Esta acción no se puede deshacer.`)) return;
+    if (!confirm(`¿Borrar "${p.title}"? Esta acción no se puede deshacer.`))
+      return;
     try {
       await remove.mutateAsync(p.id);
       toast.success("Promoción eliminada");
@@ -42,7 +45,8 @@ export default function PromotionsAdminPage() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <p className="text-sm text-[var(--text-muted)]">
-          {list.length} promociones · {list.filter((p) => p.is_active).length} activas
+          {list.length} promociones · {list.filter((p) => p.is_active).length}{" "}
+          activas
         </p>
         {!creating && !editing ? (
           <Button onClick={() => setCreating(true)}>
@@ -78,12 +82,22 @@ export default function PromotionsAdminPage() {
 
       {promos.isLoading ? (
         <Skeleton className="h-32 rounded-lg" />
+      ) : promos.isError ? (
+        <ErrorState
+          title="No pudimos cargar tus promociones"
+          onRetry={() => void promos.refetch()}
+        />
       ) : list.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-[var(--border)] bg-[var(--bg-subtle)] px-6 py-12 text-center">
-          <p className="text-sm text-[var(--text-muted)]">
-            Aún no has creado promociones. Crea una para atraer clientes.
-          </p>
-        </div>
+        <EmptyState
+          icon={Tag}
+          title="Aún no has creado promociones"
+          description="Crea una para atraer clientes a tu negocio."
+          action={
+            <Button onClick={() => setCreating(true)}>
+              <Plus className="h-4 w-4" /> Nueva promoción
+            </Button>
+          }
+        />
       ) : (
         <div className="flex flex-col gap-3">
           {list.map((p) => (
