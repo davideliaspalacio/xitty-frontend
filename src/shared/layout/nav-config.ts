@@ -6,7 +6,6 @@ import {
   User,
   Briefcase,
   BarChart3,
-  Tag,
   Shield,
   Database,
   Sparkles,
@@ -34,10 +33,12 @@ export const navByRole: Record<Role, NavItem[]> = {
     { href: "/reservations", label: "Reservas", icon: CalendarCheck },
     { href: "/profile", label: "Mi cuenta", icon: User },
   ],
+  // Promociones y Métricas viven como pestañas dentro del dashboard
+  // (ver dashboard/layout.tsx); no se repiten aquí para evitar navegación
+  // duplicada (auditoría #17). El sidebar te lleva AL dashboard; las
+  // pestañas navegan DENTRO de él.
   business: [
     { href: "/dashboard", label: "Mi negocio", icon: Briefcase },
-    { href: "/dashboard/promotions", label: "Promociones", icon: Tag },
-    { href: "/dashboard/metrics", label: "Métricas", icon: BarChart3 },
     { href: "/profile", label: "Mi cuenta", icon: User },
   ],
   // Solo rutas que existen hoy. `/admin/local-picks` y `/admin/users` se
@@ -58,7 +59,6 @@ export function getNavItemsForRole(role: Role): NavItem[] {
   return items.filter((item) => {
     if (item.href === "/favorites") return featureFlags.favorites;
     if (item.href === "/reservations") return featureFlags.reservations;
-    if (item.href === "/dashboard/promotions") return featureFlags.promotions;
 
     return true;
   });

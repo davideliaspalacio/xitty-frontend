@@ -81,18 +81,21 @@ export default function ProfilePage() {
         </CardContent>
       </Card>
 
-      {/* Preferencias */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-xl">Mis preferencias</CardTitle>
-          <CardDescription>
-            Define cómo quieres viajar — esto alimenta las recomendaciones.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <PreferencesSummary />
-        </CardContent>
-      </Card>
+      {/* Preferencias — solo para turistas: alimentan las recomendaciones de
+          viaje. Un dueño de negocio o admin no las usa (auditoría #18). */}
+      {user?.role === "user" ? (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-xl">Mis preferencias</CardTitle>
+            <CardDescription>
+              Define cómo quieres viajar — esto alimenta las recomendaciones.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <PreferencesSummary />
+          </CardContent>
+        </Card>
+      ) : null}
 
       {/* Ayuda */}
       <Card>
