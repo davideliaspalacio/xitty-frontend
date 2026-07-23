@@ -14,6 +14,13 @@ const STATUS_COLOR: Record<ScrapingRunStatus, string> = {
   failed: "bg-red-50 text-red-700",
 };
 
+const STATUS_LABEL: Record<ScrapingRunStatus, string> = {
+  running: "En curso",
+  succeeded: "Completado",
+  partial: "Parcial",
+  failed: "Fallido",
+};
+
 /**
  * Fecha corta para no desbordar en mobile: `dd/mm HH:MM` (sin año ni
  * segundos, que el toLocaleString añade y no aportan aquí).
@@ -38,7 +45,7 @@ function StatusBadge({ status }: { status: ScrapingRunStatus }) {
         STATUS_COLOR[status],
       )}
     >
-      {status}
+      {STATUS_LABEL[status]}
     </span>
   );
 }
@@ -88,9 +95,9 @@ export function RunsHistory() {
               <StatusBadge status={r.status} />
             </div>
             <dl className="grid grid-cols-3 gap-2 text-xs">
-              <RunStat label="Found" value={r.items_found} />
-              <RunStat label="Enriched" value={r.items_enriched} />
-              <RunStat label="Failed" value={r.items_failed} />
+              <RunStat label="Encontrados" value={r.items_found} />
+              <RunStat label="Enriquecidos" value={r.items_enriched} />
+              <RunStat label="Fallidos" value={r.items_failed} />
             </dl>
             <div className="flex flex-col gap-1 text-xs text-[var(--text-muted)]">
               <div className="flex justify-between gap-2">
@@ -116,11 +123,11 @@ export function RunsHistory() {
         <table className="w-full text-sm">
           <thead>
             <tr className="text-left text-[11px] uppercase tracking-wide text-[var(--text-soft)] border-b border-[var(--border)]">
-              <th className="px-4 py-2 font-medium">Source</th>
-              <th className="px-4 py-2 font-medium">Status</th>
-              <th className="px-4 py-2 font-medium text-right">Found</th>
-              <th className="px-4 py-2 font-medium text-right">Enriched</th>
-              <th className="px-4 py-2 font-medium text-right">Failed</th>
+              <th className="px-4 py-2 font-medium">Fuente</th>
+              <th className="px-4 py-2 font-medium">Estado</th>
+              <th className="px-4 py-2 font-medium text-right">Encontrados</th>
+              <th className="px-4 py-2 font-medium text-right">Enriquecidos</th>
+              <th className="px-4 py-2 font-medium text-right">Fallidos</th>
               <th className="px-4 py-2 font-medium">Inicio</th>
               <th className="px-4 py-2 font-medium">Fin</th>
               <th className="px-4 py-2 font-medium">Error</th>
