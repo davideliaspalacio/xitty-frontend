@@ -6,11 +6,18 @@ vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn(), replace: vi.fn() }),
 }));
 
+const authMock = vi.hoisted(() => ({
+  user: {
+    id: "u1",
+    email: "test@example.com",
+    full_name: "Test User",
+    role: "user",
+  } as { id: string; email: string; full_name: string; role: string },
+}));
+
 vi.mock("@/features/auth/store/auth-store", () => ({
   useAuthStore: (selector: (s: unknown) => unknown) =>
-    selector({
-      user: { id: "u1", email: "test@example.com", full_name: "Test User" },
-    }),
+    selector({ user: authMock.user }),
 }));
 
 vi.mock("@/features/auth/hooks/use-auth", () => ({
@@ -20,6 +27,13 @@ vi.mock("@/features/auth/hooks/use-auth", () => ({
 describe("Topbar", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Por defecto, turista (ve el SOS).
+    authMock.user = {
+      id: "u1",
+      email: "test@example.com",
+      full_name: "Test User",
+      role: "user",
+    };
   });
 
   it("renders the search input", () => {
@@ -29,11 +43,19 @@ describe("Topbar", () => {
     ).toBeInTheDocument();
   });
 
-  it("renders the SOS emergency button next to the avatar", () => {
+  it("renders the SOS emergency button for a turista", () => {
     render(<Topbar />);
     expect(
       screen.getByRole("button", { name: /llamar emergencia/i }),
     ).toBeInTheDocument();
+  });
+
+  it("hides the SOS button for a business owner (not a turista)", () => {
+    authMock.user = { ...authMock.user, role: "business" };
+    render(<Topbar />);
+    expect(
+      screen.queryByRole("button", { name: /llamar emergencia/i }),
+    ).toBeNull();
   });
 
   it("renders the LanguageSelector next to the EmergencyButton", () => {
