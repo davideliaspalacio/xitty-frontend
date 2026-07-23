@@ -14,7 +14,13 @@ import { RoleGate } from "@/features/auth/components/role-gate";
 import { usePlaces } from "@/features/places";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/shared/ui/card";
 import { EmptyState } from "@/shared/ui/empty-state";
 import { Field } from "@/shared/ui/field";
 import { Input } from "@/shared/ui/input";
@@ -68,7 +74,8 @@ function getStatus(entry: FeaturedEntry) {
   const starts = new Date(entry.week_starts_at).getTime();
   const ends = new Date(entry.week_ends_at).getTime();
 
-  if (!entry.is_active) return { label: "Inactivo", variant: "default" as const };
+  if (!entry.is_active)
+    return { label: "Inactivo", variant: "default" as const };
   if (now < starts) return { label: "Programado", variant: "info" as const };
   if (now > ends) return { label: "Vencido", variant: "warning" as const };
   return { label: "Vigente", variant: "success" as const };
@@ -88,7 +95,9 @@ function FeaturedForm() {
   const [heroImageUrl, setHeroImageUrl] = useState("");
   const [weekStartsAt, setWeekStartsAt] = useState(defaults.weekStartsAt);
   const [weekEndsAt, setWeekEndsAt] = useState(defaults.weekEndsAt);
-  const [position, setPosition] = useState(0);
+  // Posición 1-based de cara al curador (auditoría #28). Se guarda 0-based
+  // en la BD (ver handleSubmit) para no romper el orden ni las filas viejas.
+  const [position, setPosition] = useState(1);
   const [isActive, setIsActive] = useState(true);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -113,18 +122,21 @@ function FeaturedForm() {
         hero_image_url: heroImageUrl.trim() || undefined,
         week_starts_at: toIso(weekStartsAt),
         week_ends_at: toIso(weekEndsAt),
-        position,
+        // 1-based en el form → 0-based en la BD.
+        position: position - 1,
         is_active: isActive,
       });
       toast.success("Destacado programado");
       setCustomTitle("");
       setCustomDescription("");
       setHeroImageUrl("");
-      setPosition(0);
+      setPosition(1);
       setIsActive(true);
     } catch (error) {
       toast.error(
-        error instanceof ApiError ? error.message : "No se pudo crear el destacado",
+        error instanceof ApiError
+          ? error.message
+          : "No se pudo crear el destacado",
       );
     }
   }
@@ -175,7 +187,7 @@ function FeaturedForm() {
               <Input
                 id="featured-position"
                 type="number"
-                min={0}
+                min={1}
                 max={100}
                 value={position}
                 onChange={(event) => setPosition(Number(event.target.value))}
@@ -267,7 +279,9 @@ function FeaturedRow({ entry }: { entry: FeaturedEntry }) {
         id: entry.id,
         payload: { is_active: !entry.is_active },
       });
-      toast.success(entry.is_active ? "Destacado pausado" : "Destacado activado");
+      toast.success(
+        entry.is_active ? "Destacado pausado" : "Destacado activado",
+      );
     } catch (error) {
       toast.error(
         error instanceof ApiError
@@ -312,7 +326,7 @@ function FeaturedRow({ entry }: { entry: FeaturedEntry }) {
           <Badge variant={status.variant}>{status.label}</Badge>
           <Badge variant="secondary">{entry.curator_name}</Badge>
           <span className="text-xs text-[var(--text-muted)]">
-            Posición {entry.position}
+            Posición {entry.position + 1}
           </span>
         </div>
         <h2 className="truncate text-sm font-semibold text-[var(--text)]">
@@ -371,7 +385,8 @@ function FeaturedList() {
       <CardHeader>
         <CardTitle>Programación</CardTitle>
         <CardDescription>
-          Revisa lo vigente, lo próximo y lo que debe pausarse antes de publicar.
+          Revisa lo vigente, lo próximo y lo que debe pausarse antes de
+          publicar.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -411,7 +426,8 @@ export default function AdminFeaturedPage() {
           </h1>
           <p className="max-w-2xl text-[15px] text-[var(--text-muted)]">
             Programa lugares recomendados con texto editorial, crédito y ventana
-            semanal para mantener vivo el home sin tocar la base de datos a mano.
+            semanal para mantener vivo el home sin tocar la base de datos a
+            mano.
           </p>
         </header>
 
